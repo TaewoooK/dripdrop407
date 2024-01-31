@@ -17,9 +17,6 @@
       },
       "api": {
         "dripdrop407": {}
-      },
-      "storage": {
-        "TestBucket": {}
       }
     }
   }

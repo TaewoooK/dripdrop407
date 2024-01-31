@@ -45,11 +45,5 @@
       "service": "Cognito"
     }
   },
-  "storage": {
-    "TestBucket": {
-      "dependsOn": [],
-      "providerPlugin": "awscloudformation",
-      "service": "S3"
-    }
-  }
+  "storage": {}
 }
