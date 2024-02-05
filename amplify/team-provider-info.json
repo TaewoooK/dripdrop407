@@ -17,6 +17,9 @@
       },
       "api": {
         "dripdrop407": {}
+      },
+      "storage": {
+        "uploadimages": {}
       }
     }
   }

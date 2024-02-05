@@ -46,6 +46,75 @@ export const deleteTodo = /* GraphQL */ `
     }
   }
 `;
+export const createPost = /* GraphQL */ `
+  mutation CreatePost(
+    $input: CreatePostInput!
+    $condition: ModelPostConditionInput
+  ) {
+    createPost(input: $input, condition: $condition) {
+      id
+      name
+      description
+      owner
+      date
+      image {
+        bucket
+        region
+        key
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updatePost = /* GraphQL */ `
+  mutation UpdatePost(
+    $input: UpdatePostInput!
+    $condition: ModelPostConditionInput
+  ) {
+    updatePost(input: $input, condition: $condition) {
+      id
+      name
+      description
+      owner
+      date
+      image {
+        bucket
+        region
+        key
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deletePost = /* GraphQL */ `
+  mutation DeletePost(
+    $input: DeletePostInput!
+    $condition: ModelPostConditionInput
+  ) {
+    deletePost(input: $input, condition: $condition) {
+      id
+      name
+      description
+      owner
+      date
+      image {
+        bucket
+        region
+        key
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const createNote = /* GraphQL */ `
   mutation CreateNote(
     $input: CreateNoteInput!
@@ -55,7 +124,6 @@ export const createNote = /* GraphQL */ `
       id
       name
       description
-      image
       createdAt
       updatedAt
       __typename
@@ -71,7 +139,6 @@ export const updateNote = /* GraphQL */ `
       id
       name
       description
-      image
       createdAt
       updatedAt
       __typename
@@ -87,7 +154,6 @@ export const deleteNote = /* GraphQL */ `
       id
       name
       description
-      image
       createdAt
       updatedAt
       __typename

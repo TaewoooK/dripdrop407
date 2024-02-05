@@ -43,7 +43,6 @@ export const onCreateNote = /* GraphQL */ `
       id
       name
       description
-      image
       createdAt
       updatedAt
       __typename
@@ -56,7 +55,6 @@ export const onUpdateNote = /* GraphQL */ `
       id
       name
       description
-      image
       createdAt
       updatedAt
       __typename
@@ -69,7 +67,75 @@ export const onDeleteNote = /* GraphQL */ `
       id
       name
       description
-      image
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onCreatePost = /* GraphQL */ `
+  subscription OnCreatePost(
+    $filter: ModelSubscriptionPostFilterInput
+    $owner: String
+  ) {
+    onCreatePost(filter: $filter, owner: $owner) {
+      id
+      name
+      description
+      owner
+      date
+      image {
+        bucket
+        region
+        key
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdatePost = /* GraphQL */ `
+  subscription OnUpdatePost(
+    $filter: ModelSubscriptionPostFilterInput
+    $owner: String
+  ) {
+    onUpdatePost(filter: $filter, owner: $owner) {
+      id
+      name
+      description
+      owner
+      date
+      image {
+        bucket
+        region
+        key
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeletePost = /* GraphQL */ `
+  subscription OnDeletePost(
+    $filter: ModelSubscriptionPostFilterInput
+    $owner: String
+  ) {
+    onDeletePost(filter: $filter, owner: $owner) {
+      id
+      name
+      description
+      owner
+      date
+      image {
+        bucket
+        region
+        key
+        __typename
+      }
       createdAt
       updatedAt
       __typename
