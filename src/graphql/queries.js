@@ -71,8 +71,6 @@ export const getPost = /* GraphQL */ `
       id
       name
       description
-      owner
-      date
       image {
         bucket
         region
@@ -81,6 +79,7 @@ export const getPost = /* GraphQL */ `
       }
       createdAt
       updatedAt
+      owner
       __typename
     }
   }
@@ -96,10 +95,9 @@ export const listPosts = /* GraphQL */ `
         id
         name
         description
-        owner
-        date
         createdAt
         updatedAt
+        owner
         __typename
       }
       nextToken

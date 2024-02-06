@@ -82,8 +82,6 @@ export const onCreatePost = /* GraphQL */ `
       id
       name
       description
-      owner
-      date
       image {
         bucket
         region
@@ -92,6 +90,7 @@ export const onCreatePost = /* GraphQL */ `
       }
       createdAt
       updatedAt
+      owner
       __typename
     }
   }
@@ -105,8 +104,6 @@ export const onUpdatePost = /* GraphQL */ `
       id
       name
       description
-      owner
-      date
       image {
         bucket
         region
@@ -115,6 +112,7 @@ export const onUpdatePost = /* GraphQL */ `
       }
       createdAt
       updatedAt
+      owner
       __typename
     }
   }
@@ -128,8 +126,6 @@ export const onDeletePost = /* GraphQL */ `
       id
       name
       description
-      owner
-      date
       image {
         bucket
         region
@@ -138,6 +134,7 @@ export const onDeletePost = /* GraphQL */ `
       }
       createdAt
       updatedAt
+      owner
       __typename
     }
   }

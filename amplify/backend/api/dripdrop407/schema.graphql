@@ -21,8 +21,6 @@ type Post
   id: ID!
   name: String
   description: String
-  owner: String!
-  date: Int!
 
   image: S3Object!
 }
