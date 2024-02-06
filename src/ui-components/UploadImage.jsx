@@ -24,13 +24,15 @@ const UploadImage = () => {
     console.log("Image:", image);
     console.log("Description:", description);
 
+    let result = "test";
+
     try {
-      const result = await uploadData({
+      result = await uploadData({
         key: image.name,
         data: image,
         bucket: awsExports.aws_user_files_s3_bucket,
         options: {
-          accessLevel: "guest", // defaults to `guest` but can be 'private' | 'protected' | 'guest'
+          accessLevel: "public", // defaults to `guest` but can be 'private' | 'protected' | 'guest'
         },
       }).result;
       console.log("Succeeded: ", result);
@@ -38,17 +40,22 @@ const UploadImage = () => {
       console.log("Error : ", error);
     }
 
-    /*
+    console.log(result);
+
     try {
-      const result = await client.graphql({
+      const newPost = await client.graphql({
         query: createPost,
-        variables: { input: { description: description, image: image } },
-      }).result;
-      console.log("Succeeded: ", result);
+        variables: {
+          input: {
+            name: "Lorem ipsum dolor sit amet",
+            description: "Lorem ipsum dolor sit amet",
+          },
+        },
+      }).resultData;
+      console.log("Succeeded: but where?", newPost);
     } catch (error) {
       console.log("Error : ", error);
     }
-    */
   };
 
   return (

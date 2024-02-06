@@ -55,12 +55,6 @@ export const createPost = /* GraphQL */ `
       id
       name
       description
-      image {
-        bucket
-        region
-        key
-        __typename
-      }
       createdAt
       updatedAt
       owner
@@ -77,12 +71,6 @@ export const updatePost = /* GraphQL */ `
       id
       name
       description
-      image {
-        bucket
-        region
-        key
-        __typename
-      }
       createdAt
       updatedAt
       owner
@@ -99,12 +87,6 @@ export const deletePost = /* GraphQL */ `
       id
       name
       description
-      image {
-        bucket
-        region
-        key
-        __typename
-      }
       createdAt
       updatedAt
       owner

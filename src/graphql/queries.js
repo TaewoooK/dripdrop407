@@ -71,12 +71,6 @@ export const getPost = /* GraphQL */ `
       id
       name
       description
-      image {
-        bucket
-        region
-        key
-        __typename
-      }
       createdAt
       updatedAt
       owner
