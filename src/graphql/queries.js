@@ -39,7 +39,6 @@ export const getNote = /* GraphQL */ `
       id
       name
       description
-      image
       createdAt
       updatedAt
       __typename
@@ -57,9 +56,48 @@ export const listNotes = /* GraphQL */ `
         id
         name
         description
-        image
         createdAt
         updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getPost = /* GraphQL */ `
+  query GetPost($id: ID!) {
+    getPost(id: $id) {
+      id
+      name
+      description
+      image {
+        bucket
+        region
+        key
+        __typename
+      }
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+  }
+`;
+export const listPosts = /* GraphQL */ `
+  query ListPosts(
+    $filter: ModelPostFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        description
+        createdAt
+        updatedAt
+        owner
         __typename
       }
       nextToken

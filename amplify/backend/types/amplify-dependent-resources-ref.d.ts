@@ -18,7 +18,7 @@ export type AmplifyDependentResourcesAttributes = {
     }
   },
   "storage": {
-    "TestBucket": {
+    "uploadimages": {
       "BucketName": "string",
       "Region": "string"
     }

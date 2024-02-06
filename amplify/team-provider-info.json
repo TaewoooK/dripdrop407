@@ -1,4 +1,28 @@
 {
+  "eddiedev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-dripdrop407-eddiedev-210720-authRole",
+      "UnauthRoleArn": "arn:aws:iam::654654403425:role/amplify-dripdrop407-eddiedev-210720-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::654654403425:role/amplify-dripdrop407-eddiedev-210720-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-dripdrop407-eddiedev-210720-deployment",
+      "UnauthRoleName": "amplify-dripdrop407-eddiedev-210720-unauthRole",
+      "StackName": "amplify-dripdrop407-eddiedev-210720",
+      "StackId": "arn:aws:cloudformation:us-east-2:654654403425:stack/amplify-dripdrop407-eddiedev-210720/b781b8c0-c533-11ee-be6f-06e1500056b7",
+      "AmplifyAppId": "d35lredcdzbakc"
+    },
+    "categories": {
+      "auth": {
+        "dripdrop40717f1726c": {}
+      },
+      "storage": {
+        "uploadimages": {}
+      },
+      "api": {
+        "dripdrop407": {}
+      }
+    }
+  },
   "staging": {
     "awscloudformation": {
       "AuthRoleName": "amplify-amplify283bb19e56e34-staging-63138-authRole",
@@ -17,6 +41,9 @@
       },
       "api": {
         "dripdrop407": {}
+      },
+      "storage": {
+        "uploadimages": {}
       }
     }
   }
