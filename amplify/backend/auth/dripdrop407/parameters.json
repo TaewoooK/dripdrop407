@@ -1,0 +1,19 @@
+{
+  "authSelections": "identityPoolAndUserPool",
+  "resourceName": "dripdrop407",
+  "serviceType": "imported",
+  "region": "us-east-2",
+  "usernameAttributes": [
+    "email"
+  ],
+  "requiredAttributes": [
+    "email"
+  ],
+  "passwordPolicyMinLength": 8,
+  "passwordPolicyCharacters": [],
+  "mfaConfiguration": "OFF",
+  "autoVerifiedAttributes": [
+    "email"
+  ],
+  "mfaTypes": []
+}
