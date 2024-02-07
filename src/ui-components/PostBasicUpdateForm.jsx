@@ -9,8 +9,8 @@ import * as React from "react";
 import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
-import { getPostBasic } from "../graphql/queries";
-import { updatePostBasic } from "../graphql/mutations";
+import { getPost } from "../graphql/queries";
+import { updatePost } from "../graphql/mutations";
 const client = generateClient();
 export default function PostBasicUpdateForm(props) {
   const {
@@ -51,10 +51,10 @@ export default function PostBasicUpdateForm(props) {
       const record = idProp
         ? (
             await client.graphql({
-              query: getPostBasic.replaceAll("__typename", ""),
+              query: getPost.replaceAll("__typename", ""),
               variables: { id: idProp },
             })
-          )?.data?.getPostBasic
+          )?.data?.getPost
         : postBasicModelProp;
       setPostBasicRecord(record);
     };
@@ -125,7 +125,7 @@ export default function PostBasicUpdateForm(props) {
             }
           });
           await client.graphql({
-            query: updatePostBasic.replaceAll("__typename", ""),
+            query: updatePost.replaceAll("__typename", ""),
             variables: {
               input: {
                 id: postBasicRecord.id,

@@ -9,7 +9,7 @@ import * as React from "react";
 import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
-import { createPostBasic } from "../graphql/mutations";
+import { createPost } from "../graphql/mutations";
 const client = generateClient();
 export default function PostBasicCreateForm(props) {
   const {
@@ -103,7 +103,7 @@ export default function PostBasicCreateForm(props) {
             }
           });
           await client.graphql({
-            query: createPostBasic.replaceAll("__typename", ""),
+            query: createPost.replaceAll("__typename", ""),
             variables: {
               input: {
                 ...modelFields,

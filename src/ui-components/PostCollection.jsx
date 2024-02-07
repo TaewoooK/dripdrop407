@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 import * as React from "react";
-import { listPostBasics } from "../graphql/queries";
+import { listPosts } from "../graphql/queries";
 import PostComponent from "./PostComponent";
 import { getOverrideProps } from "./utils";
 import { Collection, Pagination, Placeholder } from "@aws-amplify/ui-react";
@@ -55,10 +55,10 @@ export default function PostCollection(props) {
       }
       const result = (
         await client.graphql({
-          query: listPostBasics.replaceAll("__typename", ""),
+          query: listPosts.replaceAll("__typename", ""),
           variables,
         })
-      ).data.listPostBasics;
+      ).data.listPosts;
       newCache.push(...result.items);
       newNext = result.nextToken;
     }

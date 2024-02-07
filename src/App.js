@@ -7,8 +7,8 @@ import awsconfig from "./amplifyconfiguration.json";
 import UploadImage from "./ui-components/UploadImage";
 import {
   DripDropNavBarBasic,
-  PostComponent,
-  CommentComponent 
+  CommentComponent, 
+  PostComponent
  } from './ui-components';
 
 
