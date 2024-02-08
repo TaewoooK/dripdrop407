@@ -46,5 +46,12 @@
         "uploadimages": {}
       }
     }
+  },
+  "jeffdev": {
+    "categories": {
+      "auth": {
+        "dripdrop40717f1726c": {}
+      }
+    }
   }
 }
