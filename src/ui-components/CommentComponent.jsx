@@ -96,8 +96,10 @@ export default function CommentComponent(props) {
           isDisabled={false}
           labelHidden={false}
           variation="default"
+          style={{ color: 'white' }}
           {...getOverrideProps(overrides, "TextField")}
         ></TextField>
+        <a href="" style={{ textDecoration: 'none', color: 'inherit' }}>
         <MyIcon
           width="33px"
           height="33px"
@@ -112,6 +114,7 @@ export default function CommentComponent(props) {
           type="send"
           {...getOverrideProps(overrides, "MyIcon")}
         ></MyIcon>
+        </a>
       </Flex>
       <View
         width="40px"

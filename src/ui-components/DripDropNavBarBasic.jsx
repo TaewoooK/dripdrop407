@@ -13,7 +13,7 @@ export default function DripDropNavBarBasic(props) {
   return (
     <View
       width="260px"
-      height="1024px"
+      height="100vh"
       display="block"
       gap="unset"
       alignItems="unset"
