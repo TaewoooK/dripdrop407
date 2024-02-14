@@ -18,8 +18,8 @@ const App = ({ signOut }) => {
   return (
     <View className="App">
       <div>
-        <UploadImage />
-        <Button onClick={signOut}>Sign Out</Button>
+        {/* <UploadImage />
+        <Button onClick={signOut}>Sign Out</Button> */}
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <DripDropNavBarBasic />
           <PostComponent />

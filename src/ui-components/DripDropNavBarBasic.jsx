@@ -44,9 +44,10 @@ export default function DripDropNavBarBasic(props) {
         left="29px"
         padding="0px 0px 0px 0px"
         whiteSpace="pre-wrap"
-        children="dripdrop."
-        {...getOverrideProps(overrides, "dripdrop.")}
-      ></Text>
+      >
+        <span style={{ color: '#047D95' }}>drip</span>
+        <span>drop.</span>
+      </Text>
       <Flex
         gap="45px"
         direction="column"
@@ -85,6 +86,7 @@ export default function DripDropNavBarBasic(props) {
             padding="0px 0px 0px 0px"
             {...getOverrideProps(overrides, "Frame48651382")}
           >
+            <a href="/home" style={{ textDecoration: 'none', color: 'inherit' }}>
             <Icon
               width="19.5px"
               height="18.28px"
@@ -114,7 +116,9 @@ export default function DripDropNavBarBasic(props) {
               right="9.38%"
               {...getOverrideProps(overrides, "Vector48651383")}
             ></Icon>
+            </a>
           </View>
+          <a href="/home" style={{ textDecoration: 'none', color: 'inherit' }}>
           <Text
             fontFamily="Inter"
             fontSize="24px"
@@ -136,6 +140,7 @@ export default function DripDropNavBarBasic(props) {
             children="Home"
             {...getOverrideProps(overrides, "Home")}
           ></Text>
+          </a>
         </Flex>
         <Flex
           gap="16px"
@@ -174,6 +179,7 @@ export default function DripDropNavBarBasic(props) {
               padding="0px 0px 0px 0px"
               {...getOverrideProps(overrides, "Frame48651103")}
             >
+              <a href="/leaderboard" style={{ textDecoration: 'none', color: 'inherit' }}>
               <Icon
                 width="19.33px"
                 height="19.5px"
@@ -203,7 +209,9 @@ export default function DripDropNavBarBasic(props) {
                 right="9.72%"
                 {...getOverrideProps(overrides, "Vector48651104")}
               ></Icon>
+              </a>
             </View>
+            <a href="/leaderboard" style={{ textDecoration: 'none', color: 'inherit' }}>
             <Text
               fontFamily="Inter"
               fontSize="24px"
@@ -225,6 +233,7 @@ export default function DripDropNavBarBasic(props) {
               children="Leaderboard"
               {...getOverrideProps(overrides, "Leaderboard")}
             ></Text>
+            </a>
           </Flex>
         </Flex>
         <Flex
@@ -239,6 +248,7 @@ export default function DripDropNavBarBasic(props) {
           padding="0px 0px 0px 0px"
           {...getOverrideProps(overrides, "Frame 440")}
         >
+          <a href="/upload" style={{ textDecoration: 'none', color: 'inherit' }}>
           <Icon
             width="24px"
             height="24px"
@@ -260,6 +270,8 @@ export default function DripDropNavBarBasic(props) {
             position="relative"
             {...getOverrideProps(overrides, "Vector48651107")}
           ></Icon>
+          </a>
+          <a href="/upload" style={{ textDecoration: 'none', color: 'inherit' }}>
           <Text
             fontFamily="Inter"
             fontSize="24px"
@@ -281,6 +293,7 @@ export default function DripDropNavBarBasic(props) {
             children="Upload"
             {...getOverrideProps(overrides, "Upload")}
           ></Text>
+          </a>
         </Flex>
         <Flex
           gap="16px"
@@ -294,6 +307,7 @@ export default function DripDropNavBarBasic(props) {
           padding="0px 0px 0px 0px"
           {...getOverrideProps(overrides, "Frame 441")}
         >
+          <a href="/activity" style={{ textDecoration: 'none', color: 'inherit' }}>
           <Icon
             width="26px"
             height="26px"
@@ -315,6 +329,8 @@ export default function DripDropNavBarBasic(props) {
             position="relative"
             {...getOverrideProps(overrides, "Vector48651110")}
           ></Icon>
+          </a>
+          <a href="/activity" style={{ textDecoration: 'none', color: 'inherit' }}>
           <Text
             fontFamily="Inter"
             fontSize="24px"
@@ -336,6 +352,7 @@ export default function DripDropNavBarBasic(props) {
             children="Activity&#xA;"
             {...getOverrideProps(overrides, "Activity")}
           ></Text>
+          </a>
         </Flex>
         <Flex
           gap="16px"
@@ -362,6 +379,7 @@ export default function DripDropNavBarBasic(props) {
             padding="0px 0px 0px 0px"
             {...getOverrideProps(overrides, "Frame48651384")}
           >
+            <a href="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
             <Icon
               width="18px"
               height="18px"
@@ -391,7 +409,9 @@ export default function DripDropNavBarBasic(props) {
               right="12.5%"
               {...getOverrideProps(overrides, "Vector48651385")}
             ></Icon>
+            </a>
           </View>
+          <a href="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
           <Text
             fontFamily="Inter"
             fontSize="24px"
@@ -413,6 +433,7 @@ export default function DripDropNavBarBasic(props) {
             children="Profile"
             {...getOverrideProps(overrides, "Profile")}
           ></Text>
+          </a>
         </Flex>
       </Flex>
       <Flex
@@ -581,8 +602,8 @@ export default function DripDropNavBarBasic(props) {
           position="relative"
           padding="0px 0px 0px 0px"
           whiteSpace="pre-wrap"
-          children="Ling-jet"
-          {...getOverrideProps(overrides, "Ling-jet")}
+          children="Username"
+          {...getOverrideProps(overrides, "Username")}
         ></Text>
       </Flex>
     </View>
