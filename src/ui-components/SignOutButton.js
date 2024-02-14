@@ -3,19 +3,18 @@ import "@aws-amplify/ui-react/styles.css";
 import { Amplify } from "aws-amplify";
 import { Button, View, withAuthenticator } from "@aws-amplify/ui-react";
 import awsconfig from "../amplifyconfiguration.json";
-import UploadImage from "../ui-components/UploadImage";
 
 
 Amplify.configure(awsconfig);
 
-const Upload = () => {
+const SignOutButton = ({ signOut }) => {
   return (
-    <View className="Upload">
+    <View className="SignOutButton">
       <div>
-        <UploadImage />
+        <Button onClick={signOut} color="#FFFFFF">Sign Out</Button>
       </div>
     </View>
   );
 };
 
-export default withAuthenticator(Upload);
+export default withAuthenticator(SignOutButton);

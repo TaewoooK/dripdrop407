@@ -8,6 +8,7 @@
 import * as React from "react";
 import { getOverrideProps } from "./utils";
 import { Flex, Icon, Text, View } from "@aws-amplify/ui-react";
+import SignOutButton from "./SignOutButton";
 export default function DripDropNavBarBasic(props) {
   const { overrides, ...rest } = props;
   return (
@@ -439,7 +440,7 @@ export default function DripDropNavBarBasic(props) {
       <Flex
         gap="20px"
         direction="row"
-        width="182px"
+        width="118px"
         height="56px"
         justifyContent="center"
         alignItems="center"
@@ -449,11 +450,12 @@ export default function DripDropNavBarBasic(props) {
         border="1px SOLID rgba(255,255,255,0.2)"
         boxShadow="0px 4px 4px rgba(0, 0, 0, 0.25)"
         borderRadius="10px"
-        padding="9px 7px 9px 7px"
+        padding="1px 1px 1px 1px"
         backgroundColor="rgba(255,255,255,0.06)"
         {...getOverrideProps(overrides, "Frame 445")}
       >
-        <View
+        <SignOutButton></SignOutButton>
+        {/* <View
           width="24px"
           height="24px"
           display="block"
@@ -511,7 +513,7 @@ export default function DripDropNavBarBasic(props) {
           whiteSpace="pre-wrap"
           children="Logout"
           {...getOverrideProps(overrides, "Logout")}
-        ></Text>
+        ></Text> */}
       </Flex>
       <View
         width="24px"
