@@ -1,20 +1,32 @@
 {
   "api": {
     "dripdrop407": {
-      "dependsOn": [],
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "dripdrop40717f1726c"
+        }
+      ],
       "output": {
         "authConfig": {
           "additionalAuthenticationProviders": [
             {
-              "authenticationType": "AWS_IAM"
+              "apiKeyConfig": {
+                "apiKeyExpirationDate": "2025-02-04T00:04:11.310Z",
+                "apiKeyExpirationDays": 365,
+                "description": "for public"
+              },
+              "authenticationType": "API_KEY"
             }
           ],
           "defaultAuthentication": {
-            "apiKeyConfig": {
-              "apiKeyExpirationDays": 30,
-              "description": "api key description"
-            },
-            "authenticationType": "API_KEY"
+            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+            "userPoolConfig": {
+              "userPoolId": "authdripdrop40717f1726c"
+            }
           }
         }
       },
@@ -23,126 +35,38 @@
     }
   },
   "auth": {
-    "dripdrop407": {
+    "dripdrop40717f1726c": {
       "customAuth": false,
       "dependsOn": [],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
       "providerPlugin": "awscloudformation",
-      "service": "Cognito",
-      "serviceType": "imported"
-    }
-  },
-  "parameters": {
-    "AMPLIFY_auth_dripdrop407_allowUnauthenticatedIdentities": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "dripdrop407"
-        }
-      ]
-    },
-    "AMPLIFY_auth_dripdrop407_authRoleArn": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "dripdrop407"
-        }
-      ]
-    },
-    "AMPLIFY_auth_dripdrop407_authRoleName": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "dripdrop407"
-        }
-      ]
-    },
-    "AMPLIFY_auth_dripdrop407_identityPoolId": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "dripdrop407"
-        }
-      ]
-    },
-    "AMPLIFY_auth_dripdrop407_identityPoolName": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "dripdrop407"
-        }
-      ]
-    },
-    "AMPLIFY_auth_dripdrop407_nativeClientId": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "dripdrop407"
-        }
-      ]
-    },
-    "AMPLIFY_auth_dripdrop407_unauthRoleArn": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "dripdrop407"
-        }
-      ]
-    },
-    "AMPLIFY_auth_dripdrop407_unauthRoleName": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "dripdrop407"
-        }
-      ]
-    },
-    "AMPLIFY_auth_dripdrop407_userPoolId": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "dripdrop407"
-        }
-      ]
-    },
-    "AMPLIFY_auth_dripdrop407_userPoolName": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "dripdrop407"
-        }
-      ]
-    },
-    "AMPLIFY_auth_dripdrop407_webClientId": {
-      "usedBy": [
-        {
-          "category": "auth",
-          "resourceName": "dripdrop407"
-        }
-      ]
-    },
-    "AMPLIFY_storage_dripdrop407d0b1b9b4_bucketName": {
-      "usedBy": [
-        {
-          "category": "storage",
-          "resourceName": "dripdrop407d0b1b9b4"
-        }
-      ]
-    },
-    "AMPLIFY_storage_dripdrop407d0b1b9b4_region": {
-      "usedBy": [
-        {
-          "category": "storage",
-          "resourceName": "dripdrop407d0b1b9b4"
-        }
-      ]
+      "service": "Cognito"
     }
   },
   "storage": {
-    "dripdrop407d0b1b9b4": {
+    "uploadimages": {
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
-      "service": "S3",
-      "serviceType": "imported"
+      "service": "S3"
     }
   }
 }
