@@ -79,12 +79,21 @@ export const onCreatePost = /* GraphQL */ `
     $owner: String
   ) {
     onCreatePost(filter: $filter, owner: $owner) {
-      id
-      name
-      description
-      createdAt
-      updatedAt
+      postId
       owner
+      description
+      comments
+      drip_points
+      createdAt
+      enable_comments
+      image {
+        bucket
+        region
+        key
+        __typename
+      }
+      id
+      updatedAt
       __typename
     }
   }
@@ -95,12 +104,21 @@ export const onUpdatePost = /* GraphQL */ `
     $owner: String
   ) {
     onUpdatePost(filter: $filter, owner: $owner) {
-      id
-      name
-      description
-      createdAt
-      updatedAt
+      postId
       owner
+      description
+      comments
+      drip_points
+      createdAt
+      enable_comments
+      image {
+        bucket
+        region
+        key
+        __typename
+      }
+      id
+      updatedAt
       __typename
     }
   }
@@ -111,12 +129,21 @@ export const onDeletePost = /* GraphQL */ `
     $owner: String
   ) {
     onDeletePost(filter: $filter, owner: $owner) {
-      id
-      name
-      description
-      createdAt
-      updatedAt
+      postId
       owner
+      description
+      comments
+      drip_points
+      createdAt
+      enable_comments
+      image {
+        bucket
+        region
+        key
+        __typename
+      }
+      id
+      updatedAt
       __typename
     }
   }

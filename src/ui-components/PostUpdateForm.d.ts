@@ -5,7 +5,7 @@
  **************************************************************************/
 
 import * as React from "react";
-import { GridProps, TextFieldProps } from "@aws-amplify/ui-react";
+import { GridProps, SwitchFieldProps, TextFieldProps } from "@aws-amplify/ui-react";
 export declare type EscapeHatchProps = {
     [elementHierarchy: string]: Record<string, unknown>;
 } | null;
@@ -22,18 +22,33 @@ export declare type ValidationResponse = {
 };
 export declare type ValidationFunction<T> = (value: T, validationResponse: ValidationResponse) => ValidationResponse | Promise<ValidationResponse>;
 export declare type PostUpdateFormInputValues = {
-    name?: string;
+    postId?: string;
+    owner?: string;
     description?: string;
+    comments?: string;
+    drip_points?: number;
+    createdAt?: string;
+    enable_comments?: boolean;
 };
 export declare type PostUpdateFormValidationValues = {
-    name?: ValidationFunction<string>;
+    postId?: ValidationFunction<string>;
+    owner?: ValidationFunction<string>;
     description?: ValidationFunction<string>;
+    comments?: ValidationFunction<string>;
+    drip_points?: ValidationFunction<number>;
+    createdAt?: ValidationFunction<string>;
+    enable_comments?: ValidationFunction<boolean>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type PostUpdateFormOverridesProps = {
     PostUpdateFormGrid?: PrimitiveOverrideProps<GridProps>;
-    name?: PrimitiveOverrideProps<TextFieldProps>;
+    postId?: PrimitiveOverrideProps<TextFieldProps>;
+    owner?: PrimitiveOverrideProps<TextFieldProps>;
     description?: PrimitiveOverrideProps<TextFieldProps>;
+    comments?: PrimitiveOverrideProps<TextFieldProps>;
+    drip_points?: PrimitiveOverrideProps<TextFieldProps>;
+    createdAt?: PrimitiveOverrideProps<TextFieldProps>;
+    enable_comments?: PrimitiveOverrideProps<SwitchFieldProps>;
 } & EscapeHatchProps;
 export declare type PostUpdateFormProps = React.PropsWithChildren<{
     overrides?: PostUpdateFormOverridesProps | undefined | null;

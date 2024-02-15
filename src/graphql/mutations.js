@@ -52,12 +52,21 @@ export const createPost = /* GraphQL */ `
     $condition: ModelPostConditionInput
   ) {
     createPost(input: $input, condition: $condition) {
-      id
-      name
-      description
-      createdAt
-      updatedAt
+      postId
       owner
+      description
+      comments
+      drip_points
+      createdAt
+      enable_comments
+      image {
+        bucket
+        region
+        key
+        __typename
+      }
+      id
+      updatedAt
       __typename
     }
   }
@@ -68,12 +77,21 @@ export const updatePost = /* GraphQL */ `
     $condition: ModelPostConditionInput
   ) {
     updatePost(input: $input, condition: $condition) {
-      id
-      name
-      description
-      createdAt
-      updatedAt
+      postId
       owner
+      description
+      comments
+      drip_points
+      createdAt
+      enable_comments
+      image {
+        bucket
+        region
+        key
+        __typename
+      }
+      id
+      updatedAt
       __typename
     }
   }
@@ -84,12 +102,21 @@ export const deletePost = /* GraphQL */ `
     $condition: ModelPostConditionInput
   ) {
     deletePost(input: $input, condition: $condition) {
-      id
-      name
-      description
-      createdAt
-      updatedAt
+      postId
       owner
+      description
+      comments
+      drip_points
+      createdAt
+      enable_comments
+      image {
+        bucket
+        region
+        key
+        __typename
+      }
+      id
+      updatedAt
       __typename
     }
   }

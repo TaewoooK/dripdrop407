@@ -33,6 +33,15 @@ const UploadImage = () => {
         bucket: awsExports.aws_user_files_s3_bucket,
         options: {
           accessLevel: "public", // defaults to `guest` but can be 'private' | 'protected' | 'guest'
+          onProgress: ({ transferredBytes, totalBytes }) => {
+            if (totalBytes) {
+              console.log(
+                `Upload progress ${
+                  Math.round(transferredBytes / totalBytes) * 100
+                } %`
+              );
+            }
+          },
         },
       }).result;
       console.log("Succeeded: ", result);

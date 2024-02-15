@@ -68,12 +68,21 @@ export const listNotes = /* GraphQL */ `
 export const getPost = /* GraphQL */ `
   query GetPost($id: ID!) {
     getPost(id: $id) {
-      id
-      name
-      description
-      createdAt
-      updatedAt
+      postId
       owner
+      description
+      comments
+      drip_points
+      createdAt
+      enable_comments
+      image {
+        bucket
+        region
+        key
+        __typename
+      }
+      id
+      updatedAt
       __typename
     }
   }
@@ -86,12 +95,15 @@ export const listPosts = /* GraphQL */ `
   ) {
     listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
-        id
-        name
-        description
-        createdAt
-        updatedAt
+        postId
         owner
+        description
+        comments
+        drip_points
+        createdAt
+        enable_comments
+        id
+        updatedAt
         __typename
       }
       nextToken

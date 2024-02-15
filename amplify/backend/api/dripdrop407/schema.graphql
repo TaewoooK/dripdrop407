@@ -18,9 +18,14 @@ type Note @model @auth(rules: [{ allow: public }]) {
 type Post
   @model
   @auth(rules: [{ allow: public, operations: [read] }, { allow: owner }]) {
-  id: ID!
-  name: String
-  description: String
+  postId: String!
+  owner: String!
+  description: String!
+  comments: String
+  drip_points: Int
+  createdAt: String
+  enable_comments: Boolean
+  image: S3Object
 }
 
 type S3Object {
@@ -28,5 +33,3 @@ type S3Object {
   region: String!
   key: String!
 }
-
-

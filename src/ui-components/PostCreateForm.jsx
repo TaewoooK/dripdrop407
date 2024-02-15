@@ -6,7 +6,13 @@
 
 /* eslint-disable */
 import * as React from "react";
-import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
+import {
+  Button,
+  Flex,
+  Grid,
+  SwitchField,
+  TextField,
+} from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { createPost } from "../graphql/mutations";
@@ -23,22 +29,46 @@ export default function PostCreateForm(props) {
     ...rest
   } = props;
   const initialValues = {
-    name: "",
+    postId: "",
+    owner: "",
     description: "",
+    comments: "",
+    drip_points: "",
+    createdAt: "",
+    enable_comments: false,
   };
-  const [name, setName] = React.useState(initialValues.name);
+  const [postId, setPostId] = React.useState(initialValues.postId);
+  const [owner, setOwner] = React.useState(initialValues.owner);
   const [description, setDescription] = React.useState(
     initialValues.description
   );
+  const [comments, setComments] = React.useState(initialValues.comments);
+  const [drip_points, setDrip_points] = React.useState(
+    initialValues.drip_points
+  );
+  const [createdAt, setCreatedAt] = React.useState(initialValues.createdAt);
+  const [enable_comments, setEnable_comments] = React.useState(
+    initialValues.enable_comments
+  );
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
-    setName(initialValues.name);
+    setPostId(initialValues.postId);
+    setOwner(initialValues.owner);
     setDescription(initialValues.description);
+    setComments(initialValues.comments);
+    setDrip_points(initialValues.drip_points);
+    setCreatedAt(initialValues.createdAt);
+    setEnable_comments(initialValues.enable_comments);
     setErrors({});
   };
   const validations = {
-    name: [],
-    description: [],
+    postId: [{ type: "Required" }],
+    owner: [{ type: "Required" }],
+    description: [{ type: "Required" }],
+    comments: [],
+    drip_points: [],
+    createdAt: [],
+    enable_comments: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -66,8 +96,13 @@ export default function PostCreateForm(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
-          name,
+          postId,
+          owner,
           description,
+          comments,
+          drip_points,
+          createdAt,
+          enable_comments,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -122,41 +157,81 @@ export default function PostCreateForm(props) {
       {...rest}
     >
       <TextField
-        label="Name"
-        isRequired={false}
+        label="Post id"
+        isRequired={true}
         isReadOnly={false}
-        value={name}
+        value={postId}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              name: value,
+              postId: value,
+              owner,
               description,
+              comments,
+              drip_points,
+              createdAt,
+              enable_comments,
             };
             const result = onChange(modelFields);
-            value = result?.name ?? value;
+            value = result?.postId ?? value;
           }
-          if (errors.name?.hasError) {
-            runValidationTasks("name", value);
+          if (errors.postId?.hasError) {
+            runValidationTasks("postId", value);
           }
-          setName(value);
+          setPostId(value);
         }}
-        onBlur={() => runValidationTasks("name", name)}
-        errorMessage={errors.name?.errorMessage}
-        hasError={errors.name?.hasError}
-        {...getOverrideProps(overrides, "name")}
+        onBlur={() => runValidationTasks("postId", postId)}
+        errorMessage={errors.postId?.errorMessage}
+        hasError={errors.postId?.hasError}
+        {...getOverrideProps(overrides, "postId")}
+      ></TextField>
+      <TextField
+        label="Owner"
+        isRequired={true}
+        isReadOnly={false}
+        value={owner}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              postId,
+              owner: value,
+              description,
+              comments,
+              drip_points,
+              createdAt,
+              enable_comments,
+            };
+            const result = onChange(modelFields);
+            value = result?.owner ?? value;
+          }
+          if (errors.owner?.hasError) {
+            runValidationTasks("owner", value);
+          }
+          setOwner(value);
+        }}
+        onBlur={() => runValidationTasks("owner", owner)}
+        errorMessage={errors.owner?.errorMessage}
+        hasError={errors.owner?.hasError}
+        {...getOverrideProps(overrides, "owner")}
       ></TextField>
       <TextField
         label="Description"
-        isRequired={false}
+        isRequired={true}
         isReadOnly={false}
         value={description}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              name,
+              postId,
+              owner,
               description: value,
+              comments,
+              drip_points,
+              createdAt,
+              enable_comments,
             };
             const result = onChange(modelFields);
             value = result?.description ?? value;
@@ -171,6 +246,130 @@ export default function PostCreateForm(props) {
         hasError={errors.description?.hasError}
         {...getOverrideProps(overrides, "description")}
       ></TextField>
+      <TextField
+        label="Comments"
+        isRequired={false}
+        isReadOnly={false}
+        value={comments}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              postId,
+              owner,
+              description,
+              comments: value,
+              drip_points,
+              createdAt,
+              enable_comments,
+            };
+            const result = onChange(modelFields);
+            value = result?.comments ?? value;
+          }
+          if (errors.comments?.hasError) {
+            runValidationTasks("comments", value);
+          }
+          setComments(value);
+        }}
+        onBlur={() => runValidationTasks("comments", comments)}
+        errorMessage={errors.comments?.errorMessage}
+        hasError={errors.comments?.hasError}
+        {...getOverrideProps(overrides, "comments")}
+      ></TextField>
+      <TextField
+        label="Drip points"
+        isRequired={false}
+        isReadOnly={false}
+        type="number"
+        step="any"
+        value={drip_points}
+        onChange={(e) => {
+          let value = isNaN(parseInt(e.target.value))
+            ? e.target.value
+            : parseInt(e.target.value);
+          if (onChange) {
+            const modelFields = {
+              postId,
+              owner,
+              description,
+              comments,
+              drip_points: value,
+              createdAt,
+              enable_comments,
+            };
+            const result = onChange(modelFields);
+            value = result?.drip_points ?? value;
+          }
+          if (errors.drip_points?.hasError) {
+            runValidationTasks("drip_points", value);
+          }
+          setDrip_points(value);
+        }}
+        onBlur={() => runValidationTasks("drip_points", drip_points)}
+        errorMessage={errors.drip_points?.errorMessage}
+        hasError={errors.drip_points?.hasError}
+        {...getOverrideProps(overrides, "drip_points")}
+      ></TextField>
+      <TextField
+        label="Created at"
+        isRequired={false}
+        isReadOnly={false}
+        value={createdAt}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              postId,
+              owner,
+              description,
+              comments,
+              drip_points,
+              createdAt: value,
+              enable_comments,
+            };
+            const result = onChange(modelFields);
+            value = result?.createdAt ?? value;
+          }
+          if (errors.createdAt?.hasError) {
+            runValidationTasks("createdAt", value);
+          }
+          setCreatedAt(value);
+        }}
+        onBlur={() => runValidationTasks("createdAt", createdAt)}
+        errorMessage={errors.createdAt?.errorMessage}
+        hasError={errors.createdAt?.hasError}
+        {...getOverrideProps(overrides, "createdAt")}
+      ></TextField>
+      <SwitchField
+        label="Enable comments"
+        defaultChecked={false}
+        isDisabled={false}
+        isChecked={enable_comments}
+        onChange={(e) => {
+          let value = e.target.checked;
+          if (onChange) {
+            const modelFields = {
+              postId,
+              owner,
+              description,
+              comments,
+              drip_points,
+              createdAt,
+              enable_comments: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.enable_comments ?? value;
+          }
+          if (errors.enable_comments?.hasError) {
+            runValidationTasks("enable_comments", value);
+          }
+          setEnable_comments(value);
+        }}
+        onBlur={() => runValidationTasks("enable_comments", enable_comments)}
+        errorMessage={errors.enable_comments?.errorMessage}
+        hasError={errors.enable_comments?.hasError}
+        {...getOverrideProps(overrides, "enable_comments")}
+      ></SwitchField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}
