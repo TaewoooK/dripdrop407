@@ -45,9 +45,10 @@ export default function DripDropNavBarBasic(props) {
         left="29px"
         padding="0px 0px 0px 0px"
         whiteSpace="pre-wrap"
-      >
-        <span style={{ color: '#047D95' }}>drip</span>
-        <span>drop.</span>
+        children="dripdrop."
+        {...getOverrideProps(overrides, "dripdrop.")}
+      ><span style={{ color: '#047D95' }}>drip</span>
+      <span>drop.</span>
       </Text>
       <Flex
         gap="45px"
@@ -60,7 +61,7 @@ export default function DripDropNavBarBasic(props) {
         top="170px"
         left="31px"
         padding="0px 0px 0px 0px"
-        {...getOverrideProps(overrides, "Frame 443")}
+        {...getOverrideProps(overrides, "Frame 44348651097")}
       >
         <Flex
           gap="16px"
@@ -433,6 +434,87 @@ export default function DripDropNavBarBasic(props) {
             whiteSpace="pre-wrap"
             children="Profile"
             {...getOverrideProps(overrides, "Profile")}
+          ></Text>
+          </a>
+        </Flex>
+        <Flex
+          gap="16px"
+          direction="row"
+          width="unset"
+          height="unset"
+          justifyContent="flex-start"
+          alignItems="center"
+          shrink="0"
+          position="relative"
+          padding="0px 0px 0px 0px"
+          {...getOverrideProps(overrides, "Frame 4434961564")}
+        >
+          <View
+            width="26px"
+            height="26px"
+            display="block"
+            gap="unset"
+            alignItems="unset"
+            justifyContent="unset"
+            overflow="hidden"
+            shrink="0"
+            position="relative"
+            padding="0px 0px 0px 0px"
+            {...getOverrideProps(overrides, "Frame4961568")}
+          >
+            <a href="/friends" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Icon
+              width="19.5px"
+              height="19.5px"
+              viewBox={{
+                minX: 0,
+                minY: 0,
+                width: 19.5,
+                height: 19.500019073486328,
+              }}
+              paths={[
+                {
+                  d: "M17 4.875C17 4.46079 16.6642 4.125 16.25 4.125C15.8358 4.125 15.5 4.46079 15.5 4.875L17 4.875ZM15.5 11.375C15.5 11.7892 15.8358 12.125 16.25 12.125C16.6642 12.125 17 11.7892 17 11.375L15.5 11.375ZM19.5 8.875C19.9142 8.875 20.25 8.53921 20.25 8.125C20.25 7.71079 19.9142 7.375 19.5 7.375L19.5 8.875ZM13 7.375C12.5858 7.375 12.25 7.71079 12.25 8.125C12.25 8.53921 12.5858 8.875 13 8.875L13 7.375ZM10.5625 3.65625L11.3125 3.65625L10.5625 3.65625ZM3.25 3.65625L2.5 3.65625L3.25 3.65625ZM6.90625 0L6.90625 -0.75L6.90625 0ZM-0.75 17.5879C-0.75 18.0021 -0.414214 18.3379 0 18.3379C0.414214 18.3379 0.75 18.0021 0.75 17.5879L-0.75 17.5879ZM6.90625 10.5625L6.90625 9.8125L6.90625 10.5625ZM13.8125 17.4688L14.5625 17.4688L13.8125 17.4688ZM13.8125 17.5868L14.1994 18.2293C14.4247 18.0936 14.5625 17.8498 14.5625 17.5868L13.8125 17.5868ZM6.90517 19.5L6.90643 18.75L6.90517 18.75L6.90517 19.5ZM0 17.5868L0.386836 16.9443C0.155174 16.8048 -0.133628 16.8009 -0.369035 16.9339C-0.604441 17.067 -0.75 17.3164 -0.75 17.5868L0 17.5868ZM15.5 4.875L15.5 8.125L17 8.125L17 4.875L15.5 4.875ZM15.5 8.125L15.5 11.375L17 11.375L17 8.125L15.5 8.125ZM16.25 8.875L19.5 8.875L19.5 7.375L16.25 7.375L16.25 8.875ZM16.25 7.375L13 7.375L13 8.875L16.25 8.875L16.25 7.375ZM9.8125 3.65625C9.8125 4.42704 9.50631 5.16625 8.96128 5.71128L10.0219 6.77194C10.8483 5.94561 11.3125 4.82486 11.3125 3.65625L9.8125 3.65625ZM8.96128 5.71128C8.41625 6.25631 7.67704 6.5625 6.90625 6.5625L6.90625 8.0625C8.07486 8.0625 9.19561 7.59827 10.0219 6.77194L8.96128 5.71128ZM6.90625 6.5625C6.13546 6.5625 5.39625 6.25631 4.85122 5.71128L3.79056 6.77194C4.61689 7.59827 5.73764 8.0625 6.90625 8.0625L6.90625 6.5625ZM4.85122 5.71128C4.30619 5.16625 4 4.42704 4 3.65625L2.5 3.65625C2.5 4.82486 2.96423 5.94561 3.79056 6.77194L4.85122 5.71128ZM4 3.65625C4 2.88546 4.30619 2.14625 4.85122 1.60122L3.79056 0.540561C2.96423 1.36689 2.5 2.48764 2.5 3.65625L4 3.65625ZM4.85122 1.60122C5.39625 1.05619 6.13546 0.75 6.90625 0.75L6.90625 -0.75C5.73764 -0.75 4.61689 -0.285771 3.79056 0.540561L4.85122 1.60122ZM6.90625 0.75C7.67704 0.75 8.41625 1.05619 8.96128 1.60122L10.0219 0.540561C9.19561 -0.285771 8.07486 -0.75 6.90625 -0.75L6.90625 0.75ZM8.96128 1.60122C9.50631 2.14625 9.8125 2.88546 9.8125 3.65625L11.3125 3.65625C11.3125 2.48764 10.8483 1.36689 10.0219 0.540561L8.96128 1.60122ZM0.75 17.5879L0.75 17.4688L-0.75 17.4688L-0.75 17.5879L0.75 17.5879ZM0.75 17.4688C0.75 15.836 1.3986 14.2701 2.55312 13.1156L1.49246 12.055C0.0566383 13.4908 -0.75 15.4382 -0.75 17.4688L0.75 17.4688ZM2.55312 13.1156C3.70764 11.9611 5.27351 11.3125 6.90625 11.3125L6.90625 9.8125C4.87569 9.8125 2.92829 10.6191 1.49246 12.055L2.55312 13.1156ZM6.90625 11.3125C8.53899 11.3125 10.1049 11.9611 11.2594 13.1156L12.32 12.055C10.8842 10.6191 8.93681 9.8125 6.90625 9.8125L6.90625 11.3125ZM11.2594 13.1156C12.4139 14.2701 13.0625 15.836 13.0625 17.4688L14.5625 17.4688C14.5625 15.4382 13.7559 13.4908 12.32 12.055L11.2594 13.1156ZM13.0625 17.4688L13.0625 17.5868L14.5625 17.5868L14.5625 17.4688L13.0625 17.4688ZM13.4256 16.9444C11.4578 18.1295 9.20347 18.7539 6.90643 18.75L6.9039 20.25C9.47452 20.2543 11.9974 19.5556 14.1994 18.2293L13.4256 16.9444ZM6.90517 18.75C4.52009 18.75 2.29057 18.0904 0.386836 16.9443L-0.386836 18.2294C1.74377 19.5121 4.23975 20.25 6.90517 20.25L6.90517 18.75ZM-0.75 17.5868L-0.75 17.5879L0.75 17.5879L0.75 17.5868L-0.75 17.5868Z",
+                  stroke: "rgba(255,255,255,1)",
+                  fillRule: "nonzero",
+                  strokeLinejoin: "round",
+                  strokeWidth: 1,
+                },
+              ]}
+              display="block"
+              gap="unset"
+              alignItems="unset"
+              justifyContent="unset"
+              position="absolute"
+              top="12.5%"
+              bottom="12.5%"
+              left="12.5%"
+              right="12.5%"
+              {...getOverrideProps(overrides, "Vector4961569")}
+            ></Icon>
+            </a>
+          </View>
+          <a href="/friends" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <Text
+            fontFamily="Inter"
+            fontSize="24px"
+            fontWeight="600"
+            color="rgba(255,255,255,1)"
+            lineHeight="24px"
+            textAlign="left"
+            display="block"
+            direction="column"
+            justifyContent="unset"
+            width="102px"
+            height="27px"
+            gap="unset"
+            alignItems="unset"
+            shrink="0"
+            position="relative"
+            padding="0px 0px 0px 0px"
+            whiteSpace="pre-wrap"
+            children="Friends"
+            {...getOverrideProps(overrides, "Friends")}
           ></Text>
           </a>
         </Flex>

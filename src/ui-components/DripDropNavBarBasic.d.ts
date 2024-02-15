@@ -20,7 +20,7 @@ export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes
 export declare type DripDropNavBarBasicOverridesProps = {
     DripDropNavBarBasic?: PrimitiveOverrideProps<ViewProps>;
     "dripdrop."?: PrimitiveOverrideProps<TextProps>;
-    "Frame 443"?: PrimitiveOverrideProps<FlexProps>;
+    "Frame 44348651097"?: PrimitiveOverrideProps<FlexProps>;
     "Frame 438"?: PrimitiveOverrideProps<FlexProps>;
     Frame48651382?: PrimitiveOverrideProps<ViewProps>;
     Vector48651383?: PrimitiveOverrideProps<IconProps>;
@@ -40,6 +40,10 @@ export declare type DripDropNavBarBasicOverridesProps = {
     Frame48651384?: PrimitiveOverrideProps<ViewProps>;
     Vector48651385?: PrimitiveOverrideProps<IconProps>;
     Profile?: PrimitiveOverrideProps<TextProps>;
+    "Frame 4434961564"?: PrimitiveOverrideProps<FlexProps>;
+    Frame4961568?: PrimitiveOverrideProps<ViewProps>;
+    Vector4961569?: PrimitiveOverrideProps<IconProps>;
+    Friends?: PrimitiveOverrideProps<TextProps>;
     "Frame 445"?: PrimitiveOverrideProps<FlexProps>;
     Frame48651116?: PrimitiveOverrideProps<ViewProps>;
     Vector48651117?: PrimitiveOverrideProps<IconProps>;
