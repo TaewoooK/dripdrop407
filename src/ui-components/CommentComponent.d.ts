@@ -5,7 +5,7 @@
  **************************************************************************/
 
 import * as React from "react";
-import { FlexProps, IconProps, TextFieldProps, TextProps, ViewProps } from "@aws-amplify/ui-react";
+import { CardProps, FlexProps, IconProps, TextFieldProps, TextProps, ViewProps } from "@aws-amplify/ui-react";
 import { MyIconProps } from "./MyIcon";
 export declare type EscapeHatchProps = {
     [elementHierarchy: string]: Record<string, unknown>;
@@ -26,6 +26,8 @@ export declare type CommentComponentOverridesProps = {
     MyIcon?: MyIconProps;
     Frame?: PrimitiveOverrideProps<ViewProps>;
     Vector?: PrimitiveOverrideProps<IconProps>;
+    "Frame 466"?: PrimitiveOverrideProps<ViewProps>;
+    Card?: PrimitiveOverrideProps<CardProps>;
 } & EscapeHatchProps;
 export declare type CommentComponentProps = React.PropsWithChildren<Partial<ViewProps> & {
     state?: "Default";
