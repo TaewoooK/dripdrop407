@@ -81,6 +81,9 @@
           "bucketName": "amplify-amplify283bb19e56e34-staging-63138-deployment",
           "region": "us-east-2"
         }
+      },
+      "api": {
+        "dripdrop407": {}
       }
     }
   }

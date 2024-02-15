@@ -31,10 +31,5 @@ type S3Object {
   key: String!
 }
 
-type PostBasic @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  username: String
-  outfitimage: AWSURL
-  userphoto: AWSURL
-}
+
  
