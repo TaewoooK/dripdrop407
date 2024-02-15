@@ -13,14 +13,16 @@ export default function PostComponent(props) {
   const { Post, overrides, ...rest } = props;
   return (
     <View
-      width="995.31px"
-      height="847.48px"
+      width="599px"
+      height="762px"
       display="block"
-      gap="unset"
+      gap="0"
       alignItems="unset"
       justifyContent="unset"
       position="relative"
       padding="0px 0px 0px 0px"
+      borderRadius="40px"
+      backgroundColor="rgba(234,234,234,10)"
       {...getOverrideProps(overrides, "PostComponent")}
       {...rest}
     >
@@ -30,12 +32,12 @@ export default function PostComponent(props) {
         display="block"
         gap="unset"
         alignItems="unset"
-        justifyContent="unset"
+        justifyContent="left"
         overflow="hidden"
         position="absolute"
         top="0%"
         bottom="10.09%"
-        left="18.89%"
+        left="0%"
         right="20.93%"
         boxShadow="0px 4px 4px rgba(0, 0, 0, 0.25)"
         borderRadius="40px"
@@ -135,7 +137,9 @@ export default function PostComponent(props) {
           borderRadius="25px"
           padding="0px 0px 0px 0px"
           objectFit="unset"
-          src={Post?.outfitimage}
+          //src={Post?.outfitimage}
+          src="https://cdn.discordapp.com/attachments/1120152118272213053/1201614916788965536/IMG_5675.jpg?ex=65dceb19&is=65ca7619&hm=277e5088a148d22bbb7935216d52437d827a889d0d6e4e7dded8eeb7a4af1336&"
+          //src="https://images.unsplash.com/photo-1707879487614-72b421e4393f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHx8"
           {...getOverrideProps(overrides, "dripdropsample 1")}
         ></Image>
         <MyIcon
@@ -173,7 +177,7 @@ export default function PostComponent(props) {
             paths={[
               {
                 d: "M65 34C65 51.1208 51.1208 65 34 65L34 71C54.4345 71 71 54.4345 71 34L65 34ZM34 65C16.8792 65 3 51.1208 3 34L-3 34C-3 54.4345 13.5655 71 34 71L34 65ZM3 34C3 16.8792 16.8792 3 34 3L34 -3C13.5655 -3 -3 13.5655 -3 34L3 34ZM34 3C51.1208 3 65 16.8792 65 34L71 34C71 13.5655 54.4345 -3 34 -3L34 3Z",
-                stroke: "rgba(0,0,0,1)",
+                stroke: "rgba(0,0,0,0.5)",
                 fillRule: "nonzero",
                 strokeWidth: 3,
               },
@@ -188,7 +192,8 @@ export default function PostComponent(props) {
             justifyContent="unset"
             shrink="0"
             position="relative"
-            src={Post?.userphoto}
+            //src={Post?.userphoto}
+            src = "https://cdn.discordapp.com/attachments/1120152118272213053/1200211293995544636/IMG_5670.jpg?ex=65d7cfdf&is=65c55adf&hm=d848327c70636c5c7e10ae24e3e8ae877f0b7c12c4d1c38da5b74c577d30b384&"
             {...getOverrideProps(overrides, "Ellipse 2")}
           ></Icon>
           <Text
@@ -209,7 +214,8 @@ export default function PostComponent(props) {
             position="relative"
             padding="0px 0px 0px 0px"
             whiteSpace="pre-wrap"
-            children={Post?.username}
+            //children={Post?.username}
+            children={"Test User"}
             {...getOverrideProps(overrides, "Test User")}
           ></Text>
         </Flex>

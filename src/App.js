@@ -31,9 +31,9 @@ const App = ({ signOut }) => {
       <div>
         {/* <UploadImage />
         <Button onClick={signOut}>Sign Out</Button> */}
-        <div style={{ display: 'flex', flexDirection: 'row', gap: 0}}>
+        <div style={{ display: 'flex', flexDirection: 'row', gap: 200}}>
           <DripDropNavBarBasic style={{ marginRight: '20px' }} />
-          <div style={{ display: 'flex', flexDirection: 'row', gap: 0 }}>
+          <div style={{ display: 'flex', flexDirection: 'row', gap: 0, padding: 50}}>
             {component}
             {/* <PostComponent/>
             <CommentComponent /> */}

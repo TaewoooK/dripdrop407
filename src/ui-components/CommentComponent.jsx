@@ -38,7 +38,7 @@ export default function CommentComponent(props) {
       width="370px"
       height="624px"
       display="block"
-      gap="unset"
+      gap="0"
       alignItems="unset"
       justifyContent="unset"
       overflow="hidden"
@@ -46,7 +46,7 @@ export default function CommentComponent(props) {
       boxShadow="0px 4px 4px rgba(0, 0, 0, 0.25)"
       borderRadius="20px"
       padding="0px 0px 0px 0px"
-      backgroundColor="rgba(34,34,34,1)"
+      backgroundColor="rgba(50,50,50,1)"
       {...getOverrideProps(overrides, "CommentComponent")}
       {...rest}
     >
@@ -130,6 +130,7 @@ export default function CommentComponent(props) {
         padding="0px 0px 0px 0px"
         {...getOverrideProps(overrides, "Frame")}
       >
+        <a href="" style={{ textDecoration: 'none', color: 'inherit' }}>
         <Icon
           width="22.5px"
           height="25px"
@@ -154,6 +155,7 @@ export default function CommentComponent(props) {
           right="21.88%"
           {...getOverrideProps(overrides, "Vector")}
         ></Icon>
+        </a>
       </View>
     </View>
   );

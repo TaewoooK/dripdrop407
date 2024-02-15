@@ -17,7 +17,9 @@ const Home = ({ signOut }) => {
         <div style={{ display: 'flex', flexDirection: 'row', gap: 0}}>
           <div style={{ display: 'flex', flexDirection: 'row', gap: 0 }}>
             <PostComponent/>
-            <CommentComponent />
+            <div style={{paddingTop: 25}}>
+              <CommentComponent/>
+            </div>
           </div>
         </div>
       </div>
