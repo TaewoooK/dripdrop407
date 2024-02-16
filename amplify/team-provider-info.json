@@ -47,10 +47,43 @@
       }
     }
   },
-  "justdev": {
+  "ljussydev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-dripdrop407-ljussydev-210316-authRole",
+      "UnauthRoleArn": "arn:aws:iam::654654403425:role/amplify-dripdrop407-ljussydev-210316-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::654654403425:role/amplify-dripdrop407-ljussydev-210316-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-dripdrop407-ljussydev-210316-deployment",
+      "UnauthRoleName": "amplify-dripdrop407-ljussydev-210316-unauthRole",
+      "StackName": "amplify-dripdrop407-ljussydev-210316",
+      "StackId": "arn:aws:cloudformation:us-east-2:654654403425:stack/amplify-dripdrop407-ljussydev-210316/10389c80-c55d-11ee-b642-06493a7e6703",
+      "AmplifyAppId": "d35lredcdzbakc"
+    },
     "categories": {
       "auth": {
-        "dripdrop40717f1726c": {}
+        "dripdrop40717f1726c": {},
+        "dripdrop407": {
+          "userPoolId": "us-east-2_dNwFgXDKL",
+          "userPoolName": "dripdrop40717f1726c_userpool_17f1726c-staging",
+          "webClientId": "6v0j6vjb04sbfr0vg7qouh6lr9",
+          "nativeClientId": "6v0j6vjb04sbfr0vg7qouh6lr9",
+          "identityPoolId": "us-east-2:d2ac3aef-d2bf-4945-95a7-d082254e48a6",
+          "identityPoolName": "dripdrop40717f1726c_identitypool_17f1726c__staging",
+          "allowUnauthenticatedIdentities": false,
+          "authRoleArn": "arn:aws:iam::654654403425:role/amplify-amplify283bb19e56e34-staging-63138-authRole",
+          "authRoleName": "amplify-amplify283bb19e56e34-staging-63138-authRole",
+          "unauthRoleArn": "arn:aws:iam::654654403425:role/amplify-amplify283bb19e56e34-staging-63138-unauthRole",
+          "unauthRoleName": "amplify-amplify283bb19e56e34-staging-63138-unauthRole"
+        }
+      },
+      "storage": {
+        "dripdrop407d0b1b9b4": {
+          "bucketName": "amplify-amplify283bb19e56e34-staging-63138-deployment",
+          "region": "us-east-2"
+        }
+      },
+      "api": {
+        "dripdrop407": {}
       }
     }
   }
