@@ -6,7 +6,7 @@ import { Button, View, Image, useTheme, withAuthenticator } from "@aws-amplify/u
 import { Authenticator } from '@aws-amplify/ui-react';
 import awsconfig from "./amplifyconfiguration.json";
 import UploadImage from "./ui-components/UploadImage";
-import Logo from "./ui-components/logo.png";
+import Logo from "./ui-components/images/logo.png";
 
 Amplify.configure(awsconfig);
 /*
