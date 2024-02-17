@@ -1,4 +1,25 @@
 {
+  "justindev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-dripdrop407-justindev-11509-authRole",
+      "UnauthRoleArn": "arn:aws:iam::654654403425:role/amplify-dripdrop407-justindev-11509-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::654654403425:role/amplify-dripdrop407-justindev-11509-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-dripdrop407-justindev-11509-deployment",
+      "UnauthRoleName": "amplify-dripdrop407-justindev-11509-unauthRole",
+      "StackName": "amplify-dripdrop407-justindev-11509",
+      "StackId": "arn:aws:cloudformation:us-east-2:654654403425:stack/amplify-dripdrop407-justindev-11509/56399e20-c556-11ee-8f85-06f01fda8bf9",
+      "AmplifyAppId": "d35lredcdzbakc"
+    },
+    "categories": {
+      "auth": {
+        "dripdrop40717f1726c": {}
+      },
+      "storage": {
+        "uploadimages": {}
+      }
+    }
+  },
   "eddiedev": {
     "awscloudformation": {
       "AuthRoleName": "amplify-dripdrop407-eddiedev-210720-authRole",
