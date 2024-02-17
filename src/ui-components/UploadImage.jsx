@@ -1,14 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { generateClient } from "aws-amplify/api";
 import { uploadData } from "aws-amplify/storage";
 import { createPost } from "../graphql/mutations";
 import awsExports from "../aws-exports";
+import { fetchUserAttributes } from "aws-amplify/auth";
 
 const client = generateClient();
 
 const UploadImage = () => {
   const [image, setImage] = useState(null);
   const [description, setDescription] = useState("");
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userAttributes = await fetchUserAttributes();
+        console.log(userAttributes);
+        setUser(userAttributes);
+      } catch (error) {
+        console.error("Error fetching user data: ", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  console.log(user);
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -51,13 +70,25 @@ const UploadImage = () => {
 
     console.log(result);
 
+    const postId = user.email + new Date().toISOString();
+
     try {
       const newPost = await client.graphql({
         query: createPost,
         variables: {
           input: {
-            name: "Lorem ipsum dolor sit amet",
-            description: "Lorem ipsum dolor sit amet",
+            postId: postId,
+            owner: user.email,
+            description: description,
+            comments: String,
+            drip_points: 0,
+            createdAt: new Date().toISOString(),
+            enable_comments: true,
+            image: {
+              bucket: awsExports.aws_user_files_s3_bucket,
+              region: awsExports.aws_user_files_s3_bucket_region,
+              key: result.key,
+            },
           },
         },
       }).resultData;

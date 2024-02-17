@@ -15,9 +15,7 @@ type Note @model @auth(rules: [{ allow: public }]) {
   description: String
 }
 
-type Post
-  @model
-  @auth(rules: [{ allow: public, operations: [read] }, { allow: owner }]) {
+type Post @model @auth(rules: [{ allow: public }]) {
   postId: String!
   owner: String!
   description: String!
