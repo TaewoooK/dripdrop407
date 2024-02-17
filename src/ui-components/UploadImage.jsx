@@ -47,7 +47,7 @@ const UploadImage = () => {
 
     try {
       result = await uploadData({
-        key: user.email + new Date().toISOString() + image.name,
+        key: new Date().toISOString() + image.name,
         data: image,
         bucket: awsExports.aws_user_files_s3_bucket,
         options: {
@@ -70,15 +70,15 @@ const UploadImage = () => {
 
     console.log(result);
 
-    const postId = user.email + new Date().toISOString();
+    // const postId = user.email + new Date().toISOString();
 
     try {
       const newPost = await client.graphql({
         query: createPost,
         variables: {
           input: {
-            postId: postId,
-            owner: user.email,
+            postId: "test PostId",
+            owner: "test Owner",
             description: description,
             comments: String,
             drip_points: 0,

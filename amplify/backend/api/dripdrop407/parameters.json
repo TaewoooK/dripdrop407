@@ -2,11 +2,5 @@
   "AppSyncApiName": "dripdrop407",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
   "DynamoDBEnableServerSideEncryption": false,
-  "AuthCognitoUserPoolId": {
-    "Fn::GetAtt": [
-      "authdripdrop40717f1726c",
-      "Outputs.UserPoolId"
-    ]
-  },
-  "AuthModeLastUpdated": "2024-02-05T00:04:13.983Z"
+  "AuthModeLastUpdated": "2024-02-17T05:55:46.393Z"
 }

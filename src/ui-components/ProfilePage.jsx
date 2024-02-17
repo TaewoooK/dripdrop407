@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Amplify } from "aws-amplify";
 import awsconfig from "../aws-exports";
-import { fetchUserAttributes } from "aws-amplify/auth";
+import { getCurrentUser } from "aws-amplify/auth";
 
 Amplify.configure(awsconfig);
 
@@ -12,9 +12,10 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userAttributes = await fetchUserAttributes();
-        console.log(userAttributes);
-        setUser(userAttributes);
+        const { username, userId, signInDetails } = await getCurrentUser();
+        console.log(`The username: ${username}`);
+        console.log(`The userId: ${userId}`);
+        console.log(`The signInDetails: ${signInDetails}`);
       } catch (error) {
         console.error("Error fetching user data: ", error);
       } finally {

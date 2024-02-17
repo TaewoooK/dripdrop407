@@ -12,11 +12,11 @@
       "AmplifyAppId": "d35lredcdzbakc"
     },
     "categories": {
-      "auth": {
-        "dripdrop40717f1726c": {}
-      },
       "storage": {
         "uploadimages": {}
+      },
+      "auth": {
+        "dripdrop4075e971e1d": {}
       },
       "api": {
         "dripdrop407": {}

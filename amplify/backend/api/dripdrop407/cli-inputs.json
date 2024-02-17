@@ -4,17 +4,12 @@
     "apiName": "dripdrop407",
     "serviceName": "AppSync",
     "defaultAuthType": {
-      "mode": "AMAZON_COGNITO_USER_POOLS",
-      "cognitoUserPoolId": "authdripdrop40717f1726c"
+      "mode": "API_KEY",
+      "expirationTime": 365,
+      "apiKeyExpirationDate": "2025-02-16T05:55:42.680Z",
+      "keyDescription": "APIKeyDro["
     },
     "conflictResolution": {},
-    "additionalAuthTypes": [
-      {
-        "mode": "API_KEY",
-        "expirationTime": 365,
-        "apiKeyExpirationDate": "2025-02-04T00:04:11.310Z",
-        "keyDescription": "for public"
-      }
-    ]
+    "additionalAuthTypes": []
   }
 }

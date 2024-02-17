@@ -1,32 +1,17 @@
 {
   "api": {
     "dripdrop407": {
-      "dependsOn": [
-        {
-          "attributes": [
-            "UserPoolId"
-          ],
-          "category": "auth",
-          "resourceName": "dripdrop40717f1726c"
-        }
-      ],
+      "dependsOn": [],
       "output": {
         "authConfig": {
-          "additionalAuthenticationProviders": [
-            {
-              "apiKeyConfig": {
-                "apiKeyExpirationDate": "2025-02-04T00:04:11.310Z",
-                "apiKeyExpirationDays": 365,
-                "description": "for public"
-              },
-              "authenticationType": "API_KEY"
-            }
-          ],
+          "additionalAuthenticationProviders": [],
           "defaultAuthentication": {
-            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
-            "userPoolConfig": {
-              "userPoolId": "authdripdrop40717f1726c"
-            }
+            "apiKeyConfig": {
+              "apiKeyExpirationDate": "2025-02-16T05:55:42.680Z",
+              "apiKeyExpirationDays": 365,
+              "description": "APIKeyDro["
+            },
+            "authenticationType": "API_KEY"
           }
         }
       },
@@ -35,7 +20,7 @@
     }
   },
   "auth": {
-    "dripdrop40717f1726c": {
+    "dripdrop4075e971e1d": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {

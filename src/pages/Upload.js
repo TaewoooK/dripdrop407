@@ -5,7 +5,6 @@ import { Button, View, withAuthenticator } from "@aws-amplify/ui-react";
 import awsconfig from "../amplifyconfiguration.json";
 import UploadImage from "../ui-components/UploadImage";
 
-
 Amplify.configure(awsconfig);
 
 const Upload = () => {
