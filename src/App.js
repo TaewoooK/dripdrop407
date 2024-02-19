@@ -5,16 +5,45 @@ import { Amplify } from "aws-amplify";
 import { Button, View, Image, Text, useTheme, withAuthenticator } from "@aws-amplify/ui-react";
 import { Authenticator } from '@aws-amplify/ui-react';
 import awsconfig from "./amplifyconfiguration.json";
-import UploadImage from "./ui-components/UploadImage";
+import {
+  DripDropNavBarBasic,
+ } from './ui-components';
+import Home from "./pages/Home";
+import Upload from "./pages/Upload";
+
 
 
 Amplify.configure(awsconfig);
 /*
 const App = ({ signOut }) => {
+  let component
+  switch (window.location.pathname) {
+    case "/":
+      component = <Home/>
+      break
+    case "/home":
+      component = <Home/>
+      break
+    case "/upload":
+      component = <Upload/>
+      break
+  }
   return (
     <View className="App">
-      <UploadImage />
-      <Button onClick={signOut}>Sign Out</Button>
+      <div>
+        {/* <UploadImage />
+        <Button onClick={signOut}>Sign Out</Button> */}
+        <div style={{ display: 'flex', flexDirection: 'row', gap: 200}}>
+          <DripDropNavBarBasic style={{ marginRight: '20px' }} />
+          <div style={{ display: 'flex', flexDirection: 'row', gap: 0, padding: 50}}>
+            {component}
+            {/* <PostComponent/>
+            <CommentComponent /> */}
+          </div>
+        </div>
+        
+      </div>
+      
     </View>
   );
 };
