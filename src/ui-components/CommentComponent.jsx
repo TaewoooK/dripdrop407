@@ -31,17 +31,6 @@ export default function CommentComponent(props) {
       variantValues: { state: "Default" },
     },
   ];
-  const [comment, setComment] = React.useState("");
-  const [comments, setComments] = React.useState([]);
-
-  const onClickHandler = () => {
-    setComments((comments) => [...comments, comment]);
-    setComment(""); 
-  };
-
-  const onChangeHandler = (e) => {
-     setComment(e.target.value);  
-  };
   const overrides = mergeVariantsAndOverrides(
     getOverridesFromVariants(variants, props),
     overridesProp || {}
@@ -51,7 +40,7 @@ export default function CommentComponent(props) {
       width="370px"
       height="624px"
       display="block"
-      gap="0"
+      gap="unset"
       alignItems="unset"
       justifyContent="unset"
       overflow="hidden"
@@ -59,7 +48,7 @@ export default function CommentComponent(props) {
       boxShadow="0px 4px 4px rgba(0, 0, 0, 0.25)"
       borderRadius="20px"
       padding="0px 0px 0px 0px"
-      backgroundColor="rgba(50,50,50,1)"
+      backgroundColor="rgba(34,34,34,1)"
       {...getOverrideProps(overrides, "CommentComponent")}
       {...rest}
     >
@@ -109,27 +98,22 @@ export default function CommentComponent(props) {
           isDisabled={false}
           labelHidden={false}
           variation="default"
-          value={comment}
-          onChange={onChangeHandler}
-          style={{ color: 'white' }}
           {...getOverrideProps(overrides, "TextField")}
         ></TextField>
-          <MyIcon
-            width="33px"
-            height="33px"
-            display="block"
-            gap="unset"
-            alignItems="unset"
-            justifyContent="unset"
-            overflow="hidden"
-            shrink="0"
-            position="relative"
-            padding="0px 0px 0px 0px"
-            type="send"
-            onClick={onClickHandler} 
-            style={{cursor: "pointer"}}
-            {...getOverrideProps(overrides, "MyIcon")}
-          ></MyIcon>
+        <MyIcon
+          width="33px"
+          height="33px"
+          display="block"
+          gap="unset"
+          alignItems="unset"
+          justifyContent="unset"
+          overflow="hidden"
+          shrink="0"
+          position="relative"
+          padding="0px 0px 0px 0px"
+          type="send"
+          {...getOverrideProps(overrides, "MyIcon")}
+        ></MyIcon>
       </Flex>
       <View
         width="40px"
@@ -184,24 +168,17 @@ export default function CommentComponent(props) {
         padding="0px 0px 0px 0px"
         {...getOverrideProps(overrides, "Frame 466")}
       >
-      {comments.map((text) => (
         <Card
           width="302px"
           height="112px"
           position="absolute"
-          backgroundColor="rgba(70,70,70,1)"
+          backgroundColor="rgba(167,167,167,1)"
           top="11px"
           left="10px"
           borderRadius="25px"
           variation="outline"
-          style={{margin: 10, wordBreak: "break-all"}}
           {...getOverrideProps(overrides, "Card")}
-        >
-          <Text color="rgba(255,255,255,1)" style={{margin: 10, wordBreak: "break-all"}}>
-            {text}
-          </Text>
-        </Card>
-      ))}
+        ></Card>
       </View>
     </View>
   );

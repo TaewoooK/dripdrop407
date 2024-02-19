@@ -35,8 +35,6 @@ export declare type PostComponentOverridesProps = {
     Button49012126?: PrimitiveOverrideProps<ButtonProps>;
 } & EscapeHatchProps;
 export declare type PostComponentProps = React.PropsWithChildren<Partial<ViewProps> & {
-    Post?: any;
-} & {
     overrides?: PostComponentOverridesProps | undefined | null;
 }>;
 export default function PostComponent(props: PostComponentProps): React.ReactElement;
