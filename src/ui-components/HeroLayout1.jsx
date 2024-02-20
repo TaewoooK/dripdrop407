@@ -38,7 +38,7 @@ export default function HeroLayout1(props) {
         Message: {},
         Button: {},
         HeroMessage: {},
-        Left: { backgroundColor: "rgba(13,26,38,1)" },
+        Left: { backgroundColor: "rgba(250,250,250,1)" },
         image: { width: "unset", alignSelf: "stretch" },
         Right: {},
         HeroLayout1: {},
@@ -134,7 +134,7 @@ export default function HeroLayout1(props) {
               fontFamily="Inter"
               fontSize="24px"
               fontWeight="600"
-              color="rgba(13,26,38,1)"
+              color="rgba(250,250,250,1)"
               lineHeight="30px"
               textAlign="center"
               display="block"

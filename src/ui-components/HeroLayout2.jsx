@@ -120,7 +120,7 @@ export default function HeroLayout2(props) {
             fontFamily="Inter"
             fontSize="24px"
             fontWeight="600"
-            color="rgba(13,26,38,1)"
+            color="rgba(250,250,250,1)"
             lineHeight="30px"
             textAlign="center"
             display="block"

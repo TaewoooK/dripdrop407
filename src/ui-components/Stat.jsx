@@ -62,7 +62,7 @@ export default function Stat(props) {
           fontFamily="Inter"
           fontSize="24px"
           fontWeight="400"
-          color="rgba(13,26,38,1)"
+          color="rgba(250,250,250,1)"
           lineHeight="29.045454025268555px"
           textAlign="center"
           display="block"

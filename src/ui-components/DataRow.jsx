@@ -27,7 +27,7 @@ export default function DataRow(props) {
         fontFamily="Inter"
         fontSize="16px"
         fontWeight="600"
-        color="rgba(13,26,38,1)"
+        color="rgba(250,250,250,1)"
         lineHeight="24px"
         textAlign="left"
         display="block"

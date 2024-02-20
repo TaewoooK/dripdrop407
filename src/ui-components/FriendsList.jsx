@@ -7,14 +7,14 @@
 /* eslint-disable */
 import * as React from "react";
 import { getOverrideProps } from "./utils";
-import { Text, View } from "@aws-amplify/ui-react";
+import { Text, TextField, View } from "@aws-amplify/ui-react";
 import Friend from "./Friend";
 export default function FriendsList(props) {
   const { overrides, ...rest } = props;
   return (
     <View
       width="583px"
-      height="643px"
+      height="694px"
       display="block"
       gap="unset"
       alignItems="unset"
@@ -26,7 +26,7 @@ export default function FriendsList(props) {
     >
       <View
         width="583px"
-        height="643px"
+        height="694px"
         display="block"
         gap="unset"
         alignItems="unset"
@@ -50,10 +50,10 @@ export default function FriendsList(props) {
         alignItems="unset"
         justifyContent="unset"
         position="absolute"
-        top="13.69%"
-        bottom="5.91%"
-        left="17.15%"
-        right="17.15%"
+        top="21.04%"
+        bottom="4.47%"
+        left="16.81%"
+        right="17.5%"
         {...getOverrideProps(overrides, "Friends Group")}
       >
         <Friend
@@ -64,7 +64,7 @@ export default function FriendsList(props) {
           alignItems="unset"
           justifyContent="unset"
           position="absolute"
-          top="445px"
+          bottom="0px"
           left="calc(50% - 191.5px - 0px)"
           padding="0px 0px 0px 0px"
           {...getOverrideProps(overrides, "Friend4997933")}
@@ -77,7 +77,7 @@ export default function FriendsList(props) {
           alignItems="unset"
           justifyContent="unset"
           position="absolute"
-          top="356px"
+          bottom="89px"
           left="calc(50% - 191.5px - 0px)"
           padding="0px 0px 0px 0px"
           {...getOverrideProps(overrides, "Friend4997934")}
@@ -90,7 +90,7 @@ export default function FriendsList(props) {
           alignItems="unset"
           justifyContent="unset"
           position="absolute"
-          top="267px"
+          bottom="178px"
           left="calc(50% - 191.5px - 0px)"
           padding="0px 0px 0px 0px"
           {...getOverrideProps(overrides, "Friend4997949")}
@@ -103,7 +103,7 @@ export default function FriendsList(props) {
           alignItems="unset"
           justifyContent="unset"
           position="absolute"
-          top="178px"
+          bottom="267px"
           left="calc(50% - 191.5px - 0px)"
           padding="0px 0px 0px 0px"
           {...getOverrideProps(overrides, "Friend4997950")}
@@ -116,7 +116,7 @@ export default function FriendsList(props) {
           alignItems="unset"
           justifyContent="unset"
           position="absolute"
-          top="89px"
+          bottom="356px"
           left="calc(50% - 191.5px - 0px)"
           padding="0px 0px 0px 0px"
           {...getOverrideProps(overrides, "Friend4997924")}
@@ -129,7 +129,7 @@ export default function FriendsList(props) {
           alignItems="unset"
           justifyContent="unset"
           position="absolute"
-          top="0px"
+          bottom="445px"
           left="calc(50% - 191.5px - 0px)"
           padding="0px 0px 0px 0px"
           {...getOverrideProps(overrides, "Friend4997916")}
@@ -157,6 +157,19 @@ export default function FriendsList(props) {
         children="Friends List"
         {...getOverrideProps(overrides, "Friends List")}
       ></Text>
+      <TextField
+        width="350px"
+        height="unset"
+        placeholder="Search for Friend"
+        position="absolute"
+        top="86px"
+        left="115px"
+        size="small"
+        isDisabled={false}
+        labelHidden={true}
+        variation="default"
+        {...getOverrideProps(overrides, "TextField")}
+      ></TextField>
     </View>
   );
 }

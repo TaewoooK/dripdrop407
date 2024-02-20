@@ -12,7 +12,6 @@ export default function DripDropNavBarBasic(props) {
   const { overrides, ...rest } = props;
   return (
     <View
-      top="0px"
       width="260px"
       height="1024px"
       display="block"
@@ -20,7 +19,7 @@ export default function DripDropNavBarBasic(props) {
       alignItems="unset"
       justifyContent="unset"
       overflow="hidden"
-      position="sticky"
+      position="relative"
       padding="0px 0px 0px 0px"
       backgroundColor="rgba(34,34,34,1)"
       {...getOverrideProps(overrides, "DripDropNavBarBasic")}

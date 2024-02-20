@@ -5,7 +5,7 @@
  **************************************************************************/
 
 import * as React from "react";
-import { TextProps, ViewProps } from "@aws-amplify/ui-react";
+import { TextFieldProps, TextProps, ViewProps } from "@aws-amplify/ui-react";
 import { FriendProps } from "./Friend";
 export declare type EscapeHatchProps = {
     [elementHierarchy: string]: Record<string, unknown>;
@@ -29,6 +29,7 @@ export declare type FriendsListOverridesProps = {
     Friend4997924?: FriendProps;
     Friend4997916?: FriendProps;
     "Friends List"?: PrimitiveOverrideProps<TextProps>;
+    TextField?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type FriendsListProps = React.PropsWithChildren<Partial<ViewProps> & {
     overrides?: FriendsListOverridesProps | undefined | null;
