@@ -7,6 +7,11 @@
 export { default as CommentComponent } from "./CommentComponent";
 export { default as DripDropNavBarBasic } from "./DripDropNavBarBasic";
 export { default as EditProfile } from "./EditProfile";
+export { default as Friend } from "./Friend";
+export { default as FriendRequest } from "./FriendRequest";
+export { default as FriendRequestsListCondensed } from "./FriendRequestsListCondensed";
+export { default as FriendsList } from "./FriendsList";
+export { default as FullFriends } from "./FullFriends";
 export { default as MyIcon } from "./MyIcon";
 export { default as NoteCreateForm } from "./NoteCreateForm";
 export { default as NoteUpdateForm } from "./NoteUpdateForm";

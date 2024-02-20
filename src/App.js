@@ -10,6 +10,7 @@ import {
  } from './ui-components';
 import Home from "./pages/Home";
 import Upload from "./pages/Upload";
+import Friends from "./pages/Friends";
 
 Amplify.configure(awsconfig);
 
@@ -68,6 +69,9 @@ export default function App() {
       break
     case "/upload":
       component = <Upload/>
+      break
+    case "/friends":
+      component = <Friends/>
       break
   }
 
