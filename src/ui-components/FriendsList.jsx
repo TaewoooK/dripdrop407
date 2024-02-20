@@ -7,7 +7,7 @@
 /* eslint-disable */
 import * as React from "react";
 import { getOverrideProps } from "./utils";
-import { Text, TextField, View } from "@aws-amplify/ui-react";
+import { SearchField, Text, View } from "@aws-amplify/ui-react";
 import Friend from "./Friend";
 export default function FriendsList(props) {
   const { overrides, ...rest } = props;
@@ -157,19 +157,19 @@ export default function FriendsList(props) {
         children="Friends List"
         {...getOverrideProps(overrides, "Friends List")}
       ></Text>
-      <TextField
-        width="350px"
+      <SearchField
+        width="300px"
         height="unset"
         placeholder="Search for Friend"
         position="absolute"
-        top="86px"
-        left="115px"
+        top="89px"
+        left="142px"
         size="small"
         isDisabled={false}
         labelHidden={true}
         variation="default"
-        {...getOverrideProps(overrides, "TextField")}
-      ></TextField>
+        {...getOverrideProps(overrides, "SearchField")}
+      ></SearchField>
     </View>
   );
 }
