@@ -68,6 +68,7 @@
       }
     }
   },
+
   "ljussydev": {
     "awscloudformation": {
       "AuthRoleName": "amplify-dripdrop407-ljussydev-210316-authRole",
