@@ -47,7 +47,7 @@ const UploadImage = () => {
 
     try {
       result = await uploadData({
-        key: new Date().toISOString() + image.name,
+        key: user.email + new Date().toISOString() + image.name,
         data: image,
         bucket: awsExports.aws_user_files_s3_bucket,
         options: {
@@ -77,8 +77,8 @@ const UploadImage = () => {
         query: createPost,
         variables: {
           input: {
-            postId: "test PostId",
-            owner: "test Owner",
+            postId: user.email + new Date().toISOString(),
+            owner: user.email,
             description: description,
             comments: String,
             drip_points: 0,

@@ -7,7 +7,7 @@ export type AmplifyDependentResourcesAttributes = {
     }
   },
   "auth": {
-    "dripdrop4075e971e1d": {
+    "dripdrop407ce0801a0": {
       "AppClientID": "string",
       "AppClientIDWeb": "string",
       "IdentityPoolId": "string",
