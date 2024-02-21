@@ -214,7 +214,7 @@ const NavBar = () => {
             position="relative"
             ></Icon>
             <Text className='username'>
-                {isUserNull() ? (<p>Username</p>) : user.email}
+                {isUserNull() ? (<p>Username</p>) : user.email.split('@')[0]}
                 
             </Text>
         </Flex>
