@@ -1,0 +1,65 @@
+.comment-container {
+    width: 277.5px;
+    height: 468px;
+    display: block;
+    gap: 0;
+    top: 50px;
+    align-items: unset;
+    justify-content: unset;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    padding: 0;
+    background-color: rgba(50, 50, 50, 1);
+}
+
+.header-text {
+    font-family: "Inter";
+    font-size: 24px; /* 32px scaled down by 25% */
+    font-weight: 700;
+    color: rgba(255, 255, 255, 1);
+    line-height: 24px;
+    text-align: left;
+    display: block;
+    direction: column;
+    justify-content: unset;
+    width: unset;
+    height: unset;
+    gap: unset;
+    align-items: unset;
+    position: absolute;
+    top: 27px; /* 36px scaled down by 25% */
+    left: 45px; /* 60px scaled down by 25% */
+    padding: 0;
+    white-space: pre-wrap;
+}
+
+.text-field-container {
+    gap: 12.75px; /* 17px * 0.75 */
+    direction: row;
+    width: unset;
+    height: unset;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 406.5px; /* 542px * 0.75 */
+    left: 0px; /* 45px * 0.75 */
+    padding: 0;
+    display: flex;
+    transform: scale(0.75);
+}
+
+.icon-container {
+    width: 30px; /* 40px * 0.75 */
+    height: 30px; /* 40px * 0.75 */
+    display: block;
+    gap: unset;
+    align-items: unset;
+    justify-content: unset;
+    overflow: hidden;
+    position: absolute;
+    top: 21px; /* 28px * 0.75 */
+    left: 219px; /* 292px * 0.75 */
+    padding: 0;
+}

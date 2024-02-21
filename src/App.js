@@ -77,7 +77,7 @@ export default function App() {
       {({ signOut, user }) => (
         <View className="App">
           <div>
-            <div style={{ display: 'flex', flexDirection: 'row', gap: 0}}>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: 200}}>
               <NavBar/>
               <div style={{ display: 'flex', flexDirection: 'row', gap: 0, padding: 0}}>
                 {component}
