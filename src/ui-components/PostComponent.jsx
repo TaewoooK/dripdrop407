@@ -7,10 +7,9 @@
 /* eslint-disable */
 import * as React from "react";
 import { getOverrideProps } from "./utils";
-import { Button, Flex, Icon, Image, Text, View } from "@aws-amplify/ui-react";
-import MyIcon from "./MyIcon";
+import { Flex, Icon, Image, Text, View } from "@aws-amplify/ui-react";
 export default function PostComponent(props) {
-  const { overrides, ...rest } = props;
+  const { post, overrides, ...rest } = props;
   return (
     <View
       width="995.31px"
@@ -20,6 +19,7 @@ export default function PostComponent(props) {
       alignItems="unset"
       justifyContent="unset"
       position="relative"
+      boxShadow="0px 4px 4px rgba(0, 0, 0, 0.25)"
       padding="0px 0px 0px 0px"
       {...getOverrideProps(overrides, "PostComponent")}
       {...rest}
@@ -55,7 +55,7 @@ export default function PostComponent(props) {
           top="660px"
           left="62px"
           padding="0px 0px 0px 0px"
-          {...getOverrideProps(overrides, "Frame49012134")}
+          {...getOverrideProps(overrides, "Frame38611399")}
         >
           <Icon
             width="44.69px"
@@ -84,7 +84,7 @@ export default function PostComponent(props) {
             bottom="8.33%"
             left="9.37%"
             right="9.38%"
-            {...getOverrideProps(overrides, "Vector49012135")}
+            {...getOverrideProps(overrides, "Vector38611400")}
           ></Icon>
         </View>
         <View
@@ -99,7 +99,7 @@ export default function PostComponent(props) {
           top="660px"
           left="484px"
           padding="0px 0px 0px 0px"
-          {...getOverrideProps(overrides, "Frame49012132")}
+          {...getOverrideProps(overrides, "Frame38611401")}
         >
           <Icon
             width="42.25px"
@@ -128,7 +128,7 @@ export default function PostComponent(props) {
             bottom="16.67%"
             left="9.37%"
             right="9.37%"
-            {...getOverrideProps(overrides, "Vector49012133")}
+            {...getOverrideProps(overrides, "Vector38611402")}
           ></Icon>
         </View>
         <Image
@@ -147,21 +147,25 @@ export default function PostComponent(props) {
           objectFit="unset"
           {...getOverrideProps(overrides, "dripdropsample 1")}
         ></Image>
-        <MyIcon
-          width="36px"
-          height="36px"
-          display="block"
-          gap="unset"
-          alignItems="unset"
-          justifyContent="unset"
-          overflow="hidden"
+        <Flex
+          gap="10px"
+          direction="row"
+          width="unset"
+          height="unset"
+          justifyContent="flex-start"
+          alignItems="flex-start"
           position="absolute"
-          top="28px"
-          left="33px"
-          padding="0px 0px 0px 0px"
-          type="more_vert"
-          {...getOverrideProps(overrides, "MyIcon48882017")}
-        ></MyIcon>
+          top="18px"
+          left="23px"
+          padding="10px 10px 10px 10px"
+          {...getOverrideProps(overrides, "Frame 4378")}
+        >
+          <View
+            width="36px"
+            height="36px"
+            {...getOverrideProps(overrides, "MyIcon38611404")}
+          ></View>
+        </Flex>
         <Flex
           gap="22px"
           direction="column"
@@ -226,49 +230,21 @@ export default function PostComponent(props) {
             {...getOverrideProps(overrides, "Test User")}
           ></Text>
         </Flex>
-        <MyIcon
+        <View
           width="36px"
           height="36px"
-          display="block"
-          gap="unset"
-          alignItems="unset"
-          justifyContent="unset"
-          overflow="hidden"
-          position="absolute"
-          top="35px"
-          left="520px"
-          padding="0px 0px 0px 0px"
-          type="chat"
-          {...getOverrideProps(overrides, "MyIcon48882012")}
-        ></MyIcon>
-        <Button
+          {...getOverrideProps(overrides, "MyIcon38611408")}
+        ></View>
+        <Flex
           width="75px"
           height="74px"
-          position="absolute"
-          borderRadius="51px"
-          top="649px"
-          left="472px"
-          boxShadow="0px 4px 4px rgba(0, 0, 0, 0.25)"
-          backgroundColor="rgba(0,255,26,0.4)"
-          size="default"
-          isDisabled={false}
-          variation="default"
-          {...getOverrideProps(overrides, "Button49012122")}
-        ></Button>
-        <Button
+          {...getOverrideProps(overrides, "Button38611409")}
+        ></Flex>
+        <Flex
           width="75px"
           height="74px"
-          position="absolute"
-          borderRadius="51px"
-          top="649px"
-          left="52px"
-          boxShadow="0px 4px 4px rgba(0, 0, 0, 0.25)"
-          backgroundColor="rgba(255,0,0,0.4)"
-          size="default"
-          isDisabled={false}
-          variation="default"
-          {...getOverrideProps(overrides, "Button49012126")}
-        ></Button>
+          {...getOverrideProps(overrides, "Button38611410")}
+        ></Flex>
       </View>
     </View>
   );

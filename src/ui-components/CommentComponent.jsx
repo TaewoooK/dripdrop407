@@ -11,13 +11,11 @@ import {
   getOverridesFromVariants,
   mergeVariantsAndOverrides,
 } from "./utils";
-import { Card, Flex, Icon, Text, TextField, View } from "@aws-amplify/ui-react";
-import MyIcon from "./MyIcon";
+import { Flex, Icon, Text, View } from "@aws-amplify/ui-react";
 export default function CommentComponent(props) {
   const { overrides: overridesProp, ...rest } = props;
   const variants = [
     {
-      variantValues: { state: "Default" },
       overrides: {
         Comments: {},
         TextField: {},
@@ -29,6 +27,7 @@ export default function CommentComponent(props) {
         "Frame 466": {},
         CommentComponent: {},
       },
+      variantValues: { state: "Default" },
     },
   ];
   const overrides = mergeVariantsAndOverrides(
@@ -88,32 +87,16 @@ export default function CommentComponent(props) {
         display="flex"
         {...getOverrideProps(overrides, "Frame 453")}
       >
-        <TextField
+        <Flex
           width="253px"
           height="unset"
-          placeholder="Add a comment...."
-          shrink="0"
-          boxShadow="0px 4px 4px rgba(0, 0, 0, 0.25)"
-          size="default"
-          isDisabled={false}
-          labelHidden={false}
-          variation="default"
           {...getOverrideProps(overrides, "TextField")}
-        ></TextField>
-        <MyIcon
+        ></Flex>
+        <View
           width="33px"
           height="33px"
-          display="block"
-          gap="unset"
-          alignItems="unset"
-          justifyContent="unset"
-          overflow="hidden"
-          shrink="0"
-          position="relative"
-          padding="0px 0px 0px 0px"
-          type="send"
           {...getOverrideProps(overrides, "MyIcon")}
-        ></MyIcon>
+        ></View>
       </Flex>
       <View
         width="40px"
@@ -168,17 +151,11 @@ export default function CommentComponent(props) {
         padding="0px 0px 0px 0px"
         {...getOverrideProps(overrides, "Frame 466")}
       >
-        <Card
+        <Flex
           width="302px"
           height="112px"
-          position="absolute"
-          backgroundColor="rgba(167,167,167,1)"
-          top="11px"
-          left="10px"
-          borderRadius="25px"
-          variation="outline"
           {...getOverrideProps(overrides, "Card")}
-        ></Card>
+        ></Flex>
       </View>
     </View>
   );
