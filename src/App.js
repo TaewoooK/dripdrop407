@@ -12,6 +12,7 @@ import Home from "./pages/Home";
 import Upload from "./pages/Upload";
 import Friends from "./pages/Friends";
 import NavBar from "./components/NavBar";
+import ProfilePage from "./components/ProfilePage";
 
 Amplify.configure(awsconfig);
 
@@ -73,6 +74,9 @@ export default function App() {
       break
     case "/Friends":
       component = <Friends/>
+      break
+    case "/profile":
+      component = <ProfilePage/>
       break
   }
 
