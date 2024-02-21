@@ -42,6 +42,7 @@ export declare type PostComponentOverridesProps = {
   Button49012122?: PrimitiveOverrideProps<ButtonProps>;
   Button49012126?: PrimitiveOverrideProps<ButtonProps>;
 } & EscapeHatchProps;
+
 export declare type PostComponentProps = React.PropsWithChildren<
   Partial<ViewProps> & {
     post?: any;
