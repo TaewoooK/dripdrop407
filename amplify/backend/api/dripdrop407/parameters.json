@@ -1,5 +1,6 @@
 {
   "AppSyncApiName": "dripdrop407",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
-  "DynamoDBEnableServerSideEncryption": false
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthModeLastUpdated": "2024-02-21T18:49:53.855Z"
 }
