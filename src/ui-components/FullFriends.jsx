@@ -5,13 +5,15 @@
  **************************************************************************/
 
 /* eslint-disable */
-import * as React from "react";
+import React from "react";
 import { getOverrideProps } from "./utils";
 import FriendRequestsListCondensed from "./FriendRequestsListCondensed";
 import FriendsList from "./FriendsList";
 import { Divider, View } from "@aws-amplify/ui-react";
+
 export default function FullFriends(props) {
   const { overrides, ...rest } = props;
+
   return (
     <View
       width="583px"
