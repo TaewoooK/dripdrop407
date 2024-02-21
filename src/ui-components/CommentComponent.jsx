@@ -11,7 +11,8 @@ import {
   getOverridesFromVariants,
   mergeVariantsAndOverrides,
 } from "./utils";
-import { Flex, Icon, Text, View } from "@aws-amplify/ui-react";
+import { Card, Flex, Icon, Text, TextField, View } from "@aws-amplify/ui-react";
+import MyIcon from "./MyIcon";
 export default function CommentComponent(props) {
   const { overrides: overridesProp, ...rest } = props;
   const variants = [
@@ -87,16 +88,32 @@ export default function CommentComponent(props) {
         display="flex"
         {...getOverrideProps(overrides, "Frame 453")}
       >
-        <Flex
+        <TextField
           width="253px"
           height="unset"
+          placeholder="Add a comment...."
+          shrink="0"
+          boxShadow="0px 4px 4px rgba(0, 0, 0, 0.25)"
+          size="default"
+          isDisabled={false}
+          labelHidden={false}
+          variation="default"
           {...getOverrideProps(overrides, "TextField")}
-        ></Flex>
-        <View
+        ></TextField>
+        <MyIcon
           width="33px"
           height="33px"
+          display="block"
+          gap="unset"
+          alignItems="unset"
+          justifyContent="unset"
+          overflow="hidden"
+          shrink="0"
+          position="relative"
+          padding="0px 0px 0px 0px"
+          type="send"
           {...getOverrideProps(overrides, "MyIcon")}
-        ></View>
+        ></MyIcon>
       </Flex>
       <View
         width="40px"
@@ -151,11 +168,17 @@ export default function CommentComponent(props) {
         padding="0px 0px 0px 0px"
         {...getOverrideProps(overrides, "Frame 466")}
       >
-        <Flex
+        <Card
           width="302px"
           height="112px"
+          position="absolute"
+          backgroundColor="rgba(167,167,167,1)"
+          top="11px"
+          left="10px"
+          borderRadius="25px"
+          variation="outline"
           {...getOverrideProps(overrides, "Card")}
-        ></Flex>
+        ></Card>
       </View>
     </View>
   );
