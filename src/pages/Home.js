@@ -8,6 +8,7 @@ import {
   PostComponent
  } from '../ui-components';
  import Post from "../components/Post";
+ import Comment from "../components/Comment";
 
 Amplify.configure(awsconfig);
 
@@ -18,6 +19,7 @@ const Home = ({ signOut }) => {
         <div style={{ display: 'flex', flexDirection: 'row', gap: 0}}>
           <div style={{ display: 'flex', flexDirection: 'row', gap: 0 }}>
             <Post/>
+            <Comment/>
           </div>
         </div>
       </div>
