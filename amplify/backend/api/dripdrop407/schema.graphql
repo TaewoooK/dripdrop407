@@ -14,3 +14,9 @@ type S3Object {
   region: String!
   key: String!
 }
+
+type Comment {
+  postId: String!
+  text: String!
+  commentAuthorId: Int
+}

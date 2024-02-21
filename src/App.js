@@ -11,6 +11,7 @@ import {
 import Home from "./pages/Home";
 import Upload from "./pages/Upload";
 import NavBar from "./components/NavBar";
+import ProfilePage from "./components/ProfilePage";
 
 Amplify.configure(awsconfig);
 
@@ -69,6 +70,9 @@ export default function App() {
       break
     case "/upload":
       component = <Upload/>
+      break
+    case "/profile":
+      component = <ProfilePage/>
       break
   }
 
