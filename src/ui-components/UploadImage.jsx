@@ -4,7 +4,7 @@ import { uploadData, getUrl } from "aws-amplify/storage";
 import { createPost, updatePost } from "../graphql/mutations";
 import { fetchUserAttributes } from "aws-amplify/auth";
 import awsExports from "../aws-exports";
-import { Message } from "@aws-amplify/ui-react";
+import { Message, Image } from "@aws-amplify/ui-react";
 
 const client = generateClient();
 
@@ -15,6 +15,8 @@ const UploadImage = () => {
   const [succeeded, setSucceeded] = useState(false);
 
   const [user, setUser] = useState(null);
+
+  const [imageUrl, setImageUrl] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -35,6 +37,17 @@ const UploadImage = () => {
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     setImage(file);
+    if (file) {
+      const reader = new FileReader();
+
+      // Define what happens when the file is loaded
+      reader.onload = (e) => {
+        setImageUrl(e.target.result);
+      };
+
+      // Read the uploaded file as a data URL
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleDescriptionChange = (event) => {
@@ -122,7 +135,20 @@ const UploadImage = () => {
           borderRadius: "5px",
           boxSizing: "border-box",
         }}
-      />
+      />{" "}
+      {image && (
+        <Image
+          alt="Post Image"
+          src={imageUrl}
+          objectFit="initial"
+          objectPosition="50% 50%"
+          backgroundColor="initial"
+          height="75%"
+          width="75%"
+          opacity="100%"
+          onClick={() => alert("📸 Say cheese!")}
+        />
+      )}
       <textarea
         placeholder="Enter description"
         value={description}
