@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { generateClient } from "aws-amplify/api";
-import { uploadData } from "aws-amplify/storage";
-// import { createPost } from "../graphql/mutations";
+import { uploadData, getUrl } from "aws-amplify/storage";
+import { createPost, updatePost } from "../graphql/mutations";
+import { fetchUserAttributes } from "aws-amplify/auth";
 import awsExports from "../aws-exports";
 
 const client = generateClient();
@@ -9,6 +10,24 @@ const client = generateClient();
 const UploadImage = () => {
   const [image, setImage] = useState(null);
   const [description, setDescription] = useState("");
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userAttributes = await fetchUserAttributes();
+        console.log(userAttributes);
+        setUser(userAttributes);
+      } catch (error) {
+        console.error("Error fetching user data: ", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  console.log(user);
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -24,31 +43,50 @@ const UploadImage = () => {
     console.log("Image:", image);
     console.log("Description:", description);
 
-    try {
-      const result = await uploadData({
-        key: image.name,
+    const currDate = new Date().toISOString();
+
+    const response = await client.graphql({
+        query: createPost,
+        variables: { 
+            input: {
+                owner: user.email,
+                description: description,
+                comments: String,
+                drip_points: 0,
+                createdAt: currDate,
+                enable_comments: true,
+                postImageKey: ""
+            }
+        }
+    })
+
+    const postContext = response.data.createPost;
+    if (!postContext) {
+        console.log("Failed to create post");
+        return;
+    }
+    const imageUpload = await uploadData({
+        key: `${user.email} + ${currDate}` + "image.png",
         data: image,
-        bucket: awsExports.aws_user_files_s3_bucket,
         options: {
-          accessLevel: "guest", // defaults to `guest` but can be 'private' | 'protected' | 'guest'
-        },
-      }).result;
-      console.log("Succeeded: ", result);
-    } catch (error) {
-      console.log("Error : ", error);
+            contentType: 'image/png'
+        }
+    }).result;
+
+    const updatePostDetails = {
+        id: postContext.id,
+        postImageKey: imageUpload?.key
     }
 
-    /*
-    try {
-      const result = await client.graphql({
-        query: createPost,
-        variables: { input: { description: description, image: image } },
-      }).result;
-      console.log("Succeeded: ", result);
-    } catch (error) {
-      console.log("Error : ", error);
-    }
-    */
+    const updatePostResponse = await client.graphql({
+        query: updatePost,
+        variables: { input: updatePostDetails }
+    });
+
+    const updatedPost = updatePostResponse.data.updatePost;
+    if (!updatedPost.postImageKey) return;
+    const signedURL = await getUrl({key: updatedPost.postImageKey});
+    console.log(signedURL);
   };
 
   return (

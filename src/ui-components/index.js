@@ -15,4 +15,6 @@ export { default as FriendsList } from "./FriendsList";
 export { default as FullFriends } from "./FullFriends";
 export { default as MyIcon } from "./MyIcon";
 export { default as PostComponent } from "./PostComponent";
+export { default as PostCreateForm } from "./PostCreateForm";
+export { default as PostUpdateForm } from "./PostUpdateForm";
 export { default as studioTheme } from "./studioTheme";
