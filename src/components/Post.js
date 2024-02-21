@@ -3,8 +3,21 @@ import * as React from "react";
 import { Button, Flex, Icon, Image, Text, View } from "@aws-amplify/ui-react";
 import { MyIcon } from "../ui-components";
 import "./post.css";
+import PostActionCenter from "./PostActionCenter";
+import ReportPost from "./ReportPost";
 
 export default function PostComponent() {
+  const [showActionCenter, setShowActionCenter] = React.useState(false);
+  const [showReportPost, setShowReportPost] = React.useState(false);
+
+  const toggleActionCenter = () => {
+    setShowActionCenter(!showActionCenter);
+  };
+
+  const toggleReportPost = () => {
+    setShowReportPost(!showReportPost);
+  };
+
   return (
     <View className="big-post-container">
       <View className="post-container">
@@ -66,10 +79,18 @@ export default function PostComponent() {
           src="https://cdn.discordapp.com/attachments/1120152118272213053/1201614916788965536/IMG_5675.jpg?ex=65dceb19&is=65ca7619&hm=277e5088a148d22bbb7935216d52437d827a889d0d6e4e7dded8eeb7a4af1336&"
           //src="https://images.unsplash.com/photo-1707879487614-72b421e4393f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHx8"
         ></Image>
-
+        
         <MyIcon className="more-icon"
           type="more_vert"
+          onClick={toggleActionCenter}
         />
+        {showActionCenter && (
+          <div className="overlay" onClick={toggleActionCenter}>
+            <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
+              <PostActionCenter/>
+            </div>
+          </div>
+        )}
 
         <Flex gap="22px" direction="column" width="unset" height="unset" justifyContent="center" alignItems="center" position="absolute" top="457px" left="190px" padding="0px 0px 0px 0px">
           <Icon className="profile-picture"
