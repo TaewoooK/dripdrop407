@@ -1,7 +1,7 @@
 import React from "react";
 import "@aws-amplify/ui-react/styles.css";
 import { Amplify } from "aws-amplify";
-import { View, withAuthenticator } from "@aws-amplify/ui-react";
+import { View, Flex, withAuthenticator } from "@aws-amplify/ui-react";
 import awsconfig from "../amplifyconfiguration.json";
 import {
   CommentComponent, 
@@ -14,13 +14,17 @@ Amplify.configure(awsconfig);
 const Home = ({ signOut }) => {
   return (
     <View className="Home">
-      <div>
-        <div style={{ display: 'flex', flexDirection: 'row', gap: 0}}>
-          <div style={{ display: 'flex', flexDirection: 'row', gap: 0 }}>
+        <Flex
+          direction="row"
+          justifyContent="center"
+        >
+          <Flex
+            direction="column"
+            alignContent="center"
+          > 
             <Post/>
-          </div>
-        </div>
-      </div>
+          </Flex>
+        </Flex>
     </View>
   );
 };
