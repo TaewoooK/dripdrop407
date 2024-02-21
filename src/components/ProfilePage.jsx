@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import awsconfig from "../aws-exports";
-import { getCurrentUser } from "aws-amplify/auth";
+import { getCurrentUser, fetchUserAttributes } from "aws-amplify/auth";
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
@@ -9,7 +9,8 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const { username, email, email_verified } = await getCurrentUser();
+        const { email, email_verified } = await fetchUserAttributes();
+        const { username } = await getCurrentUser();
         console.log(`The username: ${username}`);
         console.log(`The email: ${email}`);
         console.log(`Email Verified: ${email_verified}`);

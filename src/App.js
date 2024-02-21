@@ -81,7 +81,7 @@ export default function App() {
   }
 
   return (
-    <Authenticator variation="modal" components={components}>
+    <Authenticator variation="modal" components={components} signUpAttributes={['username']}>
       {({ signOut, user }) => (
         <View className="App">
           <div>
