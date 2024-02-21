@@ -3,7 +3,8 @@
     height: 100vh;
     display: block;
     overflow: hidden;
-    position: relative;
+    top: 0;
+    position: sticky;
     padding: 0px;
     background-color: rgba(34,34,34,1);
 }
