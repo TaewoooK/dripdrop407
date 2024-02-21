@@ -4,12 +4,14 @@ import { uploadData } from "aws-amplify/storage";
 import { createPost } from "../graphql/mutations";
 import awsExports from "../aws-exports";
 import { fetchUserAttributes } from "aws-amplify/auth";
+import { Message } from "@aws-amplify/ui-react";
 
 const client = generateClient();
 
 const UploadImage = () => {
   const [image, setImage] = useState(null);
   const [description, setDescription] = useState("");
+  const [succeeded, setSucceeded] = useState(false);
 
   const [user, setUser] = useState(null);
 
@@ -64,6 +66,7 @@ const UploadImage = () => {
         },
       }).result;
       console.log("Succeeded: ", result);
+      setSucceeded(true);
     } catch (error) {
       console.log("Error : ", error);
     }
@@ -159,6 +162,20 @@ const UploadImage = () => {
         Submit
       </button>
       <div style={{ height: "20px" }}></div> {/* Added empty div for spacing */}
+      <div>
+        {succeeded && (
+          <Message
+            colorTheme="success"
+            heading="YES!"
+            isDismissible={true}
+            onDismiss={() => {
+              setSucceeded(false);
+            }}
+          >
+            Your new fit is uploaded!
+          </Message>
+        )}
+      </div>
     </div>
   );
 };
