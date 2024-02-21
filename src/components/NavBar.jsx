@@ -1,9 +1,30 @@
-import React from 'react'
+import React, { useState, useEffect } from "react";
 import "./navbar.css";
 import { Flex, Icon, Text, View } from "@aws-amplify/ui-react";
 import SignOutButton from "./SignOutButton";
+import { fetchUserAttributes } from "aws-amplify/auth";
 
 const NavBar = () => {
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+          try {
+            const userAttributes = await fetchUserAttributes();
+            console.log(userAttributes);
+            setUser(userAttributes);
+          } catch (error) {
+            console.error("Error fetching user data: ", error);
+          }
+        };
+    
+        fetchUserData();
+    }, []);
+
+    const isUserNull = () => {
+        return user ==  null ? true : false
+    }
+
   return (
     <View className='navbar_container'>
         <Text className='logo-text'>
@@ -193,7 +214,8 @@ const NavBar = () => {
             position="relative"
             ></Icon>
             <Text className='username'>
-                Username
+                {isUserNull() ? (<p>Username</p>) : user.email.split('@')[0]}
+                
             </Text>
         </Flex>
 
