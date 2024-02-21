@@ -17,7 +17,6 @@ export default function CommentComponent(props) {
   const { overrides: overridesProp, ...rest } = props;
   const variants = [
     {
-      variantValues: { state: "Default" },
       overrides: {
         Comments: {},
         TextField: {},
@@ -29,6 +28,7 @@ export default function CommentComponent(props) {
         "Frame 466": {},
         CommentComponent: {},
       },
+      variantValues: { state: "Default" },
     },
   ];
   const overrides = mergeVariantsAndOverrides(

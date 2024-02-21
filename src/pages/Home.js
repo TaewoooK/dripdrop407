@@ -9,20 +9,22 @@ import {
  } from '../ui-components';
  import Post from "../components/Post";
  import Comment from "../components/Comment";
+import PostAndComment from "../components/PostAndComment";
 
 Amplify.configure(awsconfig);
 
 const Home = ({ signOut }) => {
   return (
     <View className="Home">
-        <Flex
+        {/* <Flex
           direction="row"
           justifyContent="center"
           gap="2rem"
         >
           <Post/>
           <Comment/>
-        </Flex>
+        </Flex> */}
+        <PostAndComment/>
     </View>
   );
 };

@@ -10,7 +10,7 @@ import { getOverrideProps } from "./utils";
 import { Button, Flex, Icon, Image, Text, View } from "@aws-amplify/ui-react";
 import MyIcon from "./MyIcon";
 export default function PostComponent(props) {
-  const { overrides, ...rest } = props;
+  const { post, overrides, ...rest } = props;
   return (
     <View
       width="995.31px"
