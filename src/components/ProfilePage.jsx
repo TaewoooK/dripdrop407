@@ -10,7 +10,7 @@ const ProfilePage = () => {
     const fetchUserData = async () => {
       try {
         const { email, email_verified } = await fetchUserAttributes();
-        const { username } = await getCurrentUser();
+        const username = email.split('@')[0]
         console.log(`The username: ${username}`);
         console.log(`The email: ${email}`);
         console.log(`Email Verified: ${email_verified}`);
