@@ -1,0 +1,12 @@
+{
+  "resourceName": "s3poststorageprod",
+  "bucketName": "poststorage--prod",
+  "policyUUID": "b2c4ce7c",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ]
+}

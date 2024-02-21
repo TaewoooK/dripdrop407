@@ -10,6 +10,18 @@
       "StackName": "amplify-dripdrop407-prod-171256",
       "StackId": "arn:aws:cloudformation:us-east-2:654654403425:stack/amplify-dripdrop407-prod-171256/34400f60-d03d-11ee-98a9-0a176881d8e5",
       "AmplifyAppId": "d35lredcdzbakc"
+    },
+    "categories": {
+      "auth": {
+        "dripdrop407": {}
+      },
+      "storage": {
+        "s3dripdrop407storage75b0ead7": {},
+        "s3poststorageprod": {}
+      },
+      "api": {
+        "dripdrop407": {}
+      }
     }
   }
 }
