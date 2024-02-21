@@ -11,6 +11,7 @@ export const getPost = /* GraphQL */ `
       drip_points
       createdAt
       enable_comments
+      postImageKey
       updatedAt
       __typename
     }
@@ -31,6 +32,7 @@ export const listPosts = /* GraphQL */ `
         drip_points
         createdAt
         enable_comments
+        postImageKey
         updatedAt
         __typename
       }

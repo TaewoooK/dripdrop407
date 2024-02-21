@@ -11,6 +11,7 @@ export const onCreatePost = /* GraphQL */ `
       drip_points
       createdAt
       enable_comments
+      postImageKey
       updatedAt
       __typename
     }
@@ -26,6 +27,7 @@ export const onUpdatePost = /* GraphQL */ `
       drip_points
       createdAt
       enable_comments
+      postImageKey
       updatedAt
       __typename
     }
@@ -41,6 +43,7 @@ export const onDeletePost = /* GraphQL */ `
       drip_points
       createdAt
       enable_comments
+      postImageKey
       updatedAt
       __typename
     }
