@@ -5,6 +5,7 @@ import { createPost, updatePost } from "../graphql/mutations";
 import { fetchUserAttributes } from "aws-amplify/auth";
 import awsExports from "../aws-exports";
 import { Message, Image } from "@aws-amplify/ui-react";
+import { Loader } from "@aws-amplify/ui-react";
 
 const client = generateClient();
 
@@ -12,7 +13,7 @@ const UploadImage = () => {
   const [image, setImage] = useState(null);
   const [description, setDescription] = useState("");
 
-  const [succeeded, setSucceeded] = useState(false);
+  const [succeeded, setSucceeded] = useState(0);
 
   const [user, setUser] = useState(null);
 
@@ -55,6 +56,7 @@ const UploadImage = () => {
   };
 
   const handleSubmit = async () => {
+    setSucceeded(2);
     // Handle post submission logic here
     console.log("Image:", image);
     console.log("Description:", description);
@@ -104,7 +106,7 @@ const UploadImage = () => {
     const signedURL = await getUrl({ key: updatedPost.postImageKey });
     console.log(signedURL);
 
-    setSucceeded(true);
+    setSucceeded(1);
   };
 
   return (
@@ -135,7 +137,7 @@ const UploadImage = () => {
           borderRadius: "5px",
           boxSizing: "border-box",
         }}
-      />{" "}
+      />
       {image && (
         <Image
           alt="Post Image"
@@ -182,7 +184,8 @@ const UploadImage = () => {
       </button>
       <div style={{ height: "20px" }}></div> {/* Added empty div for spacing */}
       <div>
-        {succeeded && (
+        {succeeded == 2 && <Loader size="large" />}
+        {succeeded == 1 && (
           <Message
             colorTheme="success"
             heading="YES!"
