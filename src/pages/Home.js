@@ -18,14 +18,10 @@ const Home = ({ signOut }) => {
         <Flex
           direction="row"
           justifyContent="center"
+          gap="2rem"
         >
-          <Flex
-            direction="column"
-            alignContent="center"
-          > 
-            <Post/>
-            <Comment/>
-          </Flex>
+          <Post/>
+          <Comment/>
         </Flex>
     </View>
   );
