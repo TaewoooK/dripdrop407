@@ -16,10 +16,11 @@ const Home = ({ signOut }) => {
       <div>
         <div style={{ display: 'flex', flexDirection: 'row', gap: 0}}>
           <div style={{ display: 'flex', flexDirection: 'row', gap: 0 }}>
-            <PostComponent/>
+            {/* <PostComponent/>
             <div style={{paddingTop: 25}}>
               <CommentComponent/>
-            </div>
+            </div> */}
+            Posts go here
           </div>
         </div>
       </div>
