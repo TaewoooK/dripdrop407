@@ -8,8 +8,13 @@
 import * as React from "react";
 // import { getOverrideProps } from "./utils";
 import { Button, Flex } from "@aws-amplify/ui-react";
-export default function PostActionCenter(props) {
-  const { overrides, ...rest } = props;
+export default function PostActionCenter({toggleReportPost}) {
+  // const { overrides, ...rest } = props;
+
+  const handleReportButtonClick = () => {
+    toggleReportPost();
+  }
+
   return (
     <Flex
       gap="26px"
@@ -23,7 +28,7 @@ export default function PostActionCenter(props) {
       borderRadius="8px"
       padding="48px 32px 48px 32px"
       backgroundColor="rgba(255,255,255,1)"
-      {...rest}
+      // {...rest}
     >
       <Button
         width="367px"
@@ -33,7 +38,9 @@ export default function PostActionCenter(props) {
         isDisabled={false}
         variation="primary"
         children="Report Post"
+        onClick={handleReportButtonClick}
       ></Button>
+
       <Button
         width="367px"
         height="unset"
@@ -42,7 +49,9 @@ export default function PostActionCenter(props) {
         isDisabled={false}
         variation="primary"
         children="View Profile"
+        // onClick={"/profile"}
       ></Button>
+
       <Button
         width="367px"
         height="unset"

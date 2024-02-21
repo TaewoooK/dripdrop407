@@ -16,6 +16,7 @@ export default function PostComponent() {
 
   const toggleReportPost = () => {
     setShowReportPost(!showReportPost);
+    setShowActionCenter(false);
   };
 
   return (
@@ -84,10 +85,19 @@ export default function PostComponent() {
           type="more_vert"
           onClick={toggleActionCenter}
         />
+
         {showActionCenter && (
           <div className="overlay" onClick={toggleActionCenter}>
             <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
-              <PostActionCenter/>
+              <PostActionCenter toggleReportPost={toggleReportPost}/>
+            </div>
+          </div>
+        )}
+
+        {showReportPost && (
+          <div className="overlay" onClick={toggleReportPost}>
+            <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
+              <ReportPost/>
             </div>
           </div>
         )}
