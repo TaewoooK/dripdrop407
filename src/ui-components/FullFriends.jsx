@@ -5,13 +5,71 @@
  **************************************************************************/
 
 /* eslint-disable */
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { getOverrideProps } from "./utils";
 import FriendRequestsListCondensed from "./FriendRequestsListCondensed";
 import FriendsList from "./FriendsList";
 import { Divider, View } from "@aws-amplify/ui-react";
+import { fetchUserAttributes } from "aws-amplify/auth";
+import { generateClient } from "aws-amplify/api";
+import {
+  listFriendRequests,
+  listFriends
+} from "./../graphql/queries";
+
 export default function FullFriends(props) {
   const { overrides, ...rest } = props;
+  const [user, setUser] = useState(null);
+  const [requests, setRequests] = useState([]);
+  const [friends, setFriends] = useState([]);
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  async function fetchUserData() {
+    const userAttributes = await fetchUserAttributes();
+    
+    // Debugging
+    console.log('userAttributes: ', userAttributes);
+
+    setUser(userAttributes);
+
+    // Debugging
+    //!! DOESN't WORK
+    // useEffect(() => {}, [user]);
+    console.log('user: ', user);
+
+    // fetchFriendRequests();
+    // fetchFriends();
+  }
+
+  // async function fetchFriendRequests here
+  async function fetchFriendRequests() {
+    const apiData = await API.graphql({
+      query: listFriendRequests,
+      filter: { UserId: { eq: "[Insert User Id here]" } }
+    })
+    const requestsFromAPI = apiData.data.listFriendRequests.items;
+    setRequests(requestsFromAPI);
+
+    // debugging
+    console.log('Friend Requests: ', requests);
+  }
+
+  // async function fetchFriends here
+  async function fetchFriends() {
+    const apiData = await API.graphql({
+      query: listFriends,
+      filter: { UserId: { eq: "[Insert User Id here]" } }
+    })
+    const friendsFromAPI = apiData.data.listFriends.items;
+    setFriends(friendsFromAPI);
+
+    // debugging
+    console.log('Friends: ', friends);
+  }
+
   return (
     <View
       width="583px"
