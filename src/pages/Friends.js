@@ -19,6 +19,7 @@ import {
 import "./Friends.css";
 import FriendRequestComponent from "../ui-components/FriendRequest";
 import FriendComponent from "../ui-components/Friend";
+import { isEmpty } from "@aws-amplify/ui";
 // import { FullFriends } from '../ui-components';
 
 // @ TEST DATA @
@@ -56,22 +57,28 @@ const Friends = () => {
   async function fetchFriendRequests(userId) {
     const apiData = await client.graphql({
       query: listFriendRequests,
-      filter: { UserId: { eq: userId } }
+      variables: { filter: { UserId: { eq: userId } } }
     })
     const requestsFromAPI = apiData.data.listFriendRequests.items;
     setRequests(requestsFromAPI);
 
     // debugging
+    // console.log('Friend Requests: ', requests);
+    // console.log('Friend Requests length: ', requests.length);
+    // console.log('isEmptyFriendReqs: ', isEmptyFriendReqs());
+  }
+
+  useEffect(() => {
     console.log('Friend Requests: ', requests);
     console.log('Friend Requests length: ', requests.length);
-    console.log('Friend Requests boolean: ', requests.length === 0);
-  }
+    console.log('isEmptyFriendReqs: ', isEmptyFriendReqs());
+  }, [requests])
 
   // async function fetchFriends here
   async function fetchFriends(userId) {
     const apiData = await client.graphql({
       query: listFriends,
-      filter: { UserId: { eq: userId } }
+      variables: { filter: { UserId: { eq: userId } } }
     })
     const friendsFromAPI = apiData.data.listFriends.items;
     setFriends(friendsFromAPI);
@@ -79,7 +86,7 @@ const Friends = () => {
     // debugging
     console.log('Friends: ', friends);
     console.log('Friend boolean: ', friends.length === 0);
-    console.log(isEmptyFriends());
+    console.log('isEmptyFriends: ', isEmptyFriends());
   }
 
   // # GETTER METHODS
