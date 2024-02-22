@@ -32,4 +32,5 @@ type Comment {
   text: String!
   commentAuthorId: Int
 }
- 
+
+sudo chown -R username directory_name
