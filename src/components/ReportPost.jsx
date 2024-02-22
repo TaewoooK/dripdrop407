@@ -9,9 +9,12 @@ import * as React from "react";
 // import { getOverrideProps } from "./utils";
 import { Button, Flex, TextAreaField } from "@aws-amplify/ui-react";
 import { fetchUserAttributes } from "aws-amplify/auth";
+import { createPostReport } from "../graphql/mutations";
+import { generateClient } from "aws-amplify/api";
 
 export default function ReportPost({toggleReportPost, currPostID}) {
   // const { overrides, ...rest } = props;
+  const client = generateClient();
 
   const [reasoning, setReasoning] = React.useState("");
   const [currUser, setCurrUser] = React.useState(null);
@@ -48,6 +51,23 @@ export default function ReportPost({toggleReportPost, currPostID}) {
     // console.log("Reasoning:", reasoning, "\nUser:", (isCurrUserNull? currUser : currUser.username));
     console.log("Reporter:", currUser.email, "\nreason:", reasoning, "\nSentAt:", currDate, "\nPostID:", currPostID);
     
+    const response = await client.graphql({
+      query: createPostReport,
+      variables: {
+        input: {
+          reporter: currUser.email,
+          reason: reasoning,
+          sentAt: currDate,
+          postId: currPostID
+        },
+      },
+    });
+
+    const postReportContext = response.data.createPostReport;
+    if (!postReportContext) {
+      console.log('Failed to send report');
+      return;
+    }
 
     toggleReportPost();
   }

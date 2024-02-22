@@ -9,6 +9,7 @@ export const onCreateFriendRequest = /* GraphQL */ `
       id
       UserId
       SenderId
+      SenderUsername
       createdAt
       updatedAt
       __typename
@@ -23,6 +24,7 @@ export const onUpdateFriendRequest = /* GraphQL */ `
       id
       UserId
       SenderId
+      SenderUsername
       createdAt
       updatedAt
       __typename
@@ -37,6 +39,7 @@ export const onDeleteFriendRequest = /* GraphQL */ `
       id
       UserId
       SenderId
+      SenderUsername
       createdAt
       updatedAt
       __typename
@@ -49,6 +52,7 @@ export const onCreateFriend = /* GraphQL */ `
       id
       UserId
       FriendId
+      FriendUsername
       createdAt
       updatedAt
       __typename
@@ -61,6 +65,7 @@ export const onUpdateFriend = /* GraphQL */ `
       id
       UserId
       FriendId
+      FriendUsername
       createdAt
       updatedAt
       __typename
@@ -73,6 +78,7 @@ export const onDeleteFriend = /* GraphQL */ `
       id
       UserId
       FriendId
+      FriendUsername
       createdAt
       updatedAt
       __typename
@@ -143,6 +149,17 @@ export const onCreateComment = /* GraphQL */ `
       postId
       text
       commentAuthorId
+      CommentsPost {
+        id
+        owner
+        description
+        drip_points
+        createdAt
+        enable_comments
+        postImageKey
+        updatedAt
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -156,6 +173,17 @@ export const onUpdateComment = /* GraphQL */ `
       postId
       text
       commentAuthorId
+      CommentsPost {
+        id
+        owner
+        description
+        drip_points
+        createdAt
+        enable_comments
+        postImageKey
+        updatedAt
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -169,6 +197,65 @@ export const onDeleteComment = /* GraphQL */ `
       postId
       text
       commentAuthorId
+      CommentsPost {
+        id
+        owner
+        description
+        drip_points
+        createdAt
+        enable_comments
+        postImageKey
+        updatedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onCreatePostReport = /* GraphQL */ `
+  subscription OnCreatePostReport(
+    $filter: ModelSubscriptionPostReportFilterInput
+  ) {
+    onCreatePostReport(filter: $filter) {
+      id
+      reporter
+      reason
+      sentAt
+      postId
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdatePostReport = /* GraphQL */ `
+  subscription OnUpdatePostReport(
+    $filter: ModelSubscriptionPostReportFilterInput
+  ) {
+    onUpdatePostReport(filter: $filter) {
+      id
+      reporter
+      reason
+      sentAt
+      postId
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeletePostReport = /* GraphQL */ `
+  subscription OnDeletePostReport(
+    $filter: ModelSubscriptionPostReportFilterInput
+  ) {
+    onDeletePostReport(filter: $filter) {
+      id
+      reporter
+      reason
+      sentAt
+      postId
       createdAt
       updatedAt
       __typename

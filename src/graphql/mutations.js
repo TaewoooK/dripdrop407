@@ -10,6 +10,7 @@ export const createFriendRequest = /* GraphQL */ `
       id
       UserId
       SenderId
+      SenderUsername
       createdAt
       updatedAt
       __typename
@@ -25,6 +26,7 @@ export const updateFriendRequest = /* GraphQL */ `
       id
       UserId
       SenderId
+      SenderUsername
       createdAt
       updatedAt
       __typename
@@ -40,6 +42,7 @@ export const deleteFriendRequest = /* GraphQL */ `
       id
       UserId
       SenderId
+      SenderUsername
       createdAt
       updatedAt
       __typename
@@ -55,6 +58,7 @@ export const createFriend = /* GraphQL */ `
       id
       UserId
       FriendId
+      FriendUsername
       createdAt
       updatedAt
       __typename
@@ -70,6 +74,7 @@ export const updateFriend = /* GraphQL */ `
       id
       UserId
       FriendId
+      FriendUsername
       createdAt
       updatedAt
       __typename
@@ -85,6 +90,7 @@ export const deleteFriend = /* GraphQL */ `
       id
       UserId
       FriendId
+      FriendUsername
       createdAt
       updatedAt
       __typename
@@ -167,6 +173,17 @@ export const createComment = /* GraphQL */ `
       postId
       text
       commentAuthorId
+      CommentsPost {
+        id
+        owner
+        description
+        drip_points
+        createdAt
+        enable_comments
+        postImageKey
+        updatedAt
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -183,6 +200,17 @@ export const updateComment = /* GraphQL */ `
       postId
       text
       commentAuthorId
+      CommentsPost {
+        id
+        owner
+        description
+        drip_points
+        createdAt
+        enable_comments
+        postImageKey
+        updatedAt
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -199,6 +227,68 @@ export const deleteComment = /* GraphQL */ `
       postId
       text
       commentAuthorId
+      CommentsPost {
+        id
+        owner
+        description
+        drip_points
+        createdAt
+        enable_comments
+        postImageKey
+        updatedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const createPostReport = /* GraphQL */ `
+  mutation CreatePostReport(
+    $input: CreatePostReportInput!
+    $condition: ModelPostReportConditionInput
+  ) {
+    createPostReport(input: $input, condition: $condition) {
+      id
+      reporter
+      reason
+      sentAt
+      postId
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updatePostReport = /* GraphQL */ `
+  mutation UpdatePostReport(
+    $input: UpdatePostReportInput!
+    $condition: ModelPostReportConditionInput
+  ) {
+    updatePostReport(input: $input, condition: $condition) {
+      id
+      reporter
+      reason
+      sentAt
+      postId
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deletePostReport = /* GraphQL */ `
+  mutation DeletePostReport(
+    $input: DeletePostReportInput!
+    $condition: ModelPostReportConditionInput
+  ) {
+    deletePostReport(input: $input, condition: $condition) {
+      id
+      reporter
+      reason
+      sentAt
+      postId
       createdAt
       updatedAt
       __typename
