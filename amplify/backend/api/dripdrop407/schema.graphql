@@ -34,5 +34,6 @@ type Comment @model @auth(rules: [{allow: public}]) {
   postId: ID! @index(name: "byPost")
   text: String!
   commentAuthorId: Int
+  CommentsPost: Post @belongsTo(fields: ["postId"])
 }
  
