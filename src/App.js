@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
+import { UserContext } from './UserContext';
+
 import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
 import { Amplify } from "aws-amplify";
-import { fetchAuthSession } from "aws-amplify/auth";
-import { get } from "aws-amplify/api";
 import {
   Button,
   Grid,
@@ -15,6 +15,7 @@ import {
 } from "@aws-amplify/ui-react";
 import { Authenticator } from "@aws-amplify/ui-react";
 import awsconfig from "./amplifyconfiguration.json";
+
 import { DripDropNavBarBasic } from "./ui-components";
 import Home from "./pages/Home";
 import Upload from "./pages/Upload";
@@ -68,36 +69,9 @@ const components = {
 };
 
 export default function App() {
-  const [allUsers, setAllUsers] = useState([]);
-  useEffect(() => {
-    listAllUsers(60);
-  }, []);
+  const { users } = useContext(UserContext);
+  console.log('Users:', users);
 
-  async function listAllUsers(limit) {
-    try {
-      const apiName = 'AdminQueries';
-      const path = '/listUsers';
-      const options = {
-        queryStringParameters: {
-          limit: limit || 60 // Default limit to 60 users if not provided
-        },
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `${(await fetchAuthSession()).tokens.accessToken.payload}`
-        }
-      };
-  
-      setAllUsers(await get({ apiName, path, options }));
-    } catch (error) {
-      console.error('Error listing users:', error);
-      throw error;
-    }
-  }
-
-  useEffect(() => {
-    console.log('fdsjklfdsa: ', allUsers);
-  }, [allUsers]);
-  
   let component;
   switch (window.location.pathname) {
     case "/":
