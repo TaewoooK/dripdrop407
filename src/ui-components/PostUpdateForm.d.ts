@@ -24,7 +24,6 @@ export declare type ValidationFunction<T> = (value: T, validationResponse: Valid
 export declare type PostUpdateFormInputValues = {
     owner?: string;
     description?: string;
-    comments?: string;
     drip_points?: number;
     createdAt?: string;
     enable_comments?: boolean;
@@ -33,7 +32,6 @@ export declare type PostUpdateFormInputValues = {
 export declare type PostUpdateFormValidationValues = {
     owner?: ValidationFunction<string>;
     description?: ValidationFunction<string>;
-    comments?: ValidationFunction<string>;
     drip_points?: ValidationFunction<number>;
     createdAt?: ValidationFunction<string>;
     enable_comments?: ValidationFunction<boolean>;
@@ -44,7 +42,6 @@ export declare type PostUpdateFormOverridesProps = {
     PostUpdateFormGrid?: PrimitiveOverrideProps<GridProps>;
     owner?: PrimitiveOverrideProps<TextFieldProps>;
     description?: PrimitiveOverrideProps<TextFieldProps>;
-    comments?: PrimitiveOverrideProps<TextFieldProps>;
     drip_points?: PrimitiveOverrideProps<TextFieldProps>;
     createdAt?: PrimitiveOverrideProps<TextFieldProps>;
     enable_comments?: PrimitiveOverrideProps<SwitchFieldProps>;

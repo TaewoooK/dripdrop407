@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
 import { Amplify } from "aws-amplify";
+import { fetchAuthSession } from "aws-amplify/auth";
+import { get } from "aws-amplify/api";
 import {
   Button,
   Grid,
@@ -66,6 +68,36 @@ const components = {
 };
 
 export default function App() {
+  const [allUsers, setAllUsers] = useState([]);
+  useEffect(() => {
+    listAllUsers(60);
+  }, []);
+
+  async function listAllUsers(limit) {
+    try {
+      const apiName = 'AdminQueries';
+      const path = '/listUsers';
+      const options = {
+        queryStringParameters: {
+          limit: limit || 60 // Default limit to 60 users if not provided
+        },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${(await fetchAuthSession()).tokens.accessToken.payload}`
+        }
+      };
+  
+      setAllUsers(await get({ apiName, path, options }));
+    } catch (error) {
+      console.error('Error listing users:', error);
+      throw error;
+    }
+  }
+
+  useEffect(() => {
+    console.log('fdsjklfdsa: ', allUsers);
+  }, [allUsers]);
+  
   let component;
   switch (window.location.pathname) {
     case "/":
