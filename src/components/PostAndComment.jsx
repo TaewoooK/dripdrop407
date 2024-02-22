@@ -20,56 +20,91 @@ const PostAndComment = () => {
     const [comments, setComments] = React.useState([]);
     const [commentsText, setCommentsText] = React.useState([]);
     const [showComment, setShow] = React.useState(false);
+    const [nextToken, setNextToken] = React.useState("");
     const [posts, setPosts] = React.useState([]);
     const [images, setImages] = React.useState([]);
     const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
-    const variables = { limit: 10 }
+    const [variablesN, setVariablesN] = React.useState({});
 
-    useEffect(() => {
-        const fetchPosts = async () => {
-          try {
-            const postData = await client.graphql({ query: listPosts, variables });
-            setPosts(postData.data.listPosts.items);
-          } catch (error) {
+    const fetchPost = async () => {
+        if (!nextToken) {
+            // This means either the page just loaded or the user has scrolled to the end of the list
+            setVariablesN({ limit: 10 })
+        } else {
+            setVariablesN({ limit: 10, nextToken: nextToken }) 
+        }
+        try {
+            const postDataGraphQLResponse = await client.graphql({ query: listPosts, variables: variablesN });
+            //console.log(postDataGraphQLResponse)
+            setPosts(postDataGraphQLResponse.data.listPosts.items);
+            setNextToken(postDataGraphQLResponse.data.listPosts.nextToken);
+
+            const imagePromises = posts.map(async (post) => {
+                const postData = await getUrl({ key: post.postImageKey });
+                    return {
+                        description: post.description,
+                        imageUrl: postData.url,
+                    };
+                });
+            const fetchedImages = await Promise.all(imagePromises);
+            setImages(fetchedImages);        
+        } catch (error) {
             console.error("Error fetching posts: ", error);
-          }};
-        fetchPosts();
+        }
+    }
+
+    // initial loading for the page
+    useEffect(() => {
+        fetchPost()
+        //console.log("firing once")
     }, []);
 
+    // When nextToken changes, fetch more posts
     useEffect(() => {
-        const fetchImages = async () => {
-          try {
-            const imagePromises = posts.map(async (post) => {
-              const postData = await getUrl({ key: post.postImageKey });
-              return {
-                description: post.description,
-                imageUrl: postData.url,
-              };
-            });
-            const fetchedImages = await Promise.all(imagePromises);
-            setImages(fetchedImages);
-          } catch (error) {
-            console.error("Error fetching images:", error);
-          }};
-        if (posts.length > 0) { fetchImages(); }
-    }, [posts]);
+        fetchPost()
+    }, [nextToken]);
 
     const[scope, animate] = useAnimate();
     const handleGreenButtonClick = async () => {
-      setShow(false);
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-      await animate(scope.current, {x: "80vw"});
-      await animate(scope.current, {x: 0});
+        setShow(false);
+        if (currentImageIndex + 1 % images.length == 0) {
+            await fetchPost();
+            setCurrentImageIndex(0);
+        } else {
+            setCurrentImageIndex((currentImageIndex) => (currentImageIndex + 1) % images.length);
+        }
+        await fetchPost();
+        await animate(scope.current, {x: "80vw"});
+        await animate(scope.current, {x: 0});
       // Perform any other actions or state updates as needed
     };
 
     const handleRedButtonClick = async () => {
         setShow(false);
-        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+        if (currentImageIndex + 1 % images.length == 0) {
+            await fetchPost();
+            setCurrentImageIndex(0);
+        } else {
+            setCurrentImageIndex((currentImageIndex) => (currentImageIndex + 1) % images.length);
+        }
         await animate(scope.current, {x: "-80vw"});
         await animate(scope.current, {x: 0});
         // Perform any other actions or state updates as needed
       };
+
+      const handleCommentsExpansionClick = async () => {
+        setShow(!showComment);
+        if (!showComment) {
+            const getComments = await client.graphql({
+                query: commentsByPostId,
+                variables: { postId: posts[currentImageIndex].id }
+            });
+            const commentsList = getComments.data.commentsByPostId.items
+            const commentsTextArray = commentsList.map(comment => comment.text);
+            setComments(commentsList);
+            setCommentsText(commentsTextArray);
+        }
+      }
 
     const onClickHandler = async () => {
         const currPost = posts[currentImageIndex];
@@ -81,13 +116,13 @@ const PostAndComment = () => {
         });
         const getComments = await client.graphql({
             query: commentsByPostId,
-            variables: { postId: posts[currentImageIndex].id }
+            variables: { postId: currPost.id }
         });
         const commentsList = getComments.data.commentsByPostId.items
         const commentsTextArray = commentsList.map(comment => comment.text);
-        //console.log(commentsTextArray);
         setComments(commentsList);
         setCommentsText(commentsTextArray);
+        setComment("");
     };
   
     const onChangeHandler = (e) => {
@@ -209,7 +244,7 @@ const PostAndComment = () => {
                 
                 <MyIcon className="chat-icon"
                 type="chat"
-                onClick={()=>setShow(!showComment)}
+                onClick={handleCommentsExpansionClick}
                 ></MyIcon>
 
                 <Button className="green-button"
