@@ -8,8 +8,22 @@
 import * as React from "react";
 // import { getOverrideProps } from "./utils";
 import { Button, Flex, TextAreaField } from "@aws-amplify/ui-react";
-export default function ReportPost(props) {
-  const { overrides, ...rest } = props;
+export default function ReportPost({toggleReportPost}) {
+  // const { overrides, ...rest } = props;
+
+  const [reasoning, setReasoning] = React.useState("");
+  const [user, setUser] = React.useState(null);
+
+  const handleReasonChange = (event) => {
+    setReasoning(event.target.value);
+  }
+
+  const handleSubmit = async() => {
+    console.log("Reasoning:", reasoning, "\nUser:", user);
+    const currDate = new Date().toISOString();
+    toggleReportPost();
+  }
+
   return (
     <Flex
       gap="0"
@@ -22,7 +36,7 @@ export default function ReportPost(props) {
       borderRadius="8px"
       padding="0px 0px 0px 0px"
       // {...getOverrideProps(overrides, "ReportPost")}
-      {...rest}
+      // {...rest}
     >
       <Flex
         gap="24px"
@@ -40,8 +54,8 @@ export default function ReportPost(props) {
         // {...getOverrideProps(overrides, "Report")}
       >
         <TextAreaField
-          width="unset"
-          height="unset"
+          width="100%"
+          height="auto"
           label="Reason for reporting post"
           shrink="0"
           alignSelf="stretch"
@@ -50,6 +64,8 @@ export default function ReportPost(props) {
           isDisabled={false}
           labelHidden={false}
           variation="default"
+          style={{textAlign:"left"}}
+          onChange={handleReasonChange}
           // {...getOverrideProps(overrides, "TextAreaField")}
         ></TextAreaField>
         <Button
@@ -61,6 +77,7 @@ export default function ReportPost(props) {
           isDisabled={false}
           variation="primary"
           children="Send Report"
+          onClick={handleSubmit}
           // {...getOverrideProps(overrides, "Button")}
         ></Button>
       </Flex>

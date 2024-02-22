@@ -33,3 +33,9 @@ type Comment {
   commentAuthorId: Int
 }
  
+type PostReport @model @auth(rules: [{allow: public, operations:[create, ] }]) {
+  id: ID!
+  name: String!
+  postId: String!
+  email: AWSEmail!
+}

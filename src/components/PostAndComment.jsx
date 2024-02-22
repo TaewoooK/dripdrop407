@@ -117,7 +117,7 @@ const PostAndComment = () => {
                 {showReportPost && (
                 <div className="overlay" onClick={toggleReportPost}>
                     <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
-                    <ReportPost/>
+                    <ReportPost toggleReportPost={toggleReportPost}/>
                     </div>
                 </div>
                 )}
