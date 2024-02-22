@@ -4,9 +4,10 @@ import { MyIcon } from "../ui-components";
 import "./postandcomment.css";
 import { motion, useAnimate } from "framer-motion"
 import awsconfig from "../aws-exports";
-import { fetchUserAttributes } from "aws-amplify/auth";
-import { generateClient } from "aws-amplify/api";
-import { listPosts } from "../graphql/queries";
+import { fetchUserAttributes, getCurrentUser } from "aws-amplify/auth";
+import { generateClient, post } from "aws-amplify/api";
+import { createComment } from "../graphql/mutations";
+import { listPosts, getPost, commentsByPostId } from "../graphql/queries";
 import { getUrl } from "aws-amplify/storage";
 import PostActionCenter from "./PostActionCenter";
 import ReportPost from "./ReportPost";
@@ -16,111 +17,121 @@ const client = generateClient();
 
 const PostAndComment = () => {
     const [comment, setComment] = React.useState("");
-    const [comments, setComments] = React.useState([
-        "This is the first comment",
-        "This is the second comment",
-        "This is the third comment",
-        // Add more comments as needed
-      ]);
+    const [comments, setComments] = React.useState([]);
+    const [commentsText, setCommentsText] = React.useState([]);
     const [showComment, setShow] = React.useState(false);
+    const [nextToken, setNextToken] = React.useState("");
     const [posts, setPosts] = React.useState([]);
     const [images, setImages] = React.useState([]);
     const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
     const [currPostID, setCurrPostID] = React.useState(null);
+    const [variablesN, setVariablesN] = React.useState({});
 
-    const variables = {
-        limit: 10
+    const fetchPost = async () => {
+        if (!nextToken) {
+            // This means either the page just loaded or the user has scrolled to the end of the list
+            setVariablesN({ limit: 10 })
+        } else {
+            setVariablesN({ limit: 10, nextToken: nextToken }) 
+        }
+        try {
+            const postDataGraphQLResponse = await client.graphql({ query: listPosts, variables: variablesN });
+            //console.log(postDataGraphQLResponse)
+            setPosts(postDataGraphQLResponse.data.listPosts.items);
+            setNextToken(postDataGraphQLResponse.data.listPosts.nextToken);
+
+            const imagePromises = posts.map(async (post) => {
+                const postData = await getUrl({ key: post.postImageKey });
+                    return {
+                        description: post.description,
+                        imageUrl: postData.url,
+                    };
+                });
+            const fetchedImages = await Promise.all(imagePromises);
+            setImages(fetchedImages);        
+        } catch (error) {
+            console.error("Error fetching posts: ", error);
+        }
     }
 
-    const[scope, animate] = useAnimate();
-    const handleGreenButtonClick = async () => {
-        setShow(false);
-        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-        // setCurrPostID(posts[currentImageIndex].id)
-        await animate(scope.current, {x: "80vw"});
-        await animate(scope.current, {x: 0});
-        // console.log(currPostID)
-        // Perform any other actions or state updates as needed
-    };
-
-    const handleRedButtonClick = async () => {
-        setShow(false);
-        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-        // setCurrPostID(posts[currentImageIndex].id)
-        await animate(scope.current, {x: "-80vw"});
-        await animate(scope.current, {x: 0});
-        // console.log('curr idx:',currentImageIndex, 'postID:', currPostID)
-        // Perform any other actions or state updates as needed
-      };
-
+    // initial loading for the page
     useEffect(() => {
-        const fetchPosts = async () => {
-          try {
-            const postData = await client.graphql({ query: listPosts, variables });
-            setPosts(postData.data.listPosts.items);
-            
-            // console.log("postid", postData.data.listPosts.items[currentImageIndex].id)
-            // setCurrPostID(postData.data.listPosts.items[currentImageIndex].id)
-            // console.log('curr idx:',currentImageIndex, 'postID:', currPostID)
-          } catch (error) {
-            console.error("Error fetching posts: ", error);
-          }
-        };
-      
-        fetchPosts();
+        fetchPost()
+        //console.log("firing once")
     }, []);
-      
-    //console.log(posts);
-      
-    useEffect(() => {
-        const fetchImages = async () => {
-          try {
-            const imagePromises = posts.map(async (post) => {
-              const postData = await getUrl({ key: post.postImageKey });
-              return {
-                description: post.description,
-                imageUrl: postData.url,
-              };
-            });
-      
-            const fetchedImages = await Promise.all(imagePromises);
-            setImages(fetchedImages);
-          } catch (error) {
-            console.error("Error fetching images:", error);
-          }
-        };
-      
-        if (posts.length > 0) {
-          fetchImages();
-        }
-    }, [posts]);
 
+    // When nextToken changes, fetch more posts
+    useEffect(() => {
+        fetchPost()
+    }, [nextToken]);
+    
     useEffect(() => {
         if (posts.length > 0) {
             setCurrPostID(posts[currentImageIndex].id);
         }
     }, [posts, currentImageIndex])
 
-    // useEffect(() => {
-    //     console.log('curr idx:',currentImageIndex, 'postID:', currPostID);
-    // }, [currPostID])
-      
-    //console.log(images);
+    const[scope, animate] = useAnimate();
+    const handleGreenButtonClick = async () => {
+        setShow(false);
+        if (currentImageIndex + 1 % images.length == 0) {
+            await fetchPost();
+            setCurrentImageIndex(0);
+        } else {
+            setCurrentImageIndex((currentImageIndex) => (currentImageIndex + 1) % images.length);
+        }
+        await fetchPost();
+        await animate(scope.current, {x: "80vw"});
+        await animate(scope.current, {x: 0});
+      // Perform any other actions or state updates as needed
+    };
 
-    const handleNextImage = () => {
-        setCurrentImageIndex((currentImageIndex + 1) % images.length);
-        //console.log(currentImageIndex)
-    }
-
-    const onUpvoteHandler = () => {
-        currentImageIndex = 1;
+    const handleRedButtonClick = async () => {
+        setShow(false);
+        if (currentImageIndex + 1 % images.length == 0) {
+            await fetchPost();
+            setCurrentImageIndex(0);
+        } else {
+            setCurrentImageIndex((currentImageIndex) => (currentImageIndex + 1) % images.length);
+        }
+        await animate(scope.current, {x: "-80vw"});
+        await animate(scope.current, {x: 0});
+        // console.log('curr idx:',currentImageIndex, 'postID:', currPostID)
+        // Perform any other actions or state updates as needed
       };
 
-  
-    const onClickHandler = () => {
-        console.log("Testing");
-      setComments((comments) => [...comments, comment]);
-      setComment(""); 
+      const handleCommentsExpansionClick = async () => {
+        setShow(!showComment);
+        if (!showComment) {
+            const getComments = await client.graphql({
+                query: commentsByPostId,
+                variables: { postId: posts[currentImageIndex].id }
+            });
+            const commentsList = getComments.data.commentsByPostId.items
+            const commentsTextArray = commentsList.map(comment => comment.text);
+            setComments(commentsList);
+            setCommentsText(commentsTextArray);
+        }
+      }
+
+
+    const onClickHandler = async () => {
+        const currPost = posts[currentImageIndex];
+        await client.graphql({
+            query: createComment,
+            variables: {
+                input: { postId: currPost.id, text: comment, commentAuthorId: await getCurrentUser().userId },
+            }
+        });
+        const getComments = await client.graphql({
+            query: commentsByPostId,
+            variables: { postId: currPost.id }
+        });
+        const commentsList = getComments.data.commentsByPostId.items
+        const commentsTextArray = commentsList.map(comment => comment.text);
+        setComments(commentsList);
+        setCommentsText(commentsTextArray);
+        setComment("");
     };
   
     const onChangeHandler = (e) => {
@@ -138,6 +149,7 @@ const PostAndComment = () => {
         setShowReportPost(!showReportPost);
         setShowActionCenter(false);
     };
+
 
   return (
     <Flex
@@ -270,13 +282,13 @@ const PostAndComment = () => {
                 
                 <MyIcon className="chat-icon"
                 type="chat"
-                onClick={()=>setShow(!showComment)}
+                onClick={handleCommentsExpansionClick}
                 ></MyIcon>
 
                 <Button className="green-button"
                 onClick={handleGreenButtonClick}
-                whileHover={{ x: [-2, 2, -2, 2, 0], transition: { duration: 0.3 } }}
-                whileTap={{
+                whilehover={{ x: [-2, 2, -2, 2, 0], transition: { duration: 0.3 } }}
+                whiletap={{
                     
                   }}
                 size="default"
@@ -287,8 +299,8 @@ const PostAndComment = () => {
 
                 <Button className="red-button"
                 onClick={handleRedButtonClick}
-                whileHover={{ x: [-2, 2, -2, 2, 0], transition: { duration: 0.3 } }}
-                whileTap={{
+                whilehover={{ x: [-2, 2, -2, 2, 0], transition: { duration: 0.3 } }}
+                whiletap={{
                     
                   }}
                 size="default"
@@ -390,7 +402,7 @@ const PostAndComment = () => {
                         left="0px"
                         padding="0px 0px 0px 0px"
                     >
-                        {comments.map((text, index) => {
+                        {commentsText.map((text, index) => {
                             // Calculate the top position dynamically based on the height of previous cards
                             const topPosition = index === 0 ? 11 : comments
                                 .slice(0, index)

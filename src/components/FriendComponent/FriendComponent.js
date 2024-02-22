@@ -5,44 +5,31 @@
  **************************************************************************/
 
 /* eslint-disable */
-
-import React, { useEffect } from "react";
-import { getOverrideProps, useAuth } from "./utils";
+import React, { useState } from "react";
 import { generateClient } from "aws-amplify/api";
-import { createFriend, deleteFriendRequest } from "../graphql/mutations";
+import { deleteFriend } from "../../graphql/mutations";
+// import { getOverrideProps, useAuth } from "../../ui-components/utils";
 import { Button, Icon, Text, View } from "@aws-amplify/ui-react";
+
 const client = generateClient();
-export default function FriendRequest(props) {
-  const { friendRequest, overrides, ...rest } = props;
-  const authAttributes = useAuth().user?.attributes ?? {};
-  
-  useEffect(() => {
-    console.log('FriendRequestComponent props:', props);
-    // console.log('FriendRequestComponent key:', key);
-  }, []);
-  
-  const buttonFourNineNineSevenFourOneFourSevenOnClick = async () => {
+
+export default function Friend(props) {
+  const { key, friend, onClickEvent } = props;
+
+  const handleRemoveFriend = async () => {
+    console.log('Clicked remove friend id: ', friend.friendId)
     await client.graphql({
-      query: deleteFriendRequest.replaceAll("__typename", ""),
+      query: deleteFriend.replaceAll("__typename", ""),
       variables: {
         input: {
-          id: friendRequest?.id,
+          id: friend.id,
         },
       },
     });
+
+    onClickEvent();
   };
-  const buttonFourNineNineSevenFiveNineTwoNineOnClick = async () => {
-    await client.graphql({
-      query: createFriend.replaceAll("__typename", ""),
-      variables: {
-        input: {
-          UserId: authAttributes["email"],
-          FriendId: authAttributes["email"],
-          FriendUsername: authAttributes["email"],
-        },
-      },
-    });
-  };
+  
   return (
     <View
       width="383px"
@@ -53,8 +40,6 @@ export default function FriendRequest(props) {
       justifyContent="unset"
       position="relative"
       padding="0px 0px 0px 0px"
-      {...getOverrideProps(overrides, "FriendRequest")}
-      {...rest}
     >
       <View
         width="383px"
@@ -72,7 +57,6 @@ export default function FriendRequest(props) {
         borderRadius="50px"
         padding="0px 0px 0px 0px"
         backgroundColor="rgba(217,217,217,0.1)"
-        {...getOverrideProps(overrides, "Profile Card")}
       ></View>
       <Icon
         width="11.81%"
@@ -98,7 +82,6 @@ export default function FriendRequest(props) {
         bottom="18.43%"
         left="3.82%"
         right="84.38%"
-        {...getOverrideProps(overrides, "Profile Picture")}
       ></Icon>
       <Text
         fontFamily="Inter"
@@ -121,40 +104,21 @@ export default function FriendRequest(props) {
         right="38.37%"
         padding="0px 0px 0px 0px"
         whiteSpace="pre-wrap"
-        children={friendRequest?.SenderUsername}
-        {...getOverrideProps(overrides, "Username")}
+        children={friend?.FriendUsername}
       ></Text>
       <Button
         width="unset"
         height="unset"
         position="absolute"
-        top="25%"
-        bottom="29.17%"
-        left="79.9%"
-        right="4.44%"
+        top="calc(50% - 16.5px - 0.5px)"
+        left="calc(50% - 39.5px - -134px)"
         size="small"
         isDisabled={false}
         variation="destructive"
-        children="Deny"
+        children="Remove"
         onClick={() => {
-          buttonFourNineNineSevenFourOneFourSevenOnClick();
+          handleRemoveFriend();
         }}
-        {...getOverrideProps(overrides, "Button49974147")}
-      ></Button>
-      <Button
-        width="unset"
-        height="unset"
-        position="absolute"
-        top="calc(50% - 16.5px - 1.5px)"
-        left="calc(50% - 37px - -65.5px)"
-        size="small"
-        isDisabled={false}
-        variation="primary"
-        children="Accept"
-        onClick={() => {
-          buttonFourNineNineSevenFiveNineTwoNineOnClick();
-        }}
-        {...getOverrideProps(overrides, "Button49975929")}
       ></Button>
     </View>
   );

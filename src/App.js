@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
+import { UserContext } from './UserContext';
+
 import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
 import { Amplify } from "aws-amplify";
@@ -13,12 +15,16 @@ import {
 } from "@aws-amplify/ui-react";
 import { Authenticator } from "@aws-amplify/ui-react";
 import awsconfig from "./amplifyconfiguration.json";
+
 import { DripDropNavBarBasic } from "./ui-components";
 import Home from "./pages/Home";
 import Upload from "./pages/Upload";
+// import Friends from "./ui-components/FullFriends";
 import Friends from "./pages/Friends";
 import NavBar from "./components/NavBar";
 import ProfilePage from "./ui-components/ProfilePage";
+
+import { getOverrideProps, useAuth } from "./ui-components/utils";
 
 Amplify.configure(awsconfig);
 
@@ -66,6 +72,12 @@ const components = {
 };
 
 export default function App() {
+  const { users } = useContext(UserContext);
+  console.log('Users:', users);
+
+  const authAttributes = useAuth().user?.attributes ?? {};
+  console.log('authAttributes:', authAttributes);
+
   let component;
   switch (window.location.pathname) {
     case "/":
