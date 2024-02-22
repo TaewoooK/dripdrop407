@@ -26,6 +26,7 @@ const PostAndComment = () => {
     const [posts, setPosts] = React.useState([]);
     const [images, setImages] = React.useState([]);
     const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
+    const [currPostID, setCurrPostID] = React.useState(null);
 
     const variables = {
         limit: 10
@@ -36,6 +37,8 @@ const PostAndComment = () => {
     const handleButtonClick = () => {
       setIsAnimating(true);
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)
+      setCurrPostID(posts[currentImageIndex].id)
+      console.log(currPostID)
       // Perform any other actions or state updates as needed
     };
 
@@ -198,7 +201,8 @@ const PostAndComment = () => {
                 {showReportPost && (
                 <div className="overlay" onClick={toggleReportPost}>
                     <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
-                    <ReportPost toggleReportPost={toggleReportPost}/>
+                    {/* console.log(currPostID) */}
+                    <ReportPost toggleReportPost={toggleReportPost} postId={currPostID}/>
                     </div>
                 </div>
                 )}

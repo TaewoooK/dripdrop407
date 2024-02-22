@@ -10,7 +10,7 @@ import * as React from "react";
 import { Button, Flex, TextAreaField } from "@aws-amplify/ui-react";
 import { fetchUserAttributes } from "aws-amplify/auth";
 
-export default function ReportPost({toggleReportPost}) {
+export default function ReportPost({toggleReportPost, postID}) {
   // const { overrides, ...rest } = props;
 
   const [reasoning, setReasoning] = React.useState("");
@@ -44,8 +44,9 @@ export default function ReportPost({toggleReportPost}) {
     // setCurrUser(currUserAttributes);
     // console.log(currUserAttributes)
     const currDate = new Date().toISOString();
+    setCurrPost(postID);
     // console.log("Reasoning:", reasoning, "\nUser:", (isCurrUserNull? currUser : currUser.username));
-    console.log("Reporter:", currUser.email, "\nreason:", reasoning, "\nSentAt:", currDate);
+    console.log("Reporter:", currUser.email, "\nreason:", reasoning, "\nSentAt:", currDate, "\nPostID:", currPost);
     
 
     toggleReportPost();
