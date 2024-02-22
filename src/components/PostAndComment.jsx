@@ -34,20 +34,22 @@ const PostAndComment = () => {
 
     const[scope, animate] = useAnimate();
     const handleGreenButtonClick = async () => {
-      setShow(false);
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-      await animate(scope.current, {x: "80vw"});
-      await animate(scope.current, {x: 0});
-      // Perform any other actions or state updates as needed
+        setShow(false);
+        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+        // setCurrPostID(posts[currentImageIndex].id)
+        await animate(scope.current, {x: "80vw"});
+        await animate(scope.current, {x: 0});
+        // console.log(currPostID)
+        // Perform any other actions or state updates as needed
     };
 
     const handleRedButtonClick = async () => {
         setShow(false);
         setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+        // setCurrPostID(posts[currentImageIndex].id)
         await animate(scope.current, {x: "-80vw"});
         await animate(scope.current, {x: 0});
-        setCurrPostID(posts[currentImageIndex].id)
-        console.log(currPostID)
+        // console.log('curr idx:',currentImageIndex, 'postID:', currPostID)
         // Perform any other actions or state updates as needed
       };
 
@@ -56,8 +58,10 @@ const PostAndComment = () => {
           try {
             const postData = await client.graphql({ query: listPosts, variables });
             setPosts(postData.data.listPosts.items);
-            console.log("postid", postData.data.listPosts.items[0].id)
-            setCurrPostID(postData.data.listPosts.items[0].id)
+            
+            // console.log("postid", postData.data.listPosts.items[currentImageIndex].id)
+            // setCurrPostID(postData.data.listPosts.items[currentImageIndex].id)
+            // console.log('curr idx:',currentImageIndex, 'postID:', currPostID)
           } catch (error) {
             console.error("Error fetching posts: ", error);
           }
@@ -90,6 +94,16 @@ const PostAndComment = () => {
           fetchImages();
         }
     }, [posts]);
+
+    useEffect(() => {
+        if (posts.length > 0) {
+            setCurrPostID(posts[currentImageIndex].id);
+        }
+    }, [posts, currentImageIndex])
+
+    // useEffect(() => {
+    //     console.log('curr idx:',currentImageIndex, 'postID:', currPostID);
+    // }, [currPostID])
       
     //console.log(images);
 
