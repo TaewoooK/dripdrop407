@@ -24,16 +24,19 @@ export declare type ValidationFunction<T> = (value: T, validationResponse: Valid
 export declare type FriendCreateFormInputValues = {
     UserId?: string;
     FriendId?: string;
+    FriendUsername?: string;
 };
 export declare type FriendCreateFormValidationValues = {
     UserId?: ValidationFunction<string>;
     FriendId?: ValidationFunction<string>;
+    FriendUsername?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type FriendCreateFormOverridesProps = {
     FriendCreateFormGrid?: PrimitiveOverrideProps<GridProps>;
     UserId?: PrimitiveOverrideProps<TextFieldProps>;
     FriendId?: PrimitiveOverrideProps<TextFieldProps>;
+    FriendUsername?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type FriendCreateFormProps = React.PropsWithChildren<{
     overrides?: FriendCreateFormOverridesProps | undefined | null;
