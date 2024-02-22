@@ -214,8 +214,8 @@ const PostAndComment = () => {
                 {showReportPost && (
                 <div className="overlay" onClick={toggleReportPost}>
                     <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
-                    {/* console.log(currPostID) */}
-                    <ReportPost toggleReportPost={toggleReportPost} postId={currPostID}/>
+                    <>{console.log(currPostID)}</>
+                    <ReportPost toggleReportPost={toggleReportPost} currPostID={currPostID}/>
                     </div>
                 </div>
                 )}

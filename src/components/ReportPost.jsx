@@ -10,12 +10,12 @@ import * as React from "react";
 import { Button, Flex, TextAreaField } from "@aws-amplify/ui-react";
 import { fetchUserAttributes } from "aws-amplify/auth";
 
-export default function ReportPost({toggleReportPost, postID}) {
+export default function ReportPost({toggleReportPost, currPostID}) {
   // const { overrides, ...rest } = props;
 
   const [reasoning, setReasoning] = React.useState("");
   const [currUser, setCurrUser] = React.useState(null);
-  const [currPost, setCurrPost] = React.useState(null);
+  // const [currPostID, setCurrPostID] = React.useState(null);
   
   // const isCurrUserNull = () => {
   //   return currUser ==  null ? true : false
@@ -44,9 +44,9 @@ export default function ReportPost({toggleReportPost, postID}) {
     // setCurrUser(currUserAttributes);
     // console.log(currUserAttributes)
     const currDate = new Date().toISOString();
-    setCurrPost(postID);
+    // setCurrPostID(currPostID);
     // console.log("Reasoning:", reasoning, "\nUser:", (isCurrUserNull? currUser : currUser.username));
-    console.log("Reporter:", currUser.email, "\nreason:", reasoning, "\nSentAt:", currDate, "\nPostID:", currPost);
+    console.log("Reporter:", currUser.email, "\nreason:", reasoning, "\nSentAt:", currDate, "\nPostID:", currPostID);
     
 
     toggleReportPost();
