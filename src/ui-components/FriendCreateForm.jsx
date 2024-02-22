@@ -23,25 +23,21 @@ export default function FriendCreateForm(props) {
     ...rest
   } = props;
   const initialValues = {
-    UserId: "",
-    FriendId: "",
+    Username: "",
     FriendUsername: "",
   };
-  const [UserId, setUserId] = React.useState(initialValues.UserId);
-  const [FriendId, setFriendId] = React.useState(initialValues.FriendId);
+  const [Username, setUsername] = React.useState(initialValues.Username);
   const [FriendUsername, setFriendUsername] = React.useState(
     initialValues.FriendUsername
   );
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
-    setUserId(initialValues.UserId);
-    setFriendId(initialValues.FriendId);
+    setUsername(initialValues.Username);
     setFriendUsername(initialValues.FriendUsername);
     setErrors({});
   };
   const validations = {
-    UserId: [{ type: "Required" }],
-    FriendId: [{ type: "Required" }],
+    Username: [{ type: "Required" }],
     FriendUsername: [{ type: "Required" }],
   };
   const runValidationTasks = async (
@@ -70,8 +66,7 @@ export default function FriendCreateForm(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
-          UserId,
-          FriendId,
+          Username,
           FriendUsername,
         };
         const validationResponses = await Promise.all(
@@ -127,56 +122,29 @@ export default function FriendCreateForm(props) {
       {...rest}
     >
       <TextField
-        label="User id"
+        label="Username"
         isRequired={true}
         isReadOnly={false}
-        value={UserId}
+        value={Username}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              UserId: value,
-              FriendId,
+              Username: value,
               FriendUsername,
             };
             const result = onChange(modelFields);
-            value = result?.UserId ?? value;
+            value = result?.Username ?? value;
           }
-          if (errors.UserId?.hasError) {
-            runValidationTasks("UserId", value);
+          if (errors.Username?.hasError) {
+            runValidationTasks("Username", value);
           }
-          setUserId(value);
+          setUsername(value);
         }}
-        onBlur={() => runValidationTasks("UserId", UserId)}
-        errorMessage={errors.UserId?.errorMessage}
-        hasError={errors.UserId?.hasError}
-        {...getOverrideProps(overrides, "UserId")}
-      ></TextField>
-      <TextField
-        label="Friend id"
-        isRequired={true}
-        isReadOnly={false}
-        value={FriendId}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              UserId,
-              FriendId: value,
-              FriendUsername,
-            };
-            const result = onChange(modelFields);
-            value = result?.FriendId ?? value;
-          }
-          if (errors.FriendId?.hasError) {
-            runValidationTasks("FriendId", value);
-          }
-          setFriendId(value);
-        }}
-        onBlur={() => runValidationTasks("FriendId", FriendId)}
-        errorMessage={errors.FriendId?.errorMessage}
-        hasError={errors.FriendId?.hasError}
-        {...getOverrideProps(overrides, "FriendId")}
+        onBlur={() => runValidationTasks("Username", Username)}
+        errorMessage={errors.Username?.errorMessage}
+        hasError={errors.Username?.hasError}
+        {...getOverrideProps(overrides, "Username")}
       ></TextField>
       <TextField
         label="Friend username"
@@ -187,8 +155,7 @@ export default function FriendCreateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              UserId,
-              FriendId,
+              Username,
               FriendUsername: value,
             };
             const result = onChange(modelFields);

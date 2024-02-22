@@ -15,7 +15,7 @@ const UploadImage = () => {
 
   const [succeeded, setSucceeded] = useState(0);
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({ email: "" }); // Initial state with an empty string for email
 
   const [imageUrl, setImageUrl] = useState(null);
 
@@ -33,6 +33,7 @@ const UploadImage = () => {
     fetchUserData();
   }, []);
 
+  console.log("user: ");
   console.log(user);
 
   const handleImageUpload = (event) => {
@@ -124,7 +125,9 @@ const UploadImage = () => {
       <h2 style={{ textAlign: "center", marginBottom: "30px", color: "#333" }}>
         Make a Post
       </h2>
+      <label htmlFor="fileInput">Choose file</label>
       <input
+        id="fileInput"
         type="file"
         accept="image/*"
         onChange={handleImageUpload}
