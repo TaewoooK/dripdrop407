@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import awsconfig from "../aws-exports";
 import { fetchUserAttributes } from "aws-amplify/auth";
 import { generateClient } from "aws-amplify/api";
 import { listPosts } from "../graphql/queries";
@@ -13,12 +12,56 @@ import {
   Button,
 } from "@aws-amplify/ui-react";
 import { getUrl } from "aws-amplify/storage";
+import EditProfile from "./EditProfile";
 
 const client = generateClient();
 
+const Modal = ({ onClose }) => {
+  return (
+    <div style={modalContainerStyles}>
+      <div style={modalStyles}>
+        <EditProfile />
+        <button onClick={onClose}>Close</button>
+      </div>
+    </div>
+  );
+};
+
+const modalContainerStyles = {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent black background
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  zIndex: 9999, // higher z-index to ensure it's above other content
+};
+
+const modalStyles = {
+  backgroundColor: "white",
+  padding: "20px",
+  borderRadius: "8px",
+  boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+};
+
 const ProfilePage = () => {
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [show, setEdit] = useState(false);
 
   const [variables, setVariables] = useState({});
 
@@ -94,10 +137,16 @@ const ProfilePage = () => {
         boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
       }}
     >
+      <div backgroundColor="rgba(0,0,0,0.5)">
+      {isModalOpen && <Modal onClose={closeModal} />}
+      </div>
+
+
       {loading ? (
         <p>Loading...</p>
       ) : user ? (
         <div style={styles.profile}>
+          <Button style={styles.editButton} onClick={openModal}>Edit Profile</Button>
           <h1 style={styles.heading}>Welcome {user.email.split('@')[0]}!</h1>
           <h2 style={styles.info}>Email: {user.email}</h2>
           <h2 style={styles.info}>
@@ -167,6 +216,10 @@ const styles = {
   error: {
     color: "red",
   },
+  editButton: {
+    marginBottom: "20px",
+  },
 };
+
 
 export default ProfilePage;
