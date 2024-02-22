@@ -2,27 +2,28 @@ import React, { useState, useEffect } from "react";
 import "./navbar.css";
 import { Flex, Icon, Text, View } from "@aws-amplify/ui-react";
 import SignOutButton from "./SignOutButton";
-import { fetchUserAttributes } from "aws-amplify/auth";
+import { getCurrentUser } from "aws-amplify/auth";
 
 const NavBar = () => {
-    const [user, setUser] = useState(null);
+    const [currUser, setCurrUser] = useState(null);
 
     useEffect(() => {
-        const fetchUserData = async () => {
+        const fetchCurrUserData = async () => {
           try {
-            const userAttributes = await fetchUserAttributes();
-            console.log(userAttributes);
-            setUser(userAttributes);
+            const currUserAttributes = await getCurrentUser();
+            console.log(currUserAttributes);
+            console.log(currUserAttributes.signInDetails);
+            setCurrUser(currUserAttributes);
           } catch (error) {
             console.error("Error fetching user data: ", error);
           }
         };
     
-        fetchUserData();
+        fetchCurrUserData();
     }, []);
 
-    const isUserNull = () => {
-        return user ==  null ? true : false
+    const isCurrUserNull = () => {
+        return currUser ==  null ? true : false
     }
 
   return (
@@ -214,7 +215,7 @@ const NavBar = () => {
             position="relative"
             ></Icon>
             <Text className='username'>
-                {isUserNull() ? (<p>Username</p>) : user.email.split('@')[0]}
+                {isCurrUserNull() ? (<p>Username</p>) : currUser.username}
                 
             </Text>
         </Flex>

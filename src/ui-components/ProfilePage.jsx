@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchUserAttributes } from "aws-amplify/auth";
+import { fetchUserAttributes, getCurrentUser } from "aws-amplify/auth";
 import { generateClient } from "aws-amplify/api";
 import { listPosts } from "../graphql/queries";
 import {
@@ -60,6 +60,7 @@ const ProfilePage = () => {
   };
 
   const [user, setUser] = useState(null);
+  const [currUser, setCurrUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [show, setEdit] = useState(false);
 
@@ -72,8 +73,12 @@ const ProfilePage = () => {
     const fetchUserData = async () => {
       try {
         const userAttributes = await fetchUserAttributes();
+        const currUserAttributes = await getCurrentUser();
         console.log(userAttributes);
+        console.log(currUserAttributes);
+        console.log(currUserAttributes.signInDetails);
         setUser(userAttributes);
+        setCurrUser(currUserAttributes);
         setVariables({ filter: { owner: { eq: userAttributes.email } } });
       } catch (error) {
         console.error("Error fetching user data: ", error);
@@ -147,7 +152,7 @@ const ProfilePage = () => {
       ) : user ? (
         <div style={styles.profile}>
           <Button style={styles.editButton} onClick={openModal}>Edit Profile</Button>
-          <h1 style={styles.heading}>Welcome {user.email.split('@')[0]}!</h1>
+          <h1 style={styles.heading}>Welcome {currUser.username}!</h1>
           <h2 style={styles.info}>Email: {user.email}</h2>
           <h2 style={styles.info}>
             Email Verified: {user.email_verified ? "Yes" : "No"}
