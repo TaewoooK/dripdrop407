@@ -5,7 +5,9 @@
  **************************************************************************/
 
 /* eslint-disable */
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { UserContext } from './../../UserContext';
+
 import { generateClient } from "aws-amplify/api";
 import { deleteFriend } from "../../graphql/mutations";
 // import { getOverrideProps, useAuth } from "../../ui-components/utils";
@@ -15,14 +17,27 @@ const client = generateClient();
 
 export default function Friend(props) {
   const { key, friend, onClickEvent } = props;
+  const { allUsers, myUser } = useContext(UserContext);
 
   const handleRemoveFriend = async () => {
     console.log('Clicked remove friend id: ', friend.friendId)
+    // Remove Friend record for current user
     await client.graphql({
       query: deleteFriend.replaceAll("__typename", ""),
       variables: {
         input: {
           id: friend.id,
+        },
+      },
+    });
+
+    // Remove Friend record for ex-friend user
+    await client.graphql({
+      query: deleteFriend.replaceAll("__typename", ""),
+      variables: {
+        input: {
+          Username: friend.Username,
+          FriendUsername: myUser.username,
         },
       },
     });

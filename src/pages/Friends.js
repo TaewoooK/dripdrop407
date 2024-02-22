@@ -1,15 +1,14 @@
 // React imports
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { UserContext } from './../UserContext';
 
 // AWS Amplify imports
 import "@aws-amplify/ui-react/styles.css";
 import { Amplify } from "aws-amplify";
-import { Heading, Flex, View, Divider, SearchField, withAuthenticator } from "@aws-amplify/ui-react";
+import { Heading, Flex, View, Divider, SearchField, Button, withAuthenticator } from "@aws-amplify/ui-react";
 import awsconfig from "../amplifyconfiguration.json";
-import { getOverrideProps } from "./../ui-components/utils";
 
 // GraphQL imports
-import { fetchUserAttributes } from "aws-amplify/auth";
 import { generateClient } from "aws-amplify/api";
 import {
   listFriendRequests,
@@ -20,65 +19,111 @@ import {
 import "./Friends.css";
 import FriendRequestComponent from "../components/FriendRequestComponent/FriendRequestComponent";
 import FriendComponent from "../components/FriendComponent/FriendComponent";
-import { isEmpty } from "@aws-amplify/ui";
-import { useForceUpdate } from "framer-motion";
-
-// @ TEST DATA @
-// @ 413b35a0-1031-7049-36e6-d8c0ffbb2b3c
-// @ d12bc5c0-f071-705a-8591-be06b94b3d1e
 
 Amplify.configure(awsconfig);
 
 const Friends = () => {
   // # SETTING STATES
-  const [user, setUser] = useState(null);
+  const { allUsers, myUser } = useContext(UserContext);
+
+  const [allRequests, setAllRequests] = useState([]);
   const [requests, setRequests] = useState([]);
+
+  const [allFriends, setAllFriends] = useState([]);
   const [friends, setFriends] = useState([]);
+
+  const [search, setSearch] = useState('');
 
   // # API CALLS
   const client = generateClient();
 
   useEffect(() => {
-    fetchUserData();
+    fetchRequestsAndFriends(myUser.username);
   }, []);
 
-  async function fetchUserData() {
-    const userAttributes = await fetchUserAttributes();
-    
-    // Debugging
-    console.log('userAttributes: ', userAttributes);
+  useEffect(() => {
+    console.log('myUser: ', myUser);
+    console.log('myUser.username: ', myUser.username);
+    console.log('All Friend Requests: ', allRequests);
+    console.log('My Friend Requests: ', requests);
+    console.log('All Friends: ', allFriends);
+    console.log('My Friends: ', friends);
+  }, [friends])
 
-    setUser(userAttributes);
-    
-    fetchRequestsAndFriends(userAttributes?.sub);
+  async function fetchRequestsAndFriends(username) {
+    console.log('username: ', username);
+
+    const requestData = await client.graphql({
+      query: listFriendRequests
+    });
+    const requestsFromAPI = requestData.data.listFriendRequests.items;
+    setAllRequests(requestsFromAPI);
+
+    setRequests(requestsFromAPI.filter(request => request.Username === username));
+
+    const friendData = await client.graphql({
+      query: listFriends
+    });
+    const friendsFromAPI = friendData.data.listFriends.items;
+    setAllFriends(friendsFromAPI);
+
+    setFriends(friendsFromAPI.filter(friend => friend.Username === username));
   }
 
-  async function fetchRequestsAndFriends(userId) {
-    const requestData = await client.graphql({
-      query: listFriendRequests,
-      variables: { filter: { UserId: { eq: userId } } }
-    })
-    const requestsFromAPI = requestData.data.listFriendRequests.items;
-    setRequests(requestsFromAPI);
+  async function sendFriendRequest(friendUsername) {
 
-    console.log('Friend Requests: ', requests);
-
-    const apiData = await client.graphql({
-      query: listFriends,
-      variables: { filter: { UserId: { eq: userId } } }
-    })
-    const friendsFromAPI = apiData.data.listFriends.items;
-    setFriends(friendsFromAPI);
-
-    console.log('Friends: ', friends);
   }
 
   // # HANDLER METHODS
 
+  const onSearchChange = (event) => {
+    setSearch(event.target.value);
+  }
+
+  const handleClickAdd = () => {
+    console.log('search: ', search);
+
+    // If user searches own username
+    if (search === myUser.username) {
+      alert('Can\'t add self');
+      return;
+    }
+
+    // If there's an existing friend request
+    const existingRequest = allRequests.find(request =>
+      (request.Username === myUser.username && request.SenderUsername === search)
+      || (request.Username === search && request.SenderUsername === myUser.username)
+      );
+
+    if (existingRequest) {
+      alert(`Existing Friend Request`);
+      return;
+    }
+
+    // If there's an existing friend relationship
+    const existingFriend = allFriends.find(friend =>
+      (friend.Username === myUser.username && friend.FriendUsername === search)
+      || (friend.Username === search && friend.FriendUsername === myUser.username)
+      );
+
+    if (existingFriend) {
+      alert(`Existing Friend`);
+      return;
+    }
+
+    // If user does not exist
+    const existingUser = allUsers.find(user => user.Username === search);
+    if (!existingUser) {
+      alert('User does not exist.');
+    }
+
+    sendFriendRequest(search);
+  }
+
   // Re-fetch requests and friends after click event
-  const handleClickEvent = () => {
+  const handleClickChild = () => {
     console.log('Received click event');
-    fetchRequestsAndFriends(user?.sub);
+    fetchRequestsAndFriends(myUser?.username);
   }
 
   // # GETTER METHODS
@@ -99,6 +144,32 @@ const Friends = () => {
         wrap="nowrap"
         gap="1rem"
       >
+        <Flex
+          direction ="row"
+          justifyContent="center"
+          wrap="nowrap"
+          gap="1rem"
+
+        >
+          <SearchField
+            label="Search"
+            placeholder="Search username to add..."
+            size="small"
+            hasSearchButton={false}
+            onChange={onSearchChange}
+            value={search}
+          />
+
+          <Button
+            isLoading={false}
+            variation="primary"
+            colorTheme="success"
+            size="small"
+            onClick={handleClickAdd}
+          >
+            Add
+          </Button>
+        </Flex>
         {isEmptyFriendReqs() ? 
         (
           <p>No Friend Requests</p>
@@ -116,7 +187,7 @@ const Friends = () => {
               gap="1rem"
             >
               {requests.map((request, index) => (
-                <FriendRequestComponent key={index} friendRequest={request} onClickEvent={handleClickEvent}/>
+                <FriendRequestComponent key={index} friendRequest={request} onClickEvent={handleClickChild}/>
               ))}
             </Flex>
           </>
@@ -124,7 +195,6 @@ const Friends = () => {
 
         <Divider
           size="large"
-          orientation="horizontal"
         ></Divider>
 
         {isEmptyFriends() ? 
@@ -136,11 +206,6 @@ const Friends = () => {
           <>
             <Heading level={3}> Friends </Heading>
 
-            <SearchField
-              label="Search"
-              placeholder="Search here..."
-            />
-
             <Flex
             className="requests_container"
             direction="column"
@@ -149,7 +214,7 @@ const Friends = () => {
             gap="1rem"
             >
               {friends.map((friend, index) => (
-                <FriendComponent key={index} friend={friend} onClickEvent={handleClickEvent}/>
+                <FriendComponent key={index} friend={friend} onClickEvent={handleClickChild}/>
               ))}
             </Flex>
           </>
