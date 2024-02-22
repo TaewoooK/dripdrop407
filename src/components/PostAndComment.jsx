@@ -46,8 +46,8 @@ const PostAndComment = () => {
         setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
         await animate(scope.current, {x: "-80vw"});
         await animate(scope.current, {x: 0});
-      setCurrPostID(posts[currentImageIndex].id)
-      console.log(currPostID)
+        setCurrPostID(posts[currentImageIndex].id)
+        console.log(currPostID)
         // Perform any other actions or state updates as needed
       };
 
@@ -56,6 +56,8 @@ const PostAndComment = () => {
           try {
             const postData = await client.graphql({ query: listPosts, variables });
             setPosts(postData.data.listPosts.items);
+            console.log("postid", postData.data.listPosts.items[0].id)
+            setCurrPostID(postData.data.listPosts.items[0].id)
           } catch (error) {
             console.error("Error fetching posts: ", error);
           }
@@ -189,10 +191,11 @@ const PostAndComment = () => {
                 {images[currentImageIndex] ? (
                     <Image className="post-img"
                     src={images[currentImageIndex].imageUrl}
+                    ></Image>
                     //src={Post?.outfitimage}
                     //src="https://cdn.discordapp.com/attachments/1120152118272213053/1201614916788965536/IMG_5675.jpg?ex=65dceb19&is=65ca7619&hm=277e5088a148d22bbb7935216d52437d827a889d0d6e4e7dded8eeb7a4af1336&"
                     //src="https://images.unsplash.com/photo-1707879487614-72b421e4393f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHx8"
-                    ></Image>
+                    
                                 ) : (
                     <div>Loading...</div>
                 )}
