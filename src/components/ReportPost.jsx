@@ -8,19 +8,46 @@
 import * as React from "react";
 // import { getOverrideProps } from "./utils";
 import { Button, Flex, TextAreaField } from "@aws-amplify/ui-react";
+import { fetchUserAttributes } from "aws-amplify/auth";
+
 export default function ReportPost({toggleReportPost}) {
   // const { overrides, ...rest } = props;
 
   const [reasoning, setReasoning] = React.useState("");
-  const [user, setUser] = React.useState(null);
+  const [currUser, setCurrUser] = React.useState(null);
+  const [currPost, setCurrPost] = React.useState(null);
+  
+  // const isCurrUserNull = () => {
+  //   return currUser ==  null ? true : false
+  // }
 
   const handleReasonChange = (event) => {
     setReasoning(event.target.value);
   }
 
+  React.useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userAttributes = await fetchUserAttributes();
+        console.log(userAttributes);
+        setCurrUser(userAttributes);
+      } catch (error) {
+        console.error("Error fetching user data: ", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   const handleSubmit = async() => {
-    console.log("Reasoning:", reasoning, "\nUser:", user);
+    // const currUserAttributes = await getCurrentUser();
+    // setCurrUser(currUserAttributes);
+    // console.log(currUserAttributes)
     const currDate = new Date().toISOString();
+    // console.log("Reasoning:", reasoning, "\nUser:", (isCurrUserNull? currUser : currUser.username));
+    console.log("Reporter:", currUser.email, "\nreason:", reasoning, "\nSentAt:", currDate);
+    
+
     toggleReportPost();
   }
 
