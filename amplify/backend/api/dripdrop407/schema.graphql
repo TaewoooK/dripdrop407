@@ -36,4 +36,11 @@ type Comment @model @auth(rules: [{allow: public}]) {
   commentAuthorId: Int
   CommentsPost: Post @belongsTo(fields: ["postId"])
 }
- 
+
+type PostReport @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  reporter: String!
+  reason: String
+  sentAt: String!
+  postId: String!
+}

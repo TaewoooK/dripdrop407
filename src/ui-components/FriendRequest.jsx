@@ -5,6 +5,7 @@
  **************************************************************************/
 
 /* eslint-disable */
+
 import React, { useEffect } from "react";
 import { getOverrideProps, useAuth } from "./utils";
 import { generateClient } from "aws-amplify/api";
@@ -14,12 +15,12 @@ const client = generateClient();
 export default function FriendRequest(props) {
   const { friendRequest, overrides, ...rest } = props;
   const authAttributes = useAuth().user?.attributes ?? {};
-
+  
   useEffect(() => {
     console.log('FriendRequestComponent props:', props);
     // console.log('FriendRequestComponent key:', key);
   }, []);
-
+  
   const buttonFourNineNineSevenFourOneFourSevenOnClick = async () => {
     await client.graphql({
       query: deleteFriendRequest.replaceAll("__typename", ""),

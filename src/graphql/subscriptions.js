@@ -149,6 +149,17 @@ export const onCreateComment = /* GraphQL */ `
       postId
       text
       commentAuthorId
+      CommentsPost {
+        id
+        owner
+        description
+        drip_points
+        createdAt
+        enable_comments
+        postImageKey
+        updatedAt
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -162,6 +173,17 @@ export const onUpdateComment = /* GraphQL */ `
       postId
       text
       commentAuthorId
+      CommentsPost {
+        id
+        owner
+        description
+        drip_points
+        createdAt
+        enable_comments
+        postImageKey
+        updatedAt
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -175,6 +197,65 @@ export const onDeleteComment = /* GraphQL */ `
       postId
       text
       commentAuthorId
+      CommentsPost {
+        id
+        owner
+        description
+        drip_points
+        createdAt
+        enable_comments
+        postImageKey
+        updatedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onCreatePostReport = /* GraphQL */ `
+  subscription OnCreatePostReport(
+    $filter: ModelSubscriptionPostReportFilterInput
+  ) {
+    onCreatePostReport(filter: $filter) {
+      id
+      reporter
+      reason
+      sentAt
+      postId
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdatePostReport = /* GraphQL */ `
+  subscription OnUpdatePostReport(
+    $filter: ModelSubscriptionPostReportFilterInput
+  ) {
+    onUpdatePostReport(filter: $filter) {
+      id
+      reporter
+      reason
+      sentAt
+      postId
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeletePostReport = /* GraphQL */ `
+  subscription OnDeletePostReport(
+    $filter: ModelSubscriptionPostReportFilterInput
+  ) {
+    onDeletePostReport(filter: $filter) {
+      id
+      reporter
+      reason
+      sentAt
+      postId
       createdAt
       updatedAt
       __typename
