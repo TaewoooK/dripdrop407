@@ -33,4 +33,10 @@ type Comment {
   commentAuthorId: Int
 }
 
-sudo chown -R username directory_name
+type PostReport @model @auth(rules: [{allow: public, operations:[create, ] }]) {
+  id: ID!
+  reporter: String!
+  reason: String!
+  sentAt: String!
+  postId: String!
+}
