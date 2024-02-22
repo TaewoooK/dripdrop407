@@ -2,7 +2,7 @@ import React, { useState, useEffect  }from "react";
 import { Card, Flex, Icon, Text, TextField, View, Button, Image } from "@aws-amplify/ui-react";
 import { MyIcon } from "../ui-components";
 import "./postandcomment.css";
-import { motion } from "framer-motion"
+import { motion, useAnimate } from "framer-motion"
 import awsconfig from "../aws-exports";
 import { fetchUserAttributes } from "aws-amplify/auth";
 import { generateClient } from "aws-amplify/api";
@@ -31,13 +31,22 @@ const PostAndComment = () => {
         limit: 10
     }
 
-    const [isAnimating, setIsAnimating] = useState(false);
-
-    const handleButtonClick = () => {
-      setIsAnimating(true);
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)
+    const[scope, animate] = useAnimate();
+    const handleGreenButtonClick = async () => {
+      setShow(false);
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+      await animate(scope.current, {x: "80vw"});
+      await animate(scope.current, {x: 0});
       // Perform any other actions or state updates as needed
     };
+
+    const handleRedButtonClick = async () => {
+        setShow(false);
+        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+        await animate(scope.current, {x: "-80vw"});
+        await animate(scope.current, {x: 0});
+        // Perform any other actions or state updates as needed
+      };
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -110,6 +119,7 @@ const PostAndComment = () => {
             <motion.View className="post-container" 
                 initial={{x: "100vw"}}
                 animate={{x: 0}}
+                ref={scope}
             >
                 <View className="thumb-container1">
                 <Icon
@@ -217,16 +227,24 @@ const PostAndComment = () => {
                 onClick={()=>setShow(!showComment)}
                 ></MyIcon>
 
-                <Button className="button1"
-                onClick={handleButtonClick}
+                <Button className="green-button"
+                onClick={handleGreenButtonClick}
+                whileHover={{ x: [-2, 2, -2, 2, 0], transition: { duration: 0.3 } }}
+                whileTap={{
+                    
+                  }}
                 size="default"
                 isDisabled={false}
                 variation="default"
                 //onClick={() => setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)}
                 ></Button>
 
-                <Button className="button2"
-                onClick={handleButtonClick}
+                <Button className="red-button"
+                onClick={handleRedButtonClick}
+                whileHover={{ x: [-2, 2, -2, 2, 0], transition: { duration: 0.3 } }}
+                whileTap={{
+                    
+                  }}
                 size="default"
                 isDisabled={false}
                 variation="default"
@@ -239,8 +257,8 @@ const PostAndComment = () => {
         {
 
             showComment && <motion.View className="comment-container"
-                    initial={{opacity: 0}}
-                    animate={{opacity: 1}}
+                    initial={{x: "25vw"}}
+                    animate={{x: 0}}
                     >
                     <motion.Text initial={{x: "100vw"}}
                           animate={{x: 0}}
