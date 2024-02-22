@@ -16,7 +16,12 @@ const client = generateClient();
 
 const PostAndComment = () => {
     const [comment, setComment] = React.useState("");
-    const [comments, setComments] = React.useState([]);
+    const [comments, setComments] = React.useState([
+        "This is the first comment",
+        "This is the second comment",
+        "This is the third comment",
+        // Add more comments as needed
+      ]);
     const [showComment, setShow] = React.useState(false);
     const [posts, setPosts] = React.useState([]);
     const [images, setImages] = React.useState([]);
@@ -299,34 +304,44 @@ const PostAndComment = () => {
                     </View>
                     <View
                         width="280px"
-                        height="280px"
+                        height="310px"
                         display="block"
                         gap="unset"
                         alignItems="unset"
                         justifyContent="unset"
-                        overflow="hidden"
+                        overflow="auto" // Set overflow to "auto" for scrollbars only when needed
                         position="absolute"
-                        top="101px"
+                        top="50px"
                         left="0px"
                         padding="0px 0px 0px 0px"
                     >
-                    {comments.map((text) => (
-                        <Card
-                        width="226px"
-                        height="84px"
-                        position="absolute"
-                        backgroundColor="rgba(70,70,70,1)"
-                        top="11px"
-                        left="10px"
-                        borderRadius="25px"
-                        variation="outline"
-                        style={{margin: 10, wordBreak: "break-all"}}
-                        >
-                        <Text color="rgba(255,255,255,1)" style={{margin: 10, wordBreak: "break-all"}}>
-                            {text}
-                        </Text>
-                        </Card>
-                    ))}
+                        {comments.map((text, index) => {
+                            // Calculate the top position dynamically based on the height of previous cards
+                            const topPosition = index === 0 ? 11 : comments
+                                .slice(0, index)
+                                .reduce((acc, curr) => acc + (curr.length > 50 ? 90 : 60), 11); // Adjust the height accordingly
+                            return (
+                                <Card
+                                    key={index} // Make sure to add a unique key for each card
+                                    width="240px"
+                                    height="auto" // Change height to "auto" to allow the card's height to adjust based on content
+                                    position="absolute"
+                                    backgroundColor="rgba(70,70,70,1)"
+                                    top={`${topPosition}px`} // Adjust the top position dynamically
+                                    left="10px"
+                                    borderRadius="25px"
+                                    variation="outline"
+                                    style={{ margin: 10, wordBreak: "break-all" }}
+                                >
+                                    <Text
+                                        color="rgba(255,255,255,1)"
+                                        style={{ fontSize: 12, margin: 2, wordBreak: "break-word" }} // Use "break-word" to allow long words to break
+                                    >
+                                        {text}
+                                    </Text>
+                                </Card>
+                            );
+                        })}
                     </View>
             </motion.View>
         }
