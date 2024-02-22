@@ -3,7 +3,7 @@
   "cognitoConfig": {
     "identityPoolName": "testAuthIdentityPool",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "dripdrc078d29b",
+    "resourceNameTruncated": "dripdr075bb819",
     "userPoolName": "dripdrop407",
     "autoVerifiedAttributes": [
       "email"
@@ -32,15 +32,12 @@
     "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [],
     "userpoolClientReadAttributes": [],
-    "userpoolClientLambdaRole": "dripdrc078d29b_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "dripdr075bb819_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "c078d29b",
+    "sharedId": "075bb819",
     "resourceName": "dripdrop407",
     "authSelections": "identityPoolAndUserPool",
     "serviceName": "Cognito",
-    "usernameAttributes": [
-      "email"
-    ],
     "useDefault": "manual",
     "userPoolGroups": false,
     "userPoolGroupList": [],
