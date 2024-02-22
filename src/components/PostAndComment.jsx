@@ -31,6 +31,14 @@ const PostAndComment = () => {
         limit: 10
     }
 
+    const [isAnimating, setIsAnimating] = useState(false);
+
+    const handleButtonClick = () => {
+      setIsAnimating(true);
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)
+      // Perform any other actions or state updates as needed
+    };
+
     useEffect(() => {
         const fetchPosts = async () => {
           try {
@@ -99,8 +107,10 @@ const PostAndComment = () => {
           gap="0.5rem"
         >
         <View className="big-post-container">
-            <View className="post-container">
-                
+            <motion.View className="post-container" 
+                initial={{x: "100vw"}}
+                animate={{x: 0}}
+            >
                 <View className="thumb-container1">
                 <Icon
                     width="33.52px"
@@ -154,7 +164,6 @@ const PostAndComment = () => {
                 </View>
                 {images[currentImageIndex] ? (
                     <Image className="post-img"
-                
                     src={images[currentImageIndex].imageUrl}
                     //src={Post?.outfitimage}
                     //src="https://cdn.discordapp.com/attachments/1120152118272213053/1201614916788965536/IMG_5675.jpg?ex=65dceb19&is=65ca7619&hm=277e5088a148d22bbb7935216d52437d827a889d0d6e4e7dded8eeb7a4af1336&"
@@ -209,20 +218,22 @@ const PostAndComment = () => {
                 ></MyIcon>
 
                 <Button className="button1"
+                onClick={handleButtonClick}
                 size="default"
                 isDisabled={false}
                 variation="default"
-                onClick={() => setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)}
+                //onClick={() => setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)}
                 ></Button>
 
                 <Button className="button2"
+                onClick={handleButtonClick}
                 size="default"
                 isDisabled={false}
                 variation="default"
-                onClick={() => setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)}
+                //onClick={() => setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)}
                 ></Button>
 
-            </View>
+            </motion.View>
         </View>
                     
         {
