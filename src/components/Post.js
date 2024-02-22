@@ -1,12 +1,71 @@
-
-import * as React from "react";
+import React, { useState, useEffect  }from "react";
 import { Button, Flex, Icon, Image, Text, View } from "@aws-amplify/ui-react";
 import { MyIcon } from "../ui-components";
 import "./post.css";
+import awsconfig from "../aws-exports";
+import { fetchUserAttributes } from "aws-amplify/auth";
+import { generateClient } from "aws-amplify/api";
+import { listPosts } from "../graphql/queries";
+import { getUrl } from "aws-amplify/storage";
 import PostActionCenter from "./PostActionCenter";
 import ReportPost from "./ReportPost";
 
+const client = generateClient();
+
 export default function PostComponent() {
+
+  const [posts, setPosts] = React.useState([]);
+  const [images, setImages] = React.useState([]);
+  const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
+
+  const variables = {
+    limit: 10
+  }
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const postData = await client.graphql({ query: listPosts, variables });
+        setPosts(postData.data.listPosts.items);
+      } catch (error) {
+        console.error("Error fetching posts: ", error);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  console.log(posts);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const imagePromises = posts.map(async (post) => {
+          const postData = await getUrl({ key: post.postImageKey });
+          return {
+            description: post.description,
+            imageUrl: postData.url,
+          };
+        });
+
+        const fetchedImages = await Promise.all(imagePromises);
+        setImages(fetchedImages);
+      } catch (error) {
+        console.error("Error fetching images:", error);
+      }
+    };
+
+    if (posts.length > 0) {
+      fetchImages();
+    }
+  }, [posts]);
+  console.log(images)
+
+  const changePostClick = () => {
+    setCurrentImageIndex((currentImageIndex + 1) % images.length);
+  }
+  
+
   const [showActionCenter, setShowActionCenter] = React.useState(false);
   const [showReportPost, setShowReportPost] = React.useState(false);
 
@@ -49,7 +108,7 @@ export default function PostComponent() {
           ></Icon>
         </View>
 
-        <View className="thumb-container2">
+        <View className="thumb-container2"> 
           <Icon
             width="33.52px"
             height="30.94px"
@@ -76,8 +135,8 @@ export default function PostComponent() {
         </View>
 
         <Image className="post-img"
-          //src={Post?.outfitimage}
-          src="https://cdn.discordapp.com/attachments/1120152118272213053/1201614916788965536/IMG_5675.jpg?ex=65dceb19&is=65ca7619&hm=277e5088a148d22bbb7935216d52437d827a889d0d6e4e7dded8eeb7a4af1336&"
+          src={images[0] && images[0].imageUrl}
+          //src="https://cdn.discordapp.com/attachments/1120152118272213053/1201614916788965536/IMG_5675.jpg?ex=65dceb19&is=65ca7619&hm=277e5088a148d22bbb7935216d52437d827a889d0d6e4e7dded8eeb7a4af1336&"
           //src="https://images.unsplash.com/photo-1707879487614-72b421e4393f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHx8"
         ></Image>
         
