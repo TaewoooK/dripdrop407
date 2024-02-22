@@ -103,7 +103,7 @@
       padding: 0;
   }
   
-  .button1 {
+  .green-button {
       width: 56px;
       height: 56px;
       position: absolute;
@@ -114,7 +114,7 @@
       background-color: rgba(0, 255, 26, 0.34);
   }
   
-  .button2 {
+  .red-button {
       width: 56px;
       height: 56px;
       position: absolute;
