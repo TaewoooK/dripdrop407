@@ -38,5 +38,5 @@ type PostReport @model @auth(rules: [{allow: public, operations:[create, ] }]) {
   reporter: String!
   reason: String!
   sentAt: String!
-  postId: String!
+  postId: String
 }
