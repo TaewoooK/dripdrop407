@@ -98,7 +98,7 @@ const ProfilePage = () => {
         <p>Loading...</p>
       ) : user ? (
         <div style={styles.profile}>
-          <h1 style={styles.heading}>Welcome!</h1>
+          <h1 style={styles.heading}>Welcome {user.email.split('@')[0]}!</h1>
           <h2 style={styles.info}>Email: {user.email}</h2>
           <h2 style={styles.info}>
             Email Verified: {user.email_verified ? "Yes" : "No"}
