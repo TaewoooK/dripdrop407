@@ -4,9 +4,10 @@ import { MyIcon } from "../ui-components";
 import "./postandcomment.css";
 import { motion, useAnimate } from "framer-motion"
 import awsconfig from "../aws-exports";
-import { fetchUserAttributes } from "aws-amplify/auth";
-import { generateClient } from "aws-amplify/api";
-import { listPosts } from "../graphql/queries";
+import { fetchUserAttributes, getCurrentUser } from "aws-amplify/auth";
+import { generateClient, post } from "aws-amplify/api";
+import { createComment } from "../graphql/mutations";
+import { listPosts, getPost, commentsByPostId } from "../graphql/queries";
 import { getUrl } from "aws-amplify/storage";
 import PostActionCenter from "./PostActionCenter";
 import ReportPost from "./ReportPost";
@@ -16,20 +17,42 @@ const client = generateClient();
 
 const PostAndComment = () => {
     const [comment, setComment] = React.useState("");
-    const [comments, setComments] = React.useState([
-        "This is the first comment",
-        "This is the second comment",
-        "This is the third comment",
-        // Add more comments as needed
-      ]);
+    const [comments, setComments] = React.useState([]);
+    const [commentsText, setCommentsText] = React.useState([]);
     const [showComment, setShow] = React.useState(false);
     const [posts, setPosts] = React.useState([]);
     const [images, setImages] = React.useState([]);
     const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
+    const variables = { limit: 10 }
 
-    const variables = {
-        limit: 10
-    }
+    useEffect(() => {
+        const fetchPosts = async () => {
+          try {
+            const postData = await client.graphql({ query: listPosts, variables });
+            setPosts(postData.data.listPosts.items);
+          } catch (error) {
+            console.error("Error fetching posts: ", error);
+          }};
+        fetchPosts();
+    }, []);
+
+    useEffect(() => {
+        const fetchImages = async () => {
+          try {
+            const imagePromises = posts.map(async (post) => {
+              const postData = await getUrl({ key: post.postImageKey });
+              return {
+                description: post.description,
+                imageUrl: postData.url,
+              };
+            });
+            const fetchedImages = await Promise.all(imagePromises);
+            setImages(fetchedImages);
+          } catch (error) {
+            console.error("Error fetching images:", error);
+          }};
+        if (posts.length > 0) { fetchImages(); }
+    }, [posts]);
 
     const[scope, animate] = useAnimate();
     const handleGreenButtonClick = async () => {
@@ -48,67 +71,29 @@ const PostAndComment = () => {
         // Perform any other actions or state updates as needed
       };
 
-    useEffect(() => {
-        const fetchPosts = async () => {
-          try {
-            const postData = await client.graphql({ query: listPosts, variables });
-            setPosts(postData.data.listPosts.items);
-          } catch (error) {
-            console.error("Error fetching posts: ", error);
-          }
-        };
-      
-        fetchPosts();
-    }, []);
-      
-    //console.log(posts);
-      
-    useEffect(() => {
-        const fetchImages = async () => {
-          try {
-            const imagePromises = posts.map(async (post) => {
-              const postData = await getUrl({ key: post.postImageKey });
-              return {
-                description: post.description,
-                imageUrl: postData.url,
-              };
-            });
-      
-            const fetchedImages = await Promise.all(imagePromises);
-            setImages(fetchedImages);
-          } catch (error) {
-            console.error("Error fetching images:", error);
-          }
-        };
-      
-        if (posts.length > 0) {
-          fetchImages();
-        }
-    }, [posts]);
-      
-    //console.log(images);
-
-    const handleNextImage = () => {
-        setCurrentImageIndex((currentImageIndex + 1) % images.length);
-        //console.log(currentImageIndex)
-    }
-
-    const onUpvoteHandler = () => {
-        currentImageIndex = 1;
-      };
-
-  
-    const onClickHandler = () => {
-        console.log("Testing");
-      setComments((comments) => [...comments, comment]);
-      setComment(""); 
+    const onClickHandler = async () => {
+        const currPost = posts[currentImageIndex];
+        await client.graphql({
+            query: createComment,
+            variables: {
+                input: { postId: currPost.id, text: comment, commentAuthorId: await getCurrentUser().userId },
+            }
+        });
+        const getComments = await client.graphql({
+            query: commentsByPostId,
+            variables: { postId: posts[currentImageIndex].id }
+        });
+        const commentsList = getComments.data.commentsByPostId.items
+        const commentsTextArray = commentsList.map(comment => comment.text);
+        //console.log(commentsTextArray);
+        setComments(commentsList);
+        setCommentsText(commentsTextArray);
     };
   
     const onChangeHandler = (e) => {
        setComment(e.target.value);  
     };
 
-    console.log(currentImageIndex)
   return (
     <Flex
           direction="row"
@@ -229,8 +214,8 @@ const PostAndComment = () => {
 
                 <Button className="green-button"
                 onClick={handleGreenButtonClick}
-                whileHover={{ x: [-2, 2, -2, 2, 0], transition: { duration: 0.3 } }}
-                whileTap={{
+                whilehover={{ x: [-2, 2, -2, 2, 0], transition: { duration: 0.3 } }}
+                whiletap={{
                     
                   }}
                 size="default"
@@ -241,8 +226,8 @@ const PostAndComment = () => {
 
                 <Button className="red-button"
                 onClick={handleRedButtonClick}
-                whileHover={{ x: [-2, 2, -2, 2, 0], transition: { duration: 0.3 } }}
-                whileTap={{
+                whilehover={{ x: [-2, 2, -2, 2, 0], transition: { duration: 0.3 } }}
+                whiletap={{
                     
                   }}
                 size="default"
@@ -344,7 +329,7 @@ const PostAndComment = () => {
                         left="0px"
                         padding="0px 0px 0px 0px"
                     >
-                        {comments.map((text, index) => {
+                        {commentsText.map((text, index) => {
                             // Calculate the top position dynamically based on the height of previous cards
                             const topPosition = index === 0 ? 11 : comments
                                 .slice(0, index)

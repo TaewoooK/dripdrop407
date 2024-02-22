@@ -2,12 +2,14 @@ type FriendRequest @model @auth(rules: [{allow: public}]) {
   id: ID!
   UserId: ID!
   SenderId: ID!
+  SenderUsername: String!
 }
 
 type Friend @model @auth(rules: [{allow: public}]) {
   id: ID!
   UserId: ID!
   FriendId: ID!
+  FriendUsername: String!
 }
 
 type Post @model @auth(rules: [{allow: public}]) {
@@ -28,9 +30,10 @@ type S3Object {
 }
 
 type Comment @model @auth(rules: [{allow: public}]) {
-id: ID!
+  id: ID!
   postId: ID! @index(name: "byPost")
   text: String!
   commentAuthorId: Int
+  CommentsPost: Post @belongsTo(fields: ["postId"])
 }
  
