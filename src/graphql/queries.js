@@ -7,6 +7,7 @@ export const getFriendRequest = /* GraphQL */ `
       id
       UserId
       SenderId
+      SenderUsername
       createdAt
       updatedAt
       __typename
@@ -24,6 +25,7 @@ export const listFriendRequests = /* GraphQL */ `
         id
         UserId
         SenderId
+        SenderUsername
         createdAt
         updatedAt
         __typename
@@ -39,6 +41,7 @@ export const getFriend = /* GraphQL */ `
       id
       UserId
       FriendId
+      FriendUsername
       createdAt
       updatedAt
       __typename
@@ -56,6 +59,7 @@ export const listFriends = /* GraphQL */ `
         id
         UserId
         FriendId
+        FriendUsername
         createdAt
         updatedAt
         __typename

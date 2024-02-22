@@ -6,6 +6,7 @@ import "@aws-amplify/ui-react/styles.css";
 import { Amplify } from "aws-amplify";
 import { Heading, Flex, View, Divider, SearchField, withAuthenticator } from "@aws-amplify/ui-react";
 import awsconfig from "../amplifyconfiguration.json";
+import { getOverrideProps } from "./../ui-components/utils";
 
 // GraphQL imports
 import { fetchUserAttributes } from "aws-amplify/auth";
@@ -17,14 +18,16 @@ import {
 
 // UI imports
 import "./Friends.css";
-import FriendRequestComponent from "../ui-components/FriendRequest";
-import FriendComponent from "../ui-components/Friend";
+import FriendRequestComponent from "../components/FriendRequestComponent/FriendRequestComponent";
+import FriendComponent from "../components/FriendComponent/FriendComponent";
+// import FriendRequestComponent from "../ui-components/FriendRequest";
+// import FriendComponent from "../ui-components/Friend";
 import { isEmpty } from "@aws-amplify/ui";
 // import { FullFriends } from '../ui-components';
 
 // @ TEST DATA @
-// @ f19b2590-e021-70ef-fee2-d35ee019e8a7
-// @ 911bd5b0-e051-7009-df54-1a5ea9481ed7
+// @ 413b35a0-1031-7049-36e6-d8c0ffbb2b3c
+// @ d12bc5c0-f071-705a-8591-be06b94b3d1e
 
 Amplify.configure(awsconfig);
 
@@ -124,7 +127,7 @@ const Friends = () => {
               gap="1rem"
             >
               {requests.map((request, index) => (
-                <FriendRequestComponent key={index} object={request} />
+                <FriendRequestComponent key={index} friendRequest={request}/>
               ))}
             </Flex>
           </>

@@ -10,6 +10,7 @@ export const createFriendRequest = /* GraphQL */ `
       id
       UserId
       SenderId
+      SenderUsername
       createdAt
       updatedAt
       __typename
@@ -25,6 +26,7 @@ export const updateFriendRequest = /* GraphQL */ `
       id
       UserId
       SenderId
+      SenderUsername
       createdAt
       updatedAt
       __typename
@@ -40,6 +42,7 @@ export const deleteFriendRequest = /* GraphQL */ `
       id
       UserId
       SenderId
+      SenderUsername
       createdAt
       updatedAt
       __typename
@@ -55,6 +58,7 @@ export const createFriend = /* GraphQL */ `
       id
       UserId
       FriendId
+      FriendUsername
       createdAt
       updatedAt
       __typename
@@ -70,6 +74,7 @@ export const updateFriend = /* GraphQL */ `
       id
       UserId
       FriendId
+      FriendUsername
       createdAt
       updatedAt
       __typename
@@ -85,6 +90,7 @@ export const deleteFriend = /* GraphQL */ `
       id
       UserId
       FriendId
+      FriendUsername
       createdAt
       updatedAt
       __typename
