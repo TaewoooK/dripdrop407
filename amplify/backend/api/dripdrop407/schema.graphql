@@ -37,7 +37,7 @@ type Comment @model @auth(rules: [{allow: public}]) {
   CommentsPost: Post @belongsTo(fields: ["postId"])
 }
 
-type PostReport @model @auth(rules: [{allow: public, operations:[create, ] }]) {
+type PostReport @model @auth(rules: [{allow: public}]) {
   id: ID!
   reporter: String!
   reason: String
