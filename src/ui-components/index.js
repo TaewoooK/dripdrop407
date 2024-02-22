@@ -21,6 +21,8 @@ export { default as MyIcon } from "./MyIcon";
 export { default as PostActionCenter } from "./PostActionCenter";
 export { default as PostComponent } from "./PostComponent";
 export { default as PostCreateForm } from "./PostCreateForm";
+export { default as PostReportCreateForm } from "./PostReportCreateForm";
+export { default as PostReportUpdateForm } from "./PostReportUpdateForm";
 export { default as PostUpdateForm } from "./PostUpdateForm";
 export { default as ReportPost } from "./ReportPost";
 export { default as studioTheme } from "./studioTheme";

@@ -9,13 +9,13 @@ import * as React from "react";
 import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
-import { getFriend } from "../graphql/queries";
-import { updateFriend } from "../graphql/mutations";
+import { getPostReport } from "../graphql/queries";
+import { updatePostReport } from "../graphql/mutations";
 const client = generateClient();
-export default function FriendUpdateForm(props) {
+export default function PostReportUpdateForm(props) {
   const {
     id: idProp,
-    friend: friendModelProp,
+    postReport: postReportModelProp,
     onSuccess,
     onError,
     onSubmit,
@@ -25,41 +25,48 @@ export default function FriendUpdateForm(props) {
     ...rest
   } = props;
   const initialValues = {
-    Username: "",
-    FriendUsername: "",
+    reporter: "",
+    reason: "",
+    sentAt: "",
+    postId: "",
   };
-  const [Username, setUsername] = React.useState(initialValues.Username);
-  const [FriendUsername, setFriendUsername] = React.useState(
-    initialValues.FriendUsername
-  );
+  const [reporter, setReporter] = React.useState(initialValues.reporter);
+  const [reason, setReason] = React.useState(initialValues.reason);
+  const [sentAt, setSentAt] = React.useState(initialValues.sentAt);
+  const [postId, setPostId] = React.useState(initialValues.postId);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
-    const cleanValues = friendRecord
-      ? { ...initialValues, ...friendRecord }
+    const cleanValues = postReportRecord
+      ? { ...initialValues, ...postReportRecord }
       : initialValues;
-    setUsername(cleanValues.Username);
-    setFriendUsername(cleanValues.FriendUsername);
+    setReporter(cleanValues.reporter);
+    setReason(cleanValues.reason);
+    setSentAt(cleanValues.sentAt);
+    setPostId(cleanValues.postId);
     setErrors({});
   };
-  const [friendRecord, setFriendRecord] = React.useState(friendModelProp);
+  const [postReportRecord, setPostReportRecord] =
+    React.useState(postReportModelProp);
   React.useEffect(() => {
     const queryData = async () => {
       const record = idProp
         ? (
             await client.graphql({
-              query: getFriend.replaceAll("__typename", ""),
+              query: getPostReport.replaceAll("__typename", ""),
               variables: { id: idProp },
             })
-          )?.data?.getFriend
-        : friendModelProp;
-      setFriendRecord(record);
+          )?.data?.getPostReport
+        : postReportModelProp;
+      setPostReportRecord(record);
     };
     queryData();
-  }, [idProp, friendModelProp]);
-  React.useEffect(resetStateValues, [friendRecord]);
+  }, [idProp, postReportModelProp]);
+  React.useEffect(resetStateValues, [postReportRecord]);
   const validations = {
-    Username: [{ type: "Required" }],
-    FriendUsername: [{ type: "Required" }],
+    reporter: [{ type: "Required" }],
+    reason: [],
+    sentAt: [{ type: "Required" }],
+    postId: [{ type: "Required" }],
   };
   const runValidationTasks = async (
     fieldName,
@@ -87,8 +94,10 @@ export default function FriendUpdateForm(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
-          Username,
-          FriendUsername,
+          reporter,
+          reason: reason ?? null,
+          sentAt,
+          postId,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -119,10 +128,10 @@ export default function FriendUpdateForm(props) {
             }
           });
           await client.graphql({
-            query: updateFriend.replaceAll("__typename", ""),
+            query: updatePostReport.replaceAll("__typename", ""),
             variables: {
               input: {
-                id: friendRecord.id,
+                id: postReportRecord.id,
                 ...modelFields,
               },
             },
@@ -137,58 +146,116 @@ export default function FriendUpdateForm(props) {
           }
         }
       }}
-      {...getOverrideProps(overrides, "FriendUpdateForm")}
+      {...getOverrideProps(overrides, "PostReportUpdateForm")}
       {...rest}
     >
       <TextField
-        label="Username"
+        label="Reporter"
         isRequired={true}
         isReadOnly={false}
-        value={Username}
+        value={reporter}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              Username: value,
-              FriendUsername,
+              reporter: value,
+              reason,
+              sentAt,
+              postId,
             };
             const result = onChange(modelFields);
-            value = result?.Username ?? value;
+            value = result?.reporter ?? value;
           }
-          if (errors.Username?.hasError) {
-            runValidationTasks("Username", value);
+          if (errors.reporter?.hasError) {
+            runValidationTasks("reporter", value);
           }
-          setUsername(value);
+          setReporter(value);
         }}
-        onBlur={() => runValidationTasks("Username", Username)}
-        errorMessage={errors.Username?.errorMessage}
-        hasError={errors.Username?.hasError}
-        {...getOverrideProps(overrides, "Username")}
+        onBlur={() => runValidationTasks("reporter", reporter)}
+        errorMessage={errors.reporter?.errorMessage}
+        hasError={errors.reporter?.hasError}
+        {...getOverrideProps(overrides, "reporter")}
       ></TextField>
       <TextField
-        label="Friend username"
-        isRequired={true}
+        label="Reason"
+        isRequired={false}
         isReadOnly={false}
-        value={FriendUsername}
+        value={reason}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              Username,
-              FriendUsername: value,
+              reporter,
+              reason: value,
+              sentAt,
+              postId,
             };
             const result = onChange(modelFields);
-            value = result?.FriendUsername ?? value;
+            value = result?.reason ?? value;
           }
-          if (errors.FriendUsername?.hasError) {
-            runValidationTasks("FriendUsername", value);
+          if (errors.reason?.hasError) {
+            runValidationTasks("reason", value);
           }
-          setFriendUsername(value);
+          setReason(value);
         }}
-        onBlur={() => runValidationTasks("FriendUsername", FriendUsername)}
-        errorMessage={errors.FriendUsername?.errorMessage}
-        hasError={errors.FriendUsername?.hasError}
-        {...getOverrideProps(overrides, "FriendUsername")}
+        onBlur={() => runValidationTasks("reason", reason)}
+        errorMessage={errors.reason?.errorMessage}
+        hasError={errors.reason?.hasError}
+        {...getOverrideProps(overrides, "reason")}
+      ></TextField>
+      <TextField
+        label="Sent at"
+        isRequired={true}
+        isReadOnly={false}
+        value={sentAt}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              reporter,
+              reason,
+              sentAt: value,
+              postId,
+            };
+            const result = onChange(modelFields);
+            value = result?.sentAt ?? value;
+          }
+          if (errors.sentAt?.hasError) {
+            runValidationTasks("sentAt", value);
+          }
+          setSentAt(value);
+        }}
+        onBlur={() => runValidationTasks("sentAt", sentAt)}
+        errorMessage={errors.sentAt?.errorMessage}
+        hasError={errors.sentAt?.hasError}
+        {...getOverrideProps(overrides, "sentAt")}
+      ></TextField>
+      <TextField
+        label="Post id"
+        isRequired={true}
+        isReadOnly={false}
+        value={postId}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              reporter,
+              reason,
+              sentAt,
+              postId: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.postId ?? value;
+          }
+          if (errors.postId?.hasError) {
+            runValidationTasks("postId", value);
+          }
+          setPostId(value);
+        }}
+        onBlur={() => runValidationTasks("postId", postId)}
+        errorMessage={errors.postId?.errorMessage}
+        hasError={errors.postId?.hasError}
+        {...getOverrideProps(overrides, "postId")}
       ></TextField>
       <Flex
         justifyContent="space-between"
@@ -201,7 +268,7 @@ export default function FriendUpdateForm(props) {
             event.preventDefault();
             resetStateValues();
           }}
-          isDisabled={!(idProp || friendModelProp)}
+          isDisabled={!(idProp || postReportModelProp)}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -213,7 +280,7 @@ export default function FriendUpdateForm(props) {
             type="submit"
             variation="primary"
             isDisabled={
-              !(idProp || friendModelProp) ||
+              !(idProp || postReportModelProp) ||
               Object.values(errors).some((e) => e?.hasError)
             }
             {...getOverrideProps(overrides, "SubmitButton")}

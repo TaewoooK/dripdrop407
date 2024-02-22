@@ -5,8 +5,7 @@ export const getFriendRequest = /* GraphQL */ `
   query GetFriendRequest($id: ID!) {
     getFriendRequest(id: $id) {
       id
-      UserId
-      SenderId
+      Username
       SenderUsername
       createdAt
       updatedAt
@@ -23,8 +22,7 @@ export const listFriendRequests = /* GraphQL */ `
     listFriendRequests(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        UserId
-        SenderId
+        Username
         SenderUsername
         createdAt
         updatedAt
@@ -39,8 +37,7 @@ export const getFriend = /* GraphQL */ `
   query GetFriend($id: ID!) {
     getFriend(id: $id) {
       id
-      UserId
-      FriendId
+      Username
       FriendUsername
       createdAt
       updatedAt
@@ -57,8 +54,7 @@ export const listFriends = /* GraphQL */ `
     listFriends(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        UserId
-        FriendId
+        Username
         FriendUsername
         createdAt
         updatedAt
@@ -118,6 +114,17 @@ export const getComment = /* GraphQL */ `
       postId
       text
       commentAuthorId
+      CommentsPost {
+        id
+        owner
+        description
+        drip_points
+        createdAt
+        enable_comments
+        postImageKey
+        updatedAt
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -165,6 +172,42 @@ export const commentsByPostId = /* GraphQL */ `
         postId
         text
         commentAuthorId
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getPostReport = /* GraphQL */ `
+  query GetPostReport($id: ID!) {
+    getPostReport(id: $id) {
+      id
+      reporter
+      reason
+      sentAt
+      postId
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listPostReports = /* GraphQL */ `
+  query ListPostReports(
+    $filter: ModelPostReportFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listPostReports(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        reporter
+        reason
+        sentAt
+        postId
         createdAt
         updatedAt
         __typename

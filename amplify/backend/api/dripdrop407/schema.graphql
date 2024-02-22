@@ -1,14 +1,12 @@
 type FriendRequest @model @auth(rules: [{allow: public}]) {
   id: ID!
-  UserId: ID!
-  SenderId: ID!
+  Username: ID!
   SenderUsername: String!
 }
 
 type Friend @model @auth(rules: [{allow: public}]) {
   id: ID!
-  UserId: ID!
-  FriendId: ID!
+  Username: ID!
   FriendUsername: String!
 }
 
@@ -35,5 +33,13 @@ type Comment @model @auth(rules: [{allow: public}]) {
   text: String!
   commentAuthorId: Int
   CommentsPost: Post @belongsTo(fields: ["postId"])
+}
+
+type PostReport @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  reporter: String!
+  reason: String
+  sentAt: String!
+  postId: String!
 }
  
