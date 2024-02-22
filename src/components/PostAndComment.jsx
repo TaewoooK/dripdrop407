@@ -34,17 +34,17 @@ const PostAndComment = () => {
     const[scope, animate] = useAnimate();
     const handleGreenButtonClick = async () => {
       setShow(false);
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
       await animate(scope.current, {x: "80vw"});
       await animate(scope.current, {x: 0});
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
       // Perform any other actions or state updates as needed
     };
 
     const handleRedButtonClick = async () => {
         setShow(false);
+        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
         await animate(scope.current, {x: "-80vw"});
         await animate(scope.current, {x: 0});
-        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
         // Perform any other actions or state updates as needed
       };
 
