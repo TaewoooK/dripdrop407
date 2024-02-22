@@ -6,9 +6,7 @@
 
 /* eslint-disable */
 import React, { useEffect } from "react";
-import { getOverrideProps, useAuth, useAuth } from "./utils";
-import { generateClient } from "aws-amplify/api";
-import { createFriend, deleteFriendRequest } from "../graphql/mutations";
+import { getOverrideProps, useAuth } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { createFriend, deleteFriendRequest } from "../graphql/mutations";
 import { Button, Icon, Text, View } from "@aws-amplify/ui-react";
