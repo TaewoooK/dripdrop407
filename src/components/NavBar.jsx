@@ -1,9 +1,31 @@
-import React from 'react'
+import React, { useState, useEffect } from "react";
 import "./navbar.css";
 import { Flex, Icon, Text, View } from "@aws-amplify/ui-react";
 import SignOutButton from "./SignOutButton";
+import { getCurrentUser } from "aws-amplify/auth";
 
 const NavBar = () => {
+    const [currUser, setCurrUser] = useState(null);
+
+    useEffect(() => {
+        const fetchCurrUserData = async () => {
+          try {
+            const currUserAttributes = await getCurrentUser();
+            console.log(currUserAttributes);
+            console.log(currUserAttributes.signInDetails);
+            setCurrUser(currUserAttributes);
+          } catch (error) {
+            console.error("Error fetching user data: ", error);
+          }
+        };
+    
+        fetchCurrUserData();
+    }, []);
+
+    const isCurrUserNull = () => {
+        return currUser ==  null ? true : false
+    }
+
   return (
     <View className='navbar_container'>
         <Text className='logo-text'>
@@ -193,7 +215,8 @@ const NavBar = () => {
             position="relative"
             ></Icon>
             <Text className='username'>
-                Username
+                {isCurrUserNull() ? (<p>Username</p>) : currUser.username}
+                
             </Text>
         </Flex>
 

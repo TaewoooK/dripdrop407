@@ -1,0 +1,21 @@
+.Friends {
+    width: 550px;
+    height: 100%;
+    gap: 1rem;
+    display: inline-block;
+    background-color: rgba(34, 34, 34, 1);
+}
+
+.amplify-heading {
+    color: white;
+}
+
+p {
+    color: white;
+}
+
+.friends_content_container {
+    height: 100%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}

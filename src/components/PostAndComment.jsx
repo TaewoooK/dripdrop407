@@ -1,10 +1,18 @@
-import * as React from "react";
+import React, { useState, useEffect  }from "react";
 import { Card, Flex, Icon, Text, TextField, View, Button, Image } from "@aws-amplify/ui-react";
 import { MyIcon } from "../ui-components";
 import "./postandcomment.css";
 import { motion } from "framer-motion"
+import awsconfig from "../aws-exports";
+import { fetchUserAttributes } from "aws-amplify/auth";
+import { generateClient } from "aws-amplify/api";
+import { listPosts } from "../graphql/queries";
+import { getUrl } from "aws-amplify/storage";
 import PostActionCenter from "./PostActionCenter";
 import ReportPost from "./ReportPost";
+
+const client = generateClient();
+
 
 const PostAndComment = () => {
     const [comment, setComment] = React.useState("");
@@ -15,8 +23,74 @@ const PostAndComment = () => {
         // Add more comments as needed
       ]);
     const [showComment, setShow] = React.useState(false);
+    const [posts, setPosts] = React.useState([]);
+    const [images, setImages] = React.useState([]);
+    const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
+
+    const variables = {
+        limit: 10
+    }
+
+    const [isAnimating, setIsAnimating] = useState(false);
+
+    const handleButtonClick = () => {
+      setIsAnimating(true);
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)
+      // Perform any other actions or state updates as needed
+    };
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+          try {
+            const postData = await client.graphql({ query: listPosts, variables });
+            setPosts(postData.data.listPosts.items);
+          } catch (error) {
+            console.error("Error fetching posts: ", error);
+          }
+        };
+      
+        fetchPosts();
+    }, []);
+      
+    //console.log(posts);
+      
+    useEffect(() => {
+        const fetchImages = async () => {
+          try {
+            const imagePromises = posts.map(async (post) => {
+              const postData = await getUrl({ key: post.postImageKey });
+              return {
+                description: post.description,
+                imageUrl: postData.url,
+              };
+            });
+      
+            const fetchedImages = await Promise.all(imagePromises);
+            setImages(fetchedImages);
+          } catch (error) {
+            console.error("Error fetching images:", error);
+          }
+        };
+      
+        if (posts.length > 0) {
+          fetchImages();
+        }
+    }, [posts]);
+      
+    //console.log(images);
+
+    const handleNextImage = () => {
+        setCurrentImageIndex((currentImageIndex + 1) % images.length);
+        //console.log(currentImageIndex)
+    }
+
+    const onUpvoteHandler = () => {
+        currentImageIndex = 1;
+      };
+
   
     const onClickHandler = () => {
+        console.log("Testing");
       setComments((comments) => [...comments, comment]);
       setComment(""); 
     };
@@ -44,8 +118,10 @@ const PostAndComment = () => {
           gap="0.5rem"
         >
         <View className="big-post-container">
-            <View className="post-container">
-
+            <motion.View className="post-container" 
+                initial={{x: "100vw"}}
+                animate={{x: 0}}
+            >
                 <View className="thumb-container1">
                 <Icon
                     width="33.52px"
@@ -71,7 +147,7 @@ const PostAndComment = () => {
                     right="9.38%"
                 ></Icon>
                 </View>
-
+                
                 <View className="thumb-container2">
                 <Icon
                     width="33.52px"
@@ -97,13 +173,18 @@ const PostAndComment = () => {
                     right="9.37%"
                 ></Icon>
                 </View>
-
-                <Image className="post-img"
-                //src={Post?.outfitimage}
-                src="https://cdn.discordapp.com/attachments/1120152118272213053/1201614916788965536/IMG_5675.jpg?ex=65dceb19&is=65ca7619&hm=277e5088a148d22bbb7935216d52437d827a889d0d6e4e7dded8eeb7a4af1336&"
-                //src="https://images.unsplash.com/photo-1707879487614-72b421e4393f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHx8"
-                ></Image>
+                {images[currentImageIndex] ? (
+                    <Image className="post-img"
+                    src={images[currentImageIndex].imageUrl}
+                    //src={Post?.outfitimage}
+                    //src="https://cdn.discordapp.com/attachments/1120152118272213053/1201614916788965536/IMG_5675.jpg?ex=65dceb19&is=65ca7619&hm=277e5088a148d22bbb7935216d52437d827a889d0d6e4e7dded8eeb7a4af1336&"
+                    //src="https://images.unsplash.com/photo-1707879487614-72b421e4393f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHx8"
+                    ></Image>
+                                ) : (
+                    <div>Loading...</div>
+                )}
                 
+
                 <MyIcon className="more-icon" type="more_vert" onClick={toggleActionCenter}/>
 
                 {showActionCenter && (
@@ -162,18 +243,22 @@ const PostAndComment = () => {
                 ></MyIcon>
 
                 <Button className="button1"
+                onClick={handleButtonClick}
                 size="default"
                 isDisabled={false}
                 variation="default"
+                //onClick={() => setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)}
                 ></Button>
 
                 <Button className="button2"
+                onClick={handleButtonClick}
                 size="default"
                 isDisabled={false}
                 variation="default"
+                //onClick={() => setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)}
                 ></Button>
 
-            </View>
+            </motion.View>
         </View>
                     
         {
@@ -262,7 +347,7 @@ const PostAndComment = () => {
                         justifyContent="unset"
                         overflow="auto" // Set overflow to "auto" for scrollbars only when needed
                         position="absolute"
-                        top="101px"
+                        top="50px"
                         left="0px"
                         padding="0px 0px 0px 0px"
                     >
