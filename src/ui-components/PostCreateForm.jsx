@@ -31,7 +31,6 @@ export default function PostCreateForm(props) {
   const initialValues = {
     owner: "",
     description: "",
-    comments: "",
     drip_points: "",
     createdAt: "",
     enable_comments: false,
@@ -41,7 +40,6 @@ export default function PostCreateForm(props) {
   const [description, setDescription] = React.useState(
     initialValues.description
   );
-  const [comments, setComments] = React.useState(initialValues.comments);
   const [drip_points, setDrip_points] = React.useState(
     initialValues.drip_points
   );
@@ -56,7 +54,6 @@ export default function PostCreateForm(props) {
   const resetStateValues = () => {
     setOwner(initialValues.owner);
     setDescription(initialValues.description);
-    setComments(initialValues.comments);
     setDrip_points(initialValues.drip_points);
     setCreatedAt(initialValues.createdAt);
     setEnable_comments(initialValues.enable_comments);
@@ -66,7 +63,6 @@ export default function PostCreateForm(props) {
   const validations = {
     owner: [{ type: "Required" }],
     description: [{ type: "Required" }],
-    comments: [],
     drip_points: [],
     createdAt: [],
     enable_comments: [],
@@ -100,7 +96,6 @@ export default function PostCreateForm(props) {
         let modelFields = {
           owner,
           description,
-          comments,
           drip_points,
           createdAt,
           enable_comments,
@@ -169,7 +164,6 @@ export default function PostCreateForm(props) {
             const modelFields = {
               owner: value,
               description,
-              comments,
               drip_points,
               createdAt,
               enable_comments,
@@ -199,7 +193,6 @@ export default function PostCreateForm(props) {
             const modelFields = {
               owner,
               description: value,
-              comments,
               drip_points,
               createdAt,
               enable_comments,
@@ -219,36 +212,6 @@ export default function PostCreateForm(props) {
         {...getOverrideProps(overrides, "description")}
       ></TextField>
       <TextField
-        label="Comments"
-        isRequired={false}
-        isReadOnly={false}
-        value={comments}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              owner,
-              description,
-              comments: value,
-              drip_points,
-              createdAt,
-              enable_comments,
-              postImageKey,
-            };
-            const result = onChange(modelFields);
-            value = result?.comments ?? value;
-          }
-          if (errors.comments?.hasError) {
-            runValidationTasks("comments", value);
-          }
-          setComments(value);
-        }}
-        onBlur={() => runValidationTasks("comments", comments)}
-        errorMessage={errors.comments?.errorMessage}
-        hasError={errors.comments?.hasError}
-        {...getOverrideProps(overrides, "comments")}
-      ></TextField>
-      <TextField
         label="Drip points"
         isRequired={false}
         isReadOnly={false}
@@ -263,7 +226,6 @@ export default function PostCreateForm(props) {
             const modelFields = {
               owner,
               description,
-              comments,
               drip_points: value,
               createdAt,
               enable_comments,
@@ -293,7 +255,6 @@ export default function PostCreateForm(props) {
             const modelFields = {
               owner,
               description,
-              comments,
               drip_points,
               createdAt: value,
               enable_comments,
@@ -323,7 +284,6 @@ export default function PostCreateForm(props) {
             const modelFields = {
               owner,
               description,
-              comments,
               drip_points,
               createdAt,
               enable_comments: value,
@@ -353,7 +313,6 @@ export default function PostCreateForm(props) {
             const modelFields = {
               owner,
               description,
-              comments,
               drip_points,
               createdAt,
               enable_comments,
