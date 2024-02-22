@@ -51,7 +51,7 @@ export default function EditProfile(props) {
           padding="0px 0px 0px 0px"
           {...getOverrideProps(overrides, "Edit Profile29766913")}
         >
-          {/* <MyIcon
+          <MyIcon
             width="24px"
             height="24px"
             display="block"
@@ -64,7 +64,7 @@ export default function EditProfile(props) {
             padding="0px 0px 0px 0px"
             type="close"
             {...getOverrideProps(overrides, "MyIcon")}
-          ></MyIcon> */}
+          ></MyIcon>
           <Text
             fontFamily="Inter"
             fontSize="16px"
@@ -166,8 +166,8 @@ export default function EditProfile(props) {
           <TextField
             width="unset"
             height="unset"
-            label="Description"
-            placeholder="Write something about yourself"
+            label="Location"
+            placeholder="Seattle, WA"
             shrink="0"
             alignSelf="stretch"
             size="default"
@@ -176,32 +176,30 @@ export default function EditProfile(props) {
             variation="default"
             {...getOverrideProps(overrides, "TextField29766923")}
           ></TextField>
-
+          <TextField
+            width="unset"
+            height="unset"
+            label="Email"
+            placeholder="john.doe@awsamplify.com"
+            shrink="0"
+            alignSelf="stretch"
+            size="default"
+            isDisabled={false}
+            labelHidden={false}
+            variation="default"
+            {...getOverrideProps(overrides, "TextField29766924")}
+          ></TextField>
         </Flex>
-          
-        <div style={{ display: "flex", justifyContent: "center", gap: "370px" }}>
-          <Button
-            width="unset"
-            height="unset"
-            shrink="0"
-            size="default"
-            isDisabled={false}
-            variation="primary"
-            children="Save"
-            {...getOverrideProps(overrides, "Button")}
-          ></Button>
-          <Button
-            width="unset"
-            height="unset"
-            shrink="0"
-            size="default"
-            isDisabled={false}
-            variation="destructive"
-            children="Delete account"
-            {...getOverrideProps(overrides, "Button")}
-          ></Button>
-        </div>
-        
+        <Button
+          width="unset"
+          height="unset"
+          shrink="0"
+          size="default"
+          isDisabled={false}
+          variation="primary"
+          children="Save"
+          {...getOverrideProps(overrides, "Button")}
+        ></Button>
       </Flex>
     </Flex>
   );

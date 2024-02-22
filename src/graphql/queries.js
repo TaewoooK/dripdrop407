@@ -71,11 +71,14 @@ export const getPost = /* GraphQL */ `
       id
       owner
       description
-      comments
       drip_points
       createdAt
       enable_comments
       postImageKey
+      comments {
+        nextToken
+        __typename
+      }
       updatedAt
       __typename
     }
@@ -92,11 +95,73 @@ export const listPosts = /* GraphQL */ `
         id
         owner
         description
-        comments
         drip_points
         createdAt
         enable_comments
         postImageKey
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getComment = /* GraphQL */ `
+  query GetComment($id: ID!) {
+    getComment(id: $id) {
+      id
+      postId
+      text
+      commentAuthorId
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listComments = /* GraphQL */ `
+  query ListComments(
+    $filter: ModelCommentFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listComments(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        postId
+        text
+        commentAuthorId
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const commentsByPostId = /* GraphQL */ `
+  query CommentsByPostId(
+    $postId: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelCommentFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    commentsByPostId(
+      postId: $postId
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        postId
+        text
+        commentAuthorId
+        createdAt
         updatedAt
         __typename
       }
