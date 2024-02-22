@@ -233,7 +233,7 @@ const PostAndComment = () => {
                         justifyContent="unset"
                         overflow="auto" // Set overflow to "auto" for scrollbars only when needed
                         position="absolute"
-                        top="101px"
+                        top="50px"
                         left="0px"
                         padding="0px 0px 0px 0px"
                     >
