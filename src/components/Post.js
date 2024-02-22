@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect  }from "react";
 import { Button, Flex, Icon, Image, Text, View } from "@aws-amplify/ui-react";
 import { MyIcon } from "../ui-components";
 import "./post.css";
@@ -7,10 +7,10 @@ import { fetchUserAttributes } from "aws-amplify/auth";
 import { generateClient } from "aws-amplify/api";
 import { listPosts } from "../graphql/queries";
 import { getUrl } from "aws-amplify/storage";
-
-const client = generateClient();
 import PostActionCenter from "./PostActionCenter";
 import ReportPost from "./ReportPost";
+
+const client = generateClient();
 
 export default function PostComponent() {
 
