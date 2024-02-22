@@ -7,8 +7,8 @@
 /* eslint-disable */
 import * as React from "react";
 import { generateClient } from "aws-amplify/api";
-import { deleteFriend } from "../graphql/mutations";
-import { getOverrideProps } from "./utils";
+import { deleteFriend } from "../../graphql/mutations";
+import { getOverrideProps, useAuth } from "../../ui-components/utils";
 import { Button, Icon, Text, View } from "@aws-amplify/ui-react";
 const client = generateClient();
 export default function Friend(props) {

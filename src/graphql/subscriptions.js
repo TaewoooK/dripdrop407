@@ -9,6 +9,7 @@ export const onCreateFriendRequest = /* GraphQL */ `
       id
       UserId
       SenderId
+      SenderUsername
       createdAt
       updatedAt
       __typename
@@ -23,6 +24,7 @@ export const onUpdateFriendRequest = /* GraphQL */ `
       id
       UserId
       SenderId
+      SenderUsername
       createdAt
       updatedAt
       __typename
@@ -37,6 +39,7 @@ export const onDeleteFriendRequest = /* GraphQL */ `
       id
       UserId
       SenderId
+      SenderUsername
       createdAt
       updatedAt
       __typename
@@ -49,6 +52,7 @@ export const onCreateFriend = /* GraphQL */ `
       id
       UserId
       FriendId
+      FriendUsername
       createdAt
       updatedAt
       __typename
@@ -61,6 +65,7 @@ export const onUpdateFriend = /* GraphQL */ `
       id
       UserId
       FriendId
+      FriendUsername
       createdAt
       updatedAt
       __typename
@@ -73,6 +78,7 @@ export const onDeleteFriend = /* GraphQL */ `
       id
       UserId
       FriendId
+      FriendUsername
       createdAt
       updatedAt
       __typename
@@ -85,11 +91,14 @@ export const onCreatePost = /* GraphQL */ `
       id
       owner
       description
-      comments
       drip_points
       createdAt
       enable_comments
       postImageKey
+      comments {
+        nextToken
+        __typename
+      }
       updatedAt
       __typename
     }
@@ -101,11 +110,14 @@ export const onUpdatePost = /* GraphQL */ `
       id
       owner
       description
-      comments
       drip_points
       createdAt
       enable_comments
       postImageKey
+      comments {
+        nextToken
+        __typename
+      }
       updatedAt
       __typename
     }
@@ -117,11 +129,53 @@ export const onDeletePost = /* GraphQL */ `
       id
       owner
       description
-      comments
       drip_points
       createdAt
       enable_comments
       postImageKey
+      comments {
+        nextToken
+        __typename
+      }
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onCreateComment = /* GraphQL */ `
+  subscription OnCreateComment($filter: ModelSubscriptionCommentFilterInput) {
+    onCreateComment(filter: $filter) {
+      id
+      postId
+      text
+      commentAuthorId
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateComment = /* GraphQL */ `
+  subscription OnUpdateComment($filter: ModelSubscriptionCommentFilterInput) {
+    onUpdateComment(filter: $filter) {
+      id
+      postId
+      text
+      commentAuthorId
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteComment = /* GraphQL */ `
+  subscription OnDeleteComment($filter: ModelSubscriptionCommentFilterInput) {
+    onDeleteComment(filter: $filter) {
+      id
+      postId
+      text
+      commentAuthorId
+      createdAt
       updatedAt
       __typename
     }

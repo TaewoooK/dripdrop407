@@ -10,6 +10,7 @@ export const createFriendRequest = /* GraphQL */ `
       id
       UserId
       SenderId
+      SenderUsername
       createdAt
       updatedAt
       __typename
@@ -25,6 +26,7 @@ export const updateFriendRequest = /* GraphQL */ `
       id
       UserId
       SenderId
+      SenderUsername
       createdAt
       updatedAt
       __typename
@@ -40,6 +42,7 @@ export const deleteFriendRequest = /* GraphQL */ `
       id
       UserId
       SenderId
+      SenderUsername
       createdAt
       updatedAt
       __typename
@@ -55,6 +58,7 @@ export const createFriend = /* GraphQL */ `
       id
       UserId
       FriendId
+      FriendUsername
       createdAt
       updatedAt
       __typename
@@ -70,6 +74,7 @@ export const updateFriend = /* GraphQL */ `
       id
       UserId
       FriendId
+      FriendUsername
       createdAt
       updatedAt
       __typename
@@ -85,6 +90,7 @@ export const deleteFriend = /* GraphQL */ `
       id
       UserId
       FriendId
+      FriendUsername
       createdAt
       updatedAt
       __typename
@@ -100,11 +106,14 @@ export const createPost = /* GraphQL */ `
       id
       owner
       description
-      comments
       drip_points
       createdAt
       enable_comments
       postImageKey
+      comments {
+        nextToken
+        __typename
+      }
       updatedAt
       __typename
     }
@@ -119,11 +128,14 @@ export const updatePost = /* GraphQL */ `
       id
       owner
       description
-      comments
       drip_points
       createdAt
       enable_comments
       postImageKey
+      comments {
+        nextToken
+        __typename
+      }
       updatedAt
       __typename
     }
@@ -138,11 +150,62 @@ export const deletePost = /* GraphQL */ `
       id
       owner
       description
-      comments
       drip_points
       createdAt
       enable_comments
       postImageKey
+      comments {
+        nextToken
+        __typename
+      }
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const createComment = /* GraphQL */ `
+  mutation CreateComment(
+    $input: CreateCommentInput!
+    $condition: ModelCommentConditionInput
+  ) {
+    createComment(input: $input, condition: $condition) {
+      id
+      postId
+      text
+      commentAuthorId
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateComment = /* GraphQL */ `
+  mutation UpdateComment(
+    $input: UpdateCommentInput!
+    $condition: ModelCommentConditionInput
+  ) {
+    updateComment(input: $input, condition: $condition) {
+      id
+      postId
+      text
+      commentAuthorId
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteComment = /* GraphQL */ `
+  mutation DeleteComment(
+    $input: DeleteCommentInput!
+    $condition: ModelCommentConditionInput
+  ) {
+    deleteComment(input: $input, condition: $condition) {
+      id
+      postId
+      text
+      commentAuthorId
+      createdAt
       updatedAt
       __typename
     }

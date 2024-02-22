@@ -25,18 +25,24 @@ export default function FriendRequestCreateForm(props) {
   const initialValues = {
     UserId: "",
     SenderId: "",
+    SenderUsername: "",
   };
   const [UserId, setUserId] = React.useState(initialValues.UserId);
   const [SenderId, setSenderId] = React.useState(initialValues.SenderId);
+  const [SenderUsername, setSenderUsername] = React.useState(
+    initialValues.SenderUsername
+  );
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setUserId(initialValues.UserId);
     setSenderId(initialValues.SenderId);
+    setSenderUsername(initialValues.SenderUsername);
     setErrors({});
   };
   const validations = {
     UserId: [{ type: "Required" }],
     SenderId: [{ type: "Required" }],
+    SenderUsername: [{ type: "Required" }],
   };
   const runValidationTasks = async (
     fieldName,
@@ -66,6 +72,7 @@ export default function FriendRequestCreateForm(props) {
         let modelFields = {
           UserId,
           SenderId,
+          SenderUsername,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -130,6 +137,7 @@ export default function FriendRequestCreateForm(props) {
             const modelFields = {
               UserId: value,
               SenderId,
+              SenderUsername,
             };
             const result = onChange(modelFields);
             value = result?.UserId ?? value;
@@ -155,6 +163,7 @@ export default function FriendRequestCreateForm(props) {
             const modelFields = {
               UserId,
               SenderId: value,
+              SenderUsername,
             };
             const result = onChange(modelFields);
             value = result?.SenderId ?? value;
@@ -168,6 +177,32 @@ export default function FriendRequestCreateForm(props) {
         errorMessage={errors.SenderId?.errorMessage}
         hasError={errors.SenderId?.hasError}
         {...getOverrideProps(overrides, "SenderId")}
+      ></TextField>
+      <TextField
+        label="Sender username"
+        isRequired={true}
+        isReadOnly={false}
+        value={SenderUsername}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              UserId,
+              SenderId,
+              SenderUsername: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.SenderUsername ?? value;
+          }
+          if (errors.SenderUsername?.hasError) {
+            runValidationTasks("SenderUsername", value);
+          }
+          setSenderUsername(value);
+        }}
+        onBlur={() => runValidationTasks("SenderUsername", SenderUsername)}
+        errorMessage={errors.SenderUsername?.errorMessage}
+        hasError={errors.SenderUsername?.hasError}
+        {...getOverrideProps(overrides, "SenderUsername")}
       ></TextField>
       <Flex
         justifyContent="space-between"

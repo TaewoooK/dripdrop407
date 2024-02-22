@@ -5,11 +5,43 @@
  **************************************************************************/
 
 /* eslint-disable */
-import * as React from "react";
-import { getOverrideProps } from "./utils";
+import React, { useEffect } from "react";
+import { getOverrideProps, useAuth } from "./utils";
+import { generateClient } from "aws-amplify/api";
+import { createFriend, deleteFriendRequest } from "../graphql/mutations";
 import { Button, Icon, Text, View } from "@aws-amplify/ui-react";
+const client = generateClient();
 export default function FriendRequest(props) {
-  const { overrides, ...rest } = props;
+  const { friendRequest, overrides, ...rest } = props;
+  const authAttributes = useAuth().user?.attributes ?? {};
+
+  useEffect(() => {
+    console.log('FriendRequestComponent props:', props);
+    // console.log('FriendRequestComponent key:', key);
+  }, []);
+
+  const buttonFourNineNineSevenFourOneFourSevenOnClick = async () => {
+    await client.graphql({
+      query: deleteFriendRequest.replaceAll("__typename", ""),
+      variables: {
+        input: {
+          id: friendRequest?.id,
+        },
+      },
+    });
+  };
+  const buttonFourNineNineSevenFiveNineTwoNineOnClick = async () => {
+    await client.graphql({
+      query: createFriend.replaceAll("__typename", ""),
+      variables: {
+        input: {
+          UserId: authAttributes["email"],
+          FriendId: authAttributes["email"],
+          FriendUsername: authAttributes["email"],
+        },
+      },
+    });
+  };
   return (
     <View
       width="383px"
@@ -88,7 +120,7 @@ export default function FriendRequest(props) {
         right="38.37%"
         padding="0px 0px 0px 0px"
         whiteSpace="pre-wrap"
-        children="Username"
+        children={friendRequest?.SenderUsername}
         {...getOverrideProps(overrides, "Username")}
       ></Text>
       <Button
@@ -103,6 +135,9 @@ export default function FriendRequest(props) {
         isDisabled={false}
         variation="destructive"
         children="Deny"
+        onClick={() => {
+          buttonFourNineNineSevenFourOneFourSevenOnClick();
+        }}
         {...getOverrideProps(overrides, "Button49974147")}
       ></Button>
       <Button
@@ -115,6 +150,9 @@ export default function FriendRequest(props) {
         isDisabled={false}
         variation="primary"
         children="Accept"
+        onClick={() => {
+          buttonFourNineNineSevenFiveNineTwoNineOnClick();
+        }}
         {...getOverrideProps(overrides, "Button49975929")}
       ></Button>
     </View>

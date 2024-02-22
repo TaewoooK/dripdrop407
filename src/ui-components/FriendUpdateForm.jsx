@@ -27,9 +27,13 @@ export default function FriendUpdateForm(props) {
   const initialValues = {
     UserId: "",
     FriendId: "",
+    FriendUsername: "",
   };
   const [UserId, setUserId] = React.useState(initialValues.UserId);
   const [FriendId, setFriendId] = React.useState(initialValues.FriendId);
+  const [FriendUsername, setFriendUsername] = React.useState(
+    initialValues.FriendUsername
+  );
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = friendRecord
@@ -37,6 +41,7 @@ export default function FriendUpdateForm(props) {
       : initialValues;
     setUserId(cleanValues.UserId);
     setFriendId(cleanValues.FriendId);
+    setFriendUsername(cleanValues.FriendUsername);
     setErrors({});
   };
   const [friendRecord, setFriendRecord] = React.useState(friendModelProp);
@@ -58,6 +63,7 @@ export default function FriendUpdateForm(props) {
   const validations = {
     UserId: [{ type: "Required" }],
     FriendId: [{ type: "Required" }],
+    FriendUsername: [{ type: "Required" }],
   };
   const runValidationTasks = async (
     fieldName,
@@ -87,6 +93,7 @@ export default function FriendUpdateForm(props) {
         let modelFields = {
           UserId,
           FriendId,
+          FriendUsername,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -149,6 +156,7 @@ export default function FriendUpdateForm(props) {
             const modelFields = {
               UserId: value,
               FriendId,
+              FriendUsername,
             };
             const result = onChange(modelFields);
             value = result?.UserId ?? value;
@@ -174,6 +182,7 @@ export default function FriendUpdateForm(props) {
             const modelFields = {
               UserId,
               FriendId: value,
+              FriendUsername,
             };
             const result = onChange(modelFields);
             value = result?.FriendId ?? value;
@@ -187,6 +196,32 @@ export default function FriendUpdateForm(props) {
         errorMessage={errors.FriendId?.errorMessage}
         hasError={errors.FriendId?.hasError}
         {...getOverrideProps(overrides, "FriendId")}
+      ></TextField>
+      <TextField
+        label="Friend username"
+        isRequired={true}
+        isReadOnly={false}
+        value={FriendUsername}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              UserId,
+              FriendId,
+              FriendUsername: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.FriendUsername ?? value;
+          }
+          if (errors.FriendUsername?.hasError) {
+            runValidationTasks("FriendUsername", value);
+          }
+          setFriendUsername(value);
+        }}
+        onBlur={() => runValidationTasks("FriendUsername", FriendUsername)}
+        errorMessage={errors.FriendUsername?.errorMessage}
+        hasError={errors.FriendUsername?.hasError}
+        {...getOverrideProps(overrides, "FriendUsername")}
       ></TextField>
       <Flex
         justifyContent="space-between"
