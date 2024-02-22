@@ -5,24 +5,31 @@
  **************************************************************************/
 
 /* eslint-disable */
-import * as React from "react";
+import React, { useState } from "react";
 import { generateClient } from "aws-amplify/api";
 import { deleteFriend } from "../../graphql/mutations";
-import { getOverrideProps, useAuth } from "../../ui-components/utils";
+// import { getOverrideProps, useAuth } from "../../ui-components/utils";
 import { Button, Icon, Text, View } from "@aws-amplify/ui-react";
+
 const client = generateClient();
+
 export default function Friend(props) {
-  const { friend, overrides, ...rest } = props;
-  const buttonOnClick = async () => {
+  const { key, friend, onClickEvent } = props;
+
+  const handleRemoveFriend = async () => {
+    console.log('Clicked remove friend id: ', friend.friendId)
     await client.graphql({
       query: deleteFriend.replaceAll("__typename", ""),
       variables: {
         input: {
-          id: friend?.id,
+          id: friend.id,
         },
       },
     });
+
+    onClickEvent();
   };
+  
   return (
     <View
       width="383px"
@@ -33,8 +40,6 @@ export default function Friend(props) {
       justifyContent="unset"
       position="relative"
       padding="0px 0px 0px 0px"
-      {...getOverrideProps(overrides, "Friend")}
-      {...rest}
     >
       <View
         width="383px"
@@ -52,7 +57,6 @@ export default function Friend(props) {
         borderRadius="50px"
         padding="0px 0px 0px 0px"
         backgroundColor="rgba(217,217,217,0.1)"
-        {...getOverrideProps(overrides, "Profile Card")}
       ></View>
       <Icon
         width="11.81%"
@@ -78,7 +82,6 @@ export default function Friend(props) {
         bottom="18.43%"
         left="3.82%"
         right="84.38%"
-        {...getOverrideProps(overrides, "Profile Picture")}
       ></Icon>
       <Text
         fontFamily="Inter"
@@ -102,7 +105,6 @@ export default function Friend(props) {
         padding="0px 0px 0px 0px"
         whiteSpace="pre-wrap"
         children={friend?.FriendUsername}
-        {...getOverrideProps(overrides, "Username")}
       ></Text>
       <Button
         width="unset"
@@ -115,9 +117,8 @@ export default function Friend(props) {
         variation="destructive"
         children="Remove"
         onClick={() => {
-          buttonOnClick();
+          handleRemoveFriend();
         }}
-        {...getOverrideProps(overrides, "Button")}
       ></Button>
     </View>
   );

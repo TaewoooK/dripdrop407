@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 
 // AWS Amplify imports
 import "@aws-amplify/ui-react/styles.css";
@@ -20,10 +20,8 @@ import {
 import "./Friends.css";
 import FriendRequestComponent from "../components/FriendRequestComponent/FriendRequestComponent";
 import FriendComponent from "../components/FriendComponent/FriendComponent";
-// import FriendRequestComponent from "../ui-components/FriendRequest";
-// import FriendComponent from "../ui-components/Friend";
 import { isEmpty } from "@aws-amplify/ui";
-// import { FullFriends } from '../ui-components';
+import { useForceUpdate } from "framer-motion";
 
 // @ TEST DATA @
 // @ 413b35a0-1031-7049-36e6-d8c0ffbb2b3c
@@ -52,33 +50,19 @@ const Friends = () => {
 
     setUser(userAttributes);
     
-    fetchFriendRequests(userAttributes.sub);
-    fetchFriends(userAttributes.sub);
+    fetchRequestsAndFriends(userAttributes?.sub);
   }
 
-  // async function fetchFriendRequests here
-  async function fetchFriendRequests(userId) {
-    const apiData = await client.graphql({
+  async function fetchRequestsAndFriends(userId) {
+    const requestData = await client.graphql({
       query: listFriendRequests,
       variables: { filter: { UserId: { eq: userId } } }
     })
-    const requestsFromAPI = apiData.data.listFriendRequests.items;
+    const requestsFromAPI = requestData.data.listFriendRequests.items;
     setRequests(requestsFromAPI);
 
-    // debugging
-    // console.log('Friend Requests: ', requests);
-    // console.log('Friend Requests length: ', requests.length);
-    // console.log('isEmptyFriendReqs: ', isEmptyFriendReqs());
-  }
-
-  useEffect(() => {
     console.log('Friend Requests: ', requests);
-    console.log('Friend Requests length: ', requests.length);
-    console.log('isEmptyFriendReqs: ', isEmptyFriendReqs());
-  }, [requests])
 
-  // async function fetchFriends here
-  async function fetchFriends(userId) {
     const apiData = await client.graphql({
       query: listFriends,
       variables: { filter: { UserId: { eq: userId } } }
@@ -86,10 +70,15 @@ const Friends = () => {
     const friendsFromAPI = apiData.data.listFriends.items;
     setFriends(friendsFromAPI);
 
-    // debugging
     console.log('Friends: ', friends);
-    console.log('Friend boolean: ', friends.length === 0);
-    console.log('isEmptyFriends: ', isEmptyFriends());
+  }
+
+  // # HANDLER METHODS
+
+  // Re-fetch requests and friends after click event
+  const handleClickEvent = () => {
+    console.log('Received click event');
+    fetchRequestsAndFriends(user?.sub);
   }
 
   // # GETTER METHODS
@@ -127,7 +116,7 @@ const Friends = () => {
               gap="1rem"
             >
               {requests.map((request, index) => (
-                <FriendRequestComponent key={index} friendRequest={request}/>
+                <FriendRequestComponent key={index} friendRequest={request} onClickEvent={handleClickEvent}/>
               ))}
             </Flex>
           </>
@@ -160,7 +149,7 @@ const Friends = () => {
             gap="1rem"
             >
               {friends.map((friend, index) => (
-                <FriendComponent key={index} object={friend} />
+                <FriendComponent key={index} friend={friend} onClickEvent={handleClickEvent}/>
               ))}
             </Flex>
           </>

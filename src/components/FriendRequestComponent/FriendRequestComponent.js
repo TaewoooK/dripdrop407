@@ -10,40 +10,46 @@ import { getOverrideProps, useAuth } from "../../ui-components/utils";
 import { generateClient } from "aws-amplify/api";
 import { createFriend, deleteFriendRequest } from "../../graphql/mutations";
 import { Button, Icon, Text, View } from "@aws-amplify/ui-react";
-const client = generateClient();
-export default function FriendRequest(props) {
-    const { key, friendRequest } = props;
-    const authAttributes = useAuth().user?.attributes ?? {};
 
+const client = generateClient();
+
+export default function FriendRequest(props) {
+    const { key, friendRequest, onClickEvent } = props;
+    const authAttributes = useAuth().user?.attributes ?? {};
     
     console.log('FriendRequestComponent props:', props);
     console.log('FriendRequestComponent friendRequest:', friendRequest);
     console.log('FriendRequestComponent key:', key);
 
 
-    const handleDenyFriendRequest = async () => {
+    const handleDeleteFriendRequest = async () => {
         await client.graphql({
         query: deleteFriendRequest.replaceAll("__typename", ""),
         variables: {
             input: {
-            id: friendRequest?.id,
+                id: friendRequest?.id,
             },
         },
         });
+
+        onClickEvent();
     };
 
-    const handleAcceptFriendRequest = async () => {
+    const handleAddFriend = async () => {
         await client.graphql({
         query: createFriend.replaceAll("__typename", ""),
         variables: {
             input: {
-            UserId: authAttributes.sub,
-            FriendId: authAttributes["email"],
-            FriendUsername: authAttributes["email"],
+                UserId: authAttributes.sub,
+                FriendId: friendRequest?.SenderId,
+                FriendUsername: friendRequest?.SenderUsername,
             },
         },
         });
+
+        handleDeleteFriendRequest();
     };
+
     return (
         <View
         width="383px"
@@ -133,7 +139,7 @@ export default function FriendRequest(props) {
             variation="destructive"
             children="Deny"
             onClick={() => {
-            handleDenyFriendRequest();
+            handleDeleteFriendRequest();
             }}
         ></Button>
         <Button
@@ -147,7 +153,7 @@ export default function FriendRequest(props) {
             variation="primary"
             children="Accept"
             onClick={() => {
-            handleAcceptFriendRequest();
+            handleAddFriend();
             }}
         ></Button>
         </View>
