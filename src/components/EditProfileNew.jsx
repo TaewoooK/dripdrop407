@@ -6,24 +6,35 @@
 
 /* eslint-disable */
 import * as React from "react";
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { getOverrideProps } from "../ui-components/utils";
 import MyIcon from "../ui-components/MyIcon";
 import { Button, Flex, Image, Text, TextField } from "@aws-amplify/ui-react";
-import { updateUserAttribute } from 'aws-amplify/auth';
+import { updateUserAttribute } from "aws-amplify/auth";
+import { deleteUser } from "aws-amplify/auth";
 
 export default function EditProfileNew(props) {
   const { onClickEvent } = props;
-  const [ prefUsername, setPrefUsername ] = useState(null);
-  const [ firstName, setFirstName ] = useState(null);
-  const [ lastName, setLastName ] = useState(null);
-  const [ gender, setGender ] = useState(null);
+  const [prefUsername, setPrefUsername] = useState(null);
+  const [firstName, setFirstName] = useState(null);
+  const [lastName, setLastName] = useState(null);
+  const [gender, setGender] = useState(null);
+  const [showMakeSure, setShowMakeSure] = useState(false);
 
   async function handleSetAttribute(useStateFunc, value) {
-    if (value == '') {
+    if (value == "") {
       useStateFunc(null);
     } else {
       useStateFunc(value);
+    }
+  }
+
+  async function handleDeleteAccount() {
+    try {
+      await deleteUser();
+      alert("DELETED");
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -53,27 +64,27 @@ export default function EditProfileNew(props) {
       const output = await updateUserAttribute({
         userAttribute: {
           attributeKey,
-          value
-        }
+          value,
+        },
       });
       handleUpdateUserAttributeNextSteps(output);
     } catch (error) {
       console.log(error);
     }
   }
-  
+
   function handleUpdateUserAttributeNextSteps(output) {
     const { nextStep } = output;
-  
+
     switch (nextStep.updateAttributeStep) {
-      case 'CONFIRM_ATTRIBUTE_WITH_CODE':
+      case "CONFIRM_ATTRIBUTE_WITH_CODE":
         const codeDeliveryDetails = nextStep.codeDeliveryDetails;
         console.log(
           `Confirmation code was sent to ${codeDeliveryDetails?.deliveryMedium}.`
         );
         // Collect the confirmation code from the user and pass to confirmUserAttribute.
         break;
-      case 'DONE':
+      case "DONE":
         console.log(`attribute was successfully updated.`);
         break;
     }
@@ -217,11 +228,13 @@ export default function EditProfileNew(props) {
             shrink="0"
             alignSelf="stretch"
             size="default"
-            style={{color : "black"}}
+            style={{ color: "black" }}
             isDisabled={false}
             labelHidden={false}
             variation="default"
-            onChange={(e) => handleSetAttribute(setPrefUsername, e.currentTarget.value)}
+            onChange={(e) =>
+              handleSetAttribute(setPrefUsername, e.currentTarget.value)
+            }
           ></TextField>
           <TextField
             width="unset"
@@ -231,11 +244,13 @@ export default function EditProfileNew(props) {
             shrink="0"
             alignSelf="stretch"
             size="default"
-            style={{color : "black"}}
+            style={{ color: "black" }}
             isDisabled={false}
             labelHidden={false}
             variation="default"
-            onChange={(e) => handleSetAttribute(setFirstName, e.currentTarget.value)}
+            onChange={(e) =>
+              handleSetAttribute(setFirstName, e.currentTarget.value)
+            }
           ></TextField>
           <TextField
             width="unset"
@@ -245,11 +260,13 @@ export default function EditProfileNew(props) {
             shrink="0"
             alignSelf="stretch"
             size="default"
-            style={{color : "black"}}
+            style={{ color: "black" }}
             isDisabled={false}
             labelHidden={false}
             variation="default"
-            onChange={(e) => handleSetAttribute(setLastName, e.currentTarget.value)}
+            onChange={(e) =>
+              handleSetAttribute(setLastName, e.currentTarget.value)
+            }
           ></TextField>
           <TextField
             width="unset"
@@ -259,16 +276,19 @@ export default function EditProfileNew(props) {
             shrink="0"
             alignSelf="stretch"
             size="default"
-            style={{color : "black"}}
+            style={{ color: "black" }}
             isDisabled={false}
             labelHidden={false}
             variation="default"
-            onChange={(e) => handleSetAttribute(setGender, e.currentTarget.value)}
+            onChange={(e) =>
+              handleSetAttribute(setGender, e.currentTarget.value)
+            }
           ></TextField>
-
         </Flex>
-          
-        <div style={{ display: "flex", justifyContent: "center", gap: "370px" }}>
+
+        <div
+          style={{ display: "flex", justifyContent: "center", gap: "370px" }}
+        >
           <Button
             width="unset"
             height="unset"
@@ -284,13 +304,24 @@ export default function EditProfileNew(props) {
             height="unset"
             shrink="0"
             size="default"
-            isDisabled={false}
-            variation="destructive"
+            variation="secondary"
             children="Delete account"
-            onClick={handleClick} //currently does the same as save button, change this
+            isDisabled={false}
+            onClick={() => {
+              setShowMakeSure(true);
+            }}
           ></Button>
         </div>
-        
+        {showMakeSure && (
+          <Button
+            variation="destructive"
+            isFullWidth={true}
+            loadingText=""
+            onClick={handleDeleteAccount}
+          >
+            CLICK TO DELETE ACCOUNT
+          </Button>
+        )}
       </Flex>
     </Flex>
   );
