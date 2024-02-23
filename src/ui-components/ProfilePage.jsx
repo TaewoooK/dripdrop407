@@ -16,17 +16,6 @@ import EditProfileNew from "../components/EditProfileNew";
 
 const client = generateClient();
 
-const Modal = ({ onClose }) => {
-  return (
-    <div style={modalContainerStyles}>
-      <div style={modalStyles}>
-        <EditProfileNew />
-        <button onClick={onClose}>Close</button>
-      </div>
-    </div>
-  );
-};
-
 const modalContainerStyles = {
   position: "fixed",
   top: 0,
@@ -51,6 +40,19 @@ const ProfilePage = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const Modal = ({ onClose }) => {
+    return (
+      <div style={modalContainerStyles}>
+        <div style={modalStyles}>
+          <EditProfileNew 
+            onClickEvent={handleClickChild}
+          />
+          <button onClick={onClose}>Close</button>
+        </div>
+      </div>
+    );
+  };
+
   const openModal = () => {
     setIsModalOpen(true);
   };
@@ -58,6 +60,11 @@ const ProfilePage = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  const handleClickChild = () => {
+    console.log('Received click event');
+    closeModal();
+  }
 
   const [user, setUser] = useState(null);
   const [currUser, setCurrUser] = useState(null);

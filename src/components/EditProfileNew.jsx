@@ -6,11 +6,90 @@
 
 /* eslint-disable */
 import * as React from "react";
+import { useState, useEffect } from "react";
 import { getOverrideProps } from "../ui-components/utils";
 import MyIcon from "../ui-components/MyIcon";
 import { Button, Flex, Image, Text, TextField } from "@aws-amplify/ui-react";
+import { updateUserAttribute } from "aws-amplify/auth";
+import { deleteUser } from "aws-amplify/auth";
+
 export default function EditProfileNew(props) {
-  const { overrides, ...rest } = props;
+  const { onClickEvent } = props;
+  const [prefUsername, setPrefUsername] = useState(null);
+  const [firstName, setFirstName] = useState(null);
+  const [lastName, setLastName] = useState(null);
+  const [gender, setGender] = useState(null);
+  const [showMakeSure, setShowMakeSure] = useState(false);
+
+  async function handleSetAttribute(useStateFunc, value) {
+    if (value == "") {
+      useStateFunc(null);
+    } else {
+      useStateFunc(value);
+    }
+  }
+
+  async function handleDeleteAccount() {
+    try {
+      await deleteUser();
+      alert("DELETED");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function handleClick() {
+    console.log("NEW PREFUSER: " + prefUsername);
+    console.log("NEW FIRST NAME: " + firstName);
+    console.log("NEW LAST NAME: " + lastName);
+    console.log("NEW GENDER: " + gender);
+    if (prefUsername) {
+      await handleUpdateUserAttribute("preferred_username", prefUsername);
+    }
+    if (firstName) {
+      await handleUpdateUserAttribute("name", firstName);
+    }
+    if (lastName) {
+      await handleUpdateUserAttribute("family_name", lastName);
+    }
+    if (gender) {
+      await handleUpdateUserAttribute("gender", gender);
+    }
+
+    onClickEvent();
+  }
+
+  async function handleUpdateUserAttribute(attributeKey, value) {
+    try {
+      const output = await updateUserAttribute({
+        userAttribute: {
+          attributeKey,
+          value,
+        },
+      });
+      handleUpdateUserAttributeNextSteps(output);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function handleUpdateUserAttributeNextSteps(output) {
+    const { nextStep } = output;
+
+    switch (nextStep.updateAttributeStep) {
+      case "CONFIRM_ATTRIBUTE_WITH_CODE":
+        const codeDeliveryDetails = nextStep.codeDeliveryDetails;
+        console.log(
+          `Confirmation code was sent to ${codeDeliveryDetails?.deliveryMedium}.`
+        );
+        // Collect the confirmation code from the user and pass to confirmUserAttribute.
+        break;
+      case "DONE":
+        console.log(`attribute was successfully updated.`);
+        break;
+    }
+  }
+
   return (
     <Flex
       gap="16px"
@@ -22,8 +101,6 @@ export default function EditProfileNew(props) {
       position="relative"
       padding="0px 0px 0px 0px"
       backgroundColor="rgba(255,255,255,1)"
-      {...getOverrideProps(overrides, "EditProfile")}
-      {...rest}
     >
       <Flex
         gap="24px"
@@ -36,7 +113,6 @@ export default function EditProfileNew(props) {
         alignSelf="stretch"
         position="relative"
         padding="24px 24px 24px 24px"
-        {...getOverrideProps(overrides, "Content")}
       >
         <Flex
           gap="16px"
@@ -49,7 +125,6 @@ export default function EditProfileNew(props) {
           alignSelf="stretch"
           position="relative"
           padding="0px 0px 0px 0px"
-          {...getOverrideProps(overrides, "Edit Profile29766913")}
         >
           {/* <MyIcon
             width="24px"
@@ -84,7 +159,6 @@ export default function EditProfileNew(props) {
             padding="0px 0px 0px 0px"
             whiteSpace="pre-wrap"
             children="Edit Profile"
-            {...getOverrideProps(overrides, "Edit Profile29766916")}
           ></Text>
         </Flex>
         <Flex
@@ -98,7 +172,6 @@ export default function EditProfileNew(props) {
           alignSelf="stretch"
           position="relative"
           padding="0px 0px 0px 0px"
-          {...getOverrideProps(overrides, "Profile")}
         >
           <Image
             width="96px"
@@ -112,7 +185,6 @@ export default function EditProfileNew(props) {
             borderRadius="160px"
             padding="0px 0px 0px 0px"
             objectFit="cover"
-            {...getOverrideProps(overrides, "image")}
           ></Image>
           <Text
             fontFamily="Inter"
@@ -134,7 +206,6 @@ export default function EditProfileNew(props) {
             padding="0px 0px 0px 0px"
             whiteSpace="pre-wrap"
             children="Upload New Image"
-            {...getOverrideProps(overrides, "Upload New Image")}
           ></Text>
         </Flex>
         <Flex
@@ -148,40 +219,76 @@ export default function EditProfileNew(props) {
           alignSelf="stretch"
           position="relative"
           padding="0px 0px 0px 0px"
-          {...getOverrideProps(overrides, "Forms")}
         >
           <TextField
             width="unset"
             height="unset"
-            label="Full name"
-            placeholder="John Doe"
+            label="Preferred Username"
+            placeholder=""
             shrink="0"
             alignSelf="stretch"
             size="default"
-            style={{ color: 'black' }} // Set the text color to black
+            style={{ color: "black" }}
             isDisabled={false}
             labelHidden={false}
             variation="default"
-            {...getOverrideProps(overrides, "TextField29766922")}
-          />
+            onChange={(e) =>
+              handleSetAttribute(setPrefUsername, e.currentTarget.value)
+            }
+          ></TextField>
           <TextField
             width="unset"
             height="unset"
-            label="Description"
-            placeholder="Write something about yourself"
+            label="First Name"
+            placeholder=""
             shrink="0"
             alignSelf="stretch"
             size="default"
-            style={{ color: 'black' }} // Set the text color to black
+            style={{ color: "black" }}
             isDisabled={false}
             labelHidden={false}
             variation="default"
-            {...getOverrideProps(overrides, "TextField29766923")}
+            onChange={(e) =>
+              handleSetAttribute(setFirstName, e.currentTarget.value)
+            }
           ></TextField>
-
+          <TextField
+            width="unset"
+            height="unset"
+            label="Last Name"
+            placeholder=""
+            shrink="0"
+            alignSelf="stretch"
+            size="default"
+            style={{ color: "black" }}
+            isDisabled={false}
+            labelHidden={false}
+            variation="default"
+            onChange={(e) =>
+              handleSetAttribute(setLastName, e.currentTarget.value)
+            }
+          ></TextField>
+          <TextField
+            width="unset"
+            height="unset"
+            label="Gender"
+            placeholder=""
+            shrink="0"
+            alignSelf="stretch"
+            size="default"
+            style={{ color: "black" }}
+            isDisabled={false}
+            labelHidden={false}
+            variation="default"
+            onChange={(e) =>
+              handleSetAttribute(setGender, e.currentTarget.value)
+            }
+          ></TextField>
         </Flex>
-          
-        <div style={{ display: "flex", justifyContent: "center", gap: "370px" }}>
+
+        <div
+          style={{ display: "flex", justifyContent: "center", gap: "370px" }}
+        >
           <Button
             width="unset"
             height="unset"
@@ -190,20 +297,31 @@ export default function EditProfileNew(props) {
             isDisabled={false}
             variation="primary"
             children="Save"
-            {...getOverrideProps(overrides, "Button")}
+            onClick={handleClick}
           ></Button>
           <Button
             width="unset"
             height="unset"
             shrink="0"
             size="default"
-            isDisabled={false}
-            variation="destructive"
+            variation="secondary"
             children="Delete account"
-            {...getOverrideProps(overrides, "Button")}
+            isDisabled={false}
+            onClick={() => {
+              setShowMakeSure(true);
+            }}
           ></Button>
         </div>
-        
+        {showMakeSure && (
+          <Button
+            variation="destructive"
+            isFullWidth={true}
+            loadingText=""
+            onClick={handleDeleteAccount}
+          >
+            CLICK TO DELETE ACCOUNT
+          </Button>
+        )}
       </Flex>
     </Flex>
   );
