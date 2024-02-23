@@ -224,6 +224,23 @@ const PostAndComment = () => {
                 position="top-right"
                 reverseOrder={false}
         />
+        {showActionCenter && (
+            <div className="overlay" onClick={toggleActionCenter}>
+                <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
+                <PostActionCenter toggleReportPost={toggleReportPost}/>
+                </div>
+            </div>
+            )}
+
+            {showReportPost && (
+            <div className="overlay" onClick={toggleReportPost}>
+                <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
+                <>{console.log(currPostID)}</>
+                <ReportPost toggleReportPost={toggleReportPost} currPostID={currPostID} showReportNotification={showReportNotification}/>
+                </div>
+            </div>
+            )}
+
         <View className="big-post-container">
             <motion.View className="post-container" 
                 initial={{x: "100vw"}}
@@ -296,22 +313,6 @@ const PostAndComment = () => {
 
                 <MyIcon className="more-icon" type="more_vert" onClick={toggleActionCenter}/>
 
-                {showActionCenter && (
-                <div className="overlay" onClick={toggleActionCenter}>
-                    <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
-                    <PostActionCenter toggleReportPost={toggleReportPost}/>
-                    </div>
-                </div>
-                )}
-
-                {showReportPost && (
-                <div className="overlay" onClick={toggleReportPost}>
-                    <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
-                    <>{console.log(currPostID)}</>
-                    <ReportPost toggleReportPost={toggleReportPost} currPostID={currPostID} showReportNotification={showReportNotification}/>
-                    </div>
-                </div>
-                )}
 
                 <Flex gap="22px" direction="column" width="unset" height="unset" justifyContent="center" alignItems="center" position="absolute" top="457px" left="190px" padding="0px 0px 0px 0px">
                 <Icon className="profile-picture"
