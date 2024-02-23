@@ -35,10 +35,16 @@ const PostAndComment = () => {
             setVariablesN({ limit: 10, nextToken: nextToken }) 
         }
         try {
+            console.log("Logging fetchPost begin")
+            console.log(variablesN)
             const postDataGraphQLResponse = await client.graphql({ query: listPosts, variables: variablesN });
-            //console.log(postDataGraphQLResponse)
-            setPosts(postDataGraphQLResponse.data.listPosts.items);
-            setNextToken(postDataGraphQLResponse.data.listPosts.nextToken);
+            console.log(postDataGraphQLResponse)
+            if (postDataGraphQLResponse.data.listPosts.items.length != 0) {
+                setPosts(postDataGraphQLResponse.data.listPosts.items)
+                setNextToken(postDataGraphQLResponse.data.listPosts.nextToken);
+            } else {
+                setNextToken(null);
+            }
 
             const imagePromises = posts.map(async (post) => {
                 const postData = await getUrl({ key: post.postImageKey });
@@ -48,7 +54,8 @@ const PostAndComment = () => {
                     };
                 });
             const fetchedImages = await Promise.all(imagePromises);
-            setImages(fetchedImages);        
+            setImages(fetchedImages); 
+            console.log("End of fetchPost logging")       
         } catch (error) {
             console.error("Error fetching posts: ", error);
         }
@@ -57,6 +64,7 @@ const PostAndComment = () => {
     // initial loading for the page
     useEffect(() => {
         fetchPost()
+        //console.log(posts)
         //console.log("firing once")
     }, []);
 
@@ -66,8 +74,15 @@ const PostAndComment = () => {
     }, [nextToken]);
     
     useEffect(() => {
-        if (posts.length > 0) {
-            setCurrPostID(posts[currentImageIndex].id);
+        if (posts.length > 0 && images.length > 0) {
+            /*console.log("Debugging surya code")
+            console.log(currentImageIndex)
+            console.log(images.length)
+            console.log(posts.length)
+            console.log(currentImageIndex % images.length)
+            console.log(posts[currentImageIndex % images.length])
+            console.log("End of surya code")*/
+            setCurrPostID(posts[currentImageIndex % images.length].id);
         }
     }, [posts, currentImageIndex])
 
