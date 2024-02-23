@@ -43,4 +43,3 @@ type PostReport @model @auth(rules: [{allow: public}]) {
   postId: String!
 }
  
-}
