@@ -11,6 +11,7 @@ import { listPosts, getPost, commentsByPostId } from "../graphql/queries";
 import { getUrl } from "aws-amplify/storage";
 import PostActionCenter from "./PostActionCenter";
 import ReportPost from "./ReportPost";
+import toast, { Toaster } from "react-hot-toast";
 
 const client = generateClient();
 
@@ -183,6 +184,10 @@ const PostAndComment = () => {
         setShowActionCenter(false);
     };
 
+    const showReportNotification = () => {
+        toast.success("Post reported successfully");
+    };
+
     // const [isCommentDeleted, setIsCommentDeleted] = useState(false);
 
     // Handler function to toggle the comment deletion state
@@ -205,6 +210,7 @@ const PostAndComment = () => {
         const commentsTextArray = commentsList.map(comment => comment.text);
         setComments(commentsList);
         setCommentsText(commentsTextArray);
+        toast.success("Comment deleted successfully");
     };
 
 
@@ -214,6 +220,10 @@ const PostAndComment = () => {
           justifyContent="center"
           gap="0.5rem"
         >
+        <Toaster
+                position="top-right"
+                reverseOrder={false}
+        />
         <View className="big-post-container">
             <motion.View className="post-container" 
                 initial={{x: "100vw"}}
@@ -298,7 +308,7 @@ const PostAndComment = () => {
                 <div className="overlay" onClick={toggleReportPost}>
                     <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
                     <>{console.log(currPostID)}</>
-                    <ReportPost toggleReportPost={toggleReportPost} currPostID={currPostID}/>
+                    <ReportPost toggleReportPost={toggleReportPost} currPostID={currPostID} showReportNotification={showReportNotification}/>
                     </div>
                 </div>
                 )}
