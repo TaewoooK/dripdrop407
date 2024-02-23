@@ -5,8 +5,7 @@ export const getFriendRequest = /* GraphQL */ `
   query GetFriendRequest($id: ID!) {
     getFriendRequest(id: $id) {
       id
-      UserId
-      SenderId
+      Username
       SenderUsername
       createdAt
       updatedAt
@@ -23,8 +22,7 @@ export const listFriendRequests = /* GraphQL */ `
     listFriendRequests(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        UserId
-        SenderId
+        Username
         SenderUsername
         createdAt
         updatedAt
@@ -39,8 +37,7 @@ export const getFriend = /* GraphQL */ `
   query GetFriend($id: ID!) {
     getFriend(id: $id) {
       id
-      UserId
-      FriendId
+      Username
       FriendUsername
       createdAt
       updatedAt
@@ -57,8 +54,7 @@ export const listFriends = /* GraphQL */ `
     listFriends(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        UserId
-        FriendId
+        Username
         FriendUsername
         createdAt
         updatedAt

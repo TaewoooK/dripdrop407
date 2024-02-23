@@ -8,8 +8,7 @@ export const createFriendRequest = /* GraphQL */ `
   ) {
     createFriendRequest(input: $input, condition: $condition) {
       id
-      UserId
-      SenderId
+      Username
       SenderUsername
       createdAt
       updatedAt
@@ -24,8 +23,7 @@ export const updateFriendRequest = /* GraphQL */ `
   ) {
     updateFriendRequest(input: $input, condition: $condition) {
       id
-      UserId
-      SenderId
+      Username
       SenderUsername
       createdAt
       updatedAt
@@ -40,8 +38,7 @@ export const deleteFriendRequest = /* GraphQL */ `
   ) {
     deleteFriendRequest(input: $input, condition: $condition) {
       id
-      UserId
-      SenderId
+      Username
       SenderUsername
       createdAt
       updatedAt
@@ -56,8 +53,7 @@ export const createFriend = /* GraphQL */ `
   ) {
     createFriend(input: $input, condition: $condition) {
       id
-      UserId
-      FriendId
+      Username
       FriendUsername
       createdAt
       updatedAt
@@ -72,8 +68,7 @@ export const updateFriend = /* GraphQL */ `
   ) {
     updateFriend(input: $input, condition: $condition) {
       id
-      UserId
-      FriendId
+      Username
       FriendUsername
       createdAt
       updatedAt
@@ -88,8 +83,7 @@ export const deleteFriend = /* GraphQL */ `
   ) {
     deleteFriend(input: $input, condition: $condition) {
       id
-      UserId
-      FriendId
+      Username
       FriendUsername
       createdAt
       updatedAt
