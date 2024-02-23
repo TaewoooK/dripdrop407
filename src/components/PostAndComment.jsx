@@ -20,12 +20,13 @@ const PostAndComment = () => {
     const [comments, setComments] = React.useState([]);
     const [commentsText, setCommentsText] = React.useState([]);
     const [showComment, setShow] = React.useState(false);
-    const [nextToken, setNextToken] = React.useState("");
+    const [nextToken, setNextToken] = React.useState(null);
     const [posts, setPosts] = React.useState([]);
     const [images, setImages] = React.useState([]);
-    const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
+    const [image, setImage] = React.useState("");
+    const [currentImageIndex, setCurrentImageIndex] = React.useState(1);
     const [currPostID, setCurrPostID] = React.useState(null);
-    const [variablesN, setVariablesN] = React.useState({});
+    const [variablesN, setVariablesN] = React.useState({ limit: 10 });
 
     const fetchPost = async () => {
         if (!nextToken) {
@@ -35,18 +36,26 @@ const PostAndComment = () => {
             setVariablesN({ limit: 10, nextToken: nextToken }) 
         }
         try {
-            console.log("Logging fetchPost begin")
-            console.log(variablesN)
+            //console.log("Logging fetchPost begin")
+            //console.log("Variables")
+            //console.log(variablesN)
             const postDataGraphQLResponse = await client.graphql({ query: listPosts, variables: variablesN });
-            console.log(postDataGraphQLResponse)
+            //console.log("graphql response")
+            //console.log(postDataGraphQLResponse)
+            let postData = []
+            let nextTokenTemp = null
             if (postDataGraphQLResponse.data.listPosts.items.length != 0) {
+                postData = postDataGraphQLResponse.data.listPosts.items
+                nextTokenTemp = postDataGraphQLResponse.data.listPosts.nextToken
                 setPosts(postDataGraphQLResponse.data.listPosts.items)
                 setNextToken(postDataGraphQLResponse.data.listPosts.nextToken);
+                setVariablesN({ limit: 10, nextToken: nextTokenTemp })
             } else {
                 setNextToken(null);
             }
-
-            const imagePromises = posts.map(async (post) => {
+            //console.log("posts")
+            //console.log(postData)
+            const imagePromises = postData.map(async (post) => {
                 const postData = await getUrl({ key: post.postImageKey });
                     return {
                         description: post.description,
@@ -55,23 +64,24 @@ const PostAndComment = () => {
                 });
             const fetchedImages = await Promise.all(imagePromises);
             setImages(fetchedImages); 
-            console.log("End of fetchPost logging")       
+            //console.log("Fetched images")
+            //console.log(fetchedImages)
+            setImage(fetchedImages[0].imageUrl);
+            //console.log("End of fetchPost logging")       
         } catch (error) {
             console.error("Error fetching posts: ", error);
         }
     }
-
-    // initial loading for the page
-    useEffect(() => {
-        fetchPost()
-        //console.log(posts)
-        //console.log("firing once")
-    }, []);
-
     // When nextToken changes, fetch more posts
     useEffect(() => {
+        console.log("NextTok change calls fetchPost")
         fetchPost()
-    }, [nextToken]);
+    }, []);
+
+    // useEffect(() => {
+    //     console.log("ReRender")
+    // }, [image])
+    
     
     useEffect(() => {
         if (posts.length > 0 && images.length > 0) {
@@ -89,13 +99,19 @@ const PostAndComment = () => {
     const[scope, animate] = useAnimate();
     const handleGreenButtonClick = async () => {
         setShow(false);
-        if (currentImageIndex + 1 % images.length == 0) {
+        /*console.log("Green button initial")
+        console.log(currentImageIndex + 1)
+        console.log(images.length)
+        console.log((currentImageIndex + 1) % 10)*/
+        if ((currentImageIndex + 1) % images.length == 0) {
+            //console.log("Green Calls fetch post")
             await fetchPost();
-            setCurrentImageIndex(0);
+            setCurrentImageIndex(1);
         } else {
             setCurrentImageIndex((currentImageIndex) => (currentImageIndex + 1) % images.length);
+            setImage(images[currentImageIndex].imageUrl);
         }
-        await fetchPost();
+       // await fetchPost();
         await animate(scope.current, {x: "80vw"});
         await animate(scope.current, {x: 0});
       // Perform any other actions or state updates as needed
@@ -103,11 +119,13 @@ const PostAndComment = () => {
 
     const handleRedButtonClick = async () => {
         setShow(false);
-        if (currentImageIndex + 1 % images.length == 0) {
+        if ((currentImageIndex + 1) % images.length == 0) {
+            //console.log("Green Calls fetch post")
             await fetchPost();
-            setCurrentImageIndex(0);
+            setCurrentImageIndex(1);
         } else {
             setCurrentImageIndex((currentImageIndex) => (currentImageIndex + 1) % images.length);
+            setImage(images[currentImageIndex].imageUrl);
         }
         await animate(scope.current, {x: "-80vw"});
         await animate(scope.current, {x: 0});
@@ -229,9 +247,9 @@ const PostAndComment = () => {
                     right="9.37%"
                 ></Icon>
                 </View>
-                {images[currentImageIndex] ? (
+                {image ? (
                     <Image className="post-img"
-                    src={images[currentImageIndex].imageUrl}
+                    src={image}
                     ></Image>
                     //src={Post?.outfitimage}
                     //src="https://cdn.discordapp.com/attachments/1120152118272213053/1201614916788965536/IMG_5675.jpg?ex=65dceb19&is=65ca7619&hm=277e5088a148d22bbb7935216d52437d827a889d0d6e4e7dded8eeb7a4af1336&"
