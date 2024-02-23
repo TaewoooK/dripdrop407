@@ -53,8 +53,8 @@ const PostAndComment = () => {
             } else {
                 setNextToken(null);
             }
-            //console.log("posts")
-            //console.log(postData)
+            console.log("posts")
+            console.log(postData)
             const imagePromises = postData.map(async (post) => {
                 const postData = await getUrl({ key: post.postImageKey });
                     return {
@@ -64,9 +64,10 @@ const PostAndComment = () => {
                 });
             const fetchedImages = await Promise.all(imagePromises);
             setImages(fetchedImages); 
-            //console.log("Fetched images")
-            //console.log(fetchedImages)
+            console.log("Fetched images")
+            console.log(fetchedImages)
             setImage(fetchedImages[0].imageUrl);
+            setCurrentImageIndex(0);
             //console.log("End of fetchPost logging")       
         } catch (error) {
             console.error("Error fetching posts: ", error);
@@ -85,31 +86,23 @@ const PostAndComment = () => {
     
     useEffect(() => {
         if (posts.length > 0 && images.length > 0) {
-            /*console.log("Debugging surya code")
-            console.log(currentImageIndex)
-            console.log(images.length)
-            console.log(posts.length)
-            console.log(currentImageIndex % images.length)
-            console.log(posts[currentImageIndex % images.length])
-            console.log("End of surya code")*/
-            setCurrPostID(posts[currentImageIndex % images.length].id);
+            setCurrPostID(posts[currentImageIndex].id);
         }
     }, [posts, currentImageIndex])
 
     const[scope, animate] = useAnimate();
     const handleGreenButtonClick = async () => {
         setShow(false);
-        /*console.log("Green button initial")
-        console.log(currentImageIndex + 1)
-        console.log(images.length)
-        console.log((currentImageIndex + 1) % 10)*/
+        console.log("Green button initial")
+        console.log("Image index")
+        console.log(currentImageIndex)
         if ((currentImageIndex + 1) % images.length == 0) {
             //console.log("Green Calls fetch post")
             await fetchPost();
-            setCurrentImageIndex(1);
         } else {
             setCurrentImageIndex((currentImageIndex) => (currentImageIndex + 1) % images.length);
-            setImage(images[currentImageIndex].imageUrl);
+            let tempImgIndex = (currentImageIndex + 1) % images.length;
+            setImage(images[tempImgIndex].imageUrl);
         }
        // await fetchPost();
         await animate(scope.current, {x: "80vw"});
@@ -122,10 +115,10 @@ const PostAndComment = () => {
         if ((currentImageIndex + 1) % images.length == 0) {
             //console.log("Green Calls fetch post")
             await fetchPost();
-            setCurrentImageIndex(1);
         } else {
             setCurrentImageIndex((currentImageIndex) => (currentImageIndex + 1) % images.length);
-            setImage(images[currentImageIndex].imageUrl);
+            let tempImgIndex = (currentImageIndex + 1) % images.length;
+            setImage(images[tempImgIndex].imageUrl);
         }
         await animate(scope.current, {x: "-80vw"});
         await animate(scope.current, {x: 0});
@@ -134,16 +127,23 @@ const PostAndComment = () => {
       };
 
       const handleCommentsExpansionClick = async () => {
+        const currPostFields = await client.graphql({
+            query: getPost,
+            variables: { id: currPostID }
+        });
+        console.log(currPostFields)
+        let enableCommentsValue = currPostFields.data.getPost.enable_comments;
         setShow(!showComment);
-        if (!showComment) {
+        if (!showComment && enableCommentsValue) {
             const getComments = await client.graphql({
                 query: commentsByPostId,
-                variables: { postId: posts[currentImageIndex].id }
+                variables: { postId: currPostID }
             });
             const commentsList = getComments.data.commentsByPostId.items
             const commentsTextArray = commentsList.map(comment => comment.text);
             setComments(commentsList);
             setCommentsText(commentsTextArray);
+            console.log(commentsList)
         }
       }
 
