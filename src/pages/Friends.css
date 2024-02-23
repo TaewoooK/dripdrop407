@@ -10,6 +10,21 @@
     color: white;
 }
 
+/* Styling for Search Field */
+.amplify-searchfield {
+    width: 350px;   
+    text-align: left;
+}
+
+.amplify-input {
+    color: white;
+}
+
+.amplify-input:focus {
+    border-color: white;
+}
+/* -------------------------- */
+
 p {
     color: white;
 }

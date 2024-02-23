@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { UserContext } from './UserContext';
+import { UserProvider, UserContext } from './UserContext';
 
 import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
@@ -72,12 +72,6 @@ const components = {
 };
 
 export default function App() {
-  const { users } = useContext(UserContext);
-  console.log('Users:', users);
-
-  const authAttributes = useAuth().user?.attributes ?? {};
-  console.log('authAttributes:', authAttributes);
-
   let component;
   switch (window.location.pathname) {
     case "/":
@@ -100,22 +94,24 @@ export default function App() {
   return (
     <Authenticator variation="modal" components={components} signUpAttributes={['email', 'username']}>
       {({ signOut, user }) => (
-        <View className="App">
-          <div>
-            <Grid
-              columnGap="0.5rem"
-              rowGap="0.5rem"
-              templateColumns="1fr 4fr"
-              alignContent="center"
-            >
-              <NavBar columnStart="1" columnEnd="2" />
+        <UserProvider>
+          <View className="App">
+            <div>
+              <Grid
+                columnGap="0.5rem"
+                rowGap="0.5rem"
+                templateColumns="1fr 4fr"
+                alignContent="center"
+              >
+                <NavBar columnStart="1" columnEnd="2" />
 
-              <div columnStart="2" columnEnd="-1">
-                {component}
-              </div>
-            </Grid>
-          </div>
-        </View>
+                <div columnStart="2" columnEnd="-1">
+                  {component}
+                </div>
+              </Grid>
+            </div>
+          </View>
+        </UserProvider>
       )}
     </Authenticator>
   );
