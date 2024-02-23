@@ -186,7 +186,7 @@ export default function EditProfileNew(props) {
             padding="0px 0px 0px 0px"
             objectFit="cover"
           ></Image>
-          <Text
+          {/*<Text
             fontFamily="Inter"
             fontSize="16px"
             fontWeight="400"
@@ -206,7 +206,7 @@ export default function EditProfileNew(props) {
             padding="0px 0px 0px 0px"
             whiteSpace="pre-wrap"
             children="Upload New Image"
-          ></Text>
+        ></Text>*/}
         </Flex>
         <Flex
           gap="16px"
