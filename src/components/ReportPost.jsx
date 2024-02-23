@@ -12,7 +12,7 @@ import { fetchUserAttributes } from "aws-amplify/auth";
 import { createPostReport } from "../graphql/mutations";
 import { generateClient } from "aws-amplify/api";
 
-export default function ReportPost({toggleReportPost, currPostID}) {
+export default function ReportPost({toggleReportPost, currPostID, showReportNotification}) {
   // const { overrides, ...rest } = props;
   const client = generateClient();
 
@@ -70,6 +70,7 @@ export default function ReportPost({toggleReportPost, currPostID}) {
     }
 
     toggleReportPost();
+    showReportNotification();
   }
 
   return (
