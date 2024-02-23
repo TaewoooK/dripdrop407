@@ -61,9 +61,11 @@ const ProfilePage = () => {
     setIsModalOpen(false);
   };
 
-  const handleClickChild = () => {
+  const handleClickChild = async () => {
     console.log('Received click event');
     closeModal();
+    const userAttributes = await fetchUserAttributes();
+    setUser(userAttributes);
   }
 
   const [user, setUser] = useState(null);
@@ -160,10 +162,13 @@ const ProfilePage = () => {
         <div style={styles.profile}>
           <Button style={styles.editButton} onClick={openModal}>Edit Profile</Button>
           <h1 style={styles.heading}>Welcome {currUser.username}!</h1>
+          <h2 style={styles.info}>Preferred Username: {user.preferred_username}</h2>
           <h2 style={styles.info}>Email: {user.email}</h2>
           <h2 style={styles.info}>
             Email Verified: {user.email_verified ? "Yes" : "No"}
           </h2>
+          <h2 style={styles.info}>Name: {user.name} {user.family_name}</h2>
+          <h2 style={styles.info}>Gender: {user.gender}</h2>
         </div>
       ) : (
         <p style={styles.error}>
