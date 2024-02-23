@@ -55,11 +55,21 @@ const UploadImage = () => {
     setDescription(event.target.value);
   };
 
+  const [isChecked, setIsChecked] = useState(false);
+
+  // Handler function to toggle the checkbox state
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+    console.log(isChecked)
+    console.log("comments checked/unchecked");
+  };
+
   const handleSubmit = async () => {
     setSucceeded(2);
     // Handle post submission logic here
     console.log("Image:", image);
     console.log("Description:", description);
+    console.log(isChecked)
 
     const currDate = new Date().toISOString();
 
@@ -72,7 +82,7 @@ const UploadImage = () => {
           comments: String,
           drip_points: 0,
           createdAt: currDate,
-          enable_comments: true,
+          enable_comments: !isChecked,
           postImageKey: "",
         },
       },
@@ -151,20 +161,32 @@ const UploadImage = () => {
           onClick={() => alert("📸 Say cheese!")}
         />
       )}
-      <textarea
-        placeholder="Enter description"
-        value={description}
-        onChange={handleDescriptionChange}
-        style={{
-          width: "100%",
-          height: "150px", // Increased height of textarea
-          marginBottom: "30px",
-          padding: "10px",
-          border: "1px solid #ddd",
-          borderRadius: "5px",
-          boxSizing: "border-box",
-        }}
-      ></textarea>
+      <div style={{ marginBottom: "30px"}}>
+        <textarea
+          placeholder="Enter description"
+          value={description}
+          onChange={handleDescriptionChange}
+          style={{
+            width: "100%",
+            height: "150px", // Increased height of textarea
+            marginBottom: "0px",
+            padding: "10px",
+            border: "1px solid #ddd",
+            borderRadius: "5px",
+            boxSizing: "border-box",
+          }}
+        ></textarea>
+
+        <label style={{ marginBottom: "30px"}}>
+          <input 
+          type="checkbox"
+          checked={isChecked} // Bind the checkbox state to the isChecked variable
+          onChange={handleCheckboxChange} // Call the handler function on checkbox change
+          style={{ padding: '10px 0 20px 0'}}></input>
+          <span>Enable comments?</span>
+        </label>
+      </div>
+
       <button
         onClick={handleSubmit}
         style={{
