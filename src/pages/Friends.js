@@ -14,6 +14,10 @@ import {
   listFriendRequests,
   listFriends
 } from "./../graphql/queries";
+import {
+  createFriend,
+  createFriendRequest
+} from "./../graphql/mutations";
 
 // UI imports
 import "./Friends.css";
@@ -70,8 +74,25 @@ const Friends = () => {
     setFriends(friendsFromAPI.filter(friend => friend.Username === username));
   }
 
-  async function sendFriendRequest(friendUsername) {
+  async function sendFriendRequest(requestedUsername) {
+    // Insert friend request for requested user
+    try {
+      await client.graphql({
+      query: createFriendRequest.replaceAll("__typename", ""),
+      variables: {
+          input: {
+              Username: requestedUsername,
+              SenderUsername: myUser.username,
+          },
+      },
+      });
 
+      alert('Friend Request sent to ' + requestedUsername + '!');
+
+      fetchRequestsAndFriends(myUser.username);
+    } catch (error) {
+      console.log('Error sending friend request: ', error);
+    }
   }
 
   // # HANDLER METHODS
@@ -135,6 +156,10 @@ const Friends = () => {
     return friends.length === 0;
   }
 
+  const getOtherFriend = (friend) => {
+    return allFriends.find(otherFriend => otherFriend.Username === friend.FriendUsername && otherFriend.FriendUsername === friend.Username);
+  }
+
   return (
     <View className="Friends">
       <Flex
@@ -187,7 +212,11 @@ const Friends = () => {
               gap="1rem"
             >
               {requests.map((request, index) => (
-                <FriendRequestComponent key={index} friendRequest={request} onClickEvent={handleClickChild}/>
+                <FriendRequestComponent 
+                  key={index} 
+                  friendRequest={request} 
+                  onClickEvent={handleClickChild}
+                />
               ))}
             </Flex>
           </>
@@ -214,7 +243,12 @@ const Friends = () => {
             gap="1rem"
             >
               {friends.map((friend, index) => (
-                <FriendComponent key={index} friend={friend} onClickEvent={handleClickChild}/>
+                <FriendComponent 
+                  key={index} 
+                  friend={friend} 
+                  onClickEvent={handleClickChild} 
+                  otherFriend={getOtherFriend(friend)}
+                />
               ))}
             </Flex>
           </>

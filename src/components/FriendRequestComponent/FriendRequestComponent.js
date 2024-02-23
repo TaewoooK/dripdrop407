@@ -18,14 +18,6 @@ const client = generateClient();
 export default function FriendRequest(props) {
     const { key, friendRequest, onClickEvent } = props;
     const { allUsers, myUser } = useContext(UserContext);
-    
-
-    // useEffect(() => {
-    //     console.log('auth attr: ', authAttributes);
-    // }, []);
-    // console.log('FriendRequestComponent props:', props);
-    // console.log('FriendRequestComponent friendRequest:', friendRequest);
-    // console.log('FriendRequestComponent key:', key);
 
 
     const handleDeleteFriendRequest = async () => {
