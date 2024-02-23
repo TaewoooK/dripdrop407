@@ -5,7 +5,9 @@
  **************************************************************************/
 
 /* eslint-disable */
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
+import { UserContext } from './../../UserContext';
+
 import { getOverrideProps, useAuth } from "../../ui-components/utils";
 import { generateClient } from "aws-amplify/api";
 import { createFriend, deleteFriendRequest } from "../../graphql/mutations";
@@ -15,11 +17,7 @@ const client = generateClient();
 
 export default function FriendRequest(props) {
     const { key, friendRequest, onClickEvent } = props;
-    const authAttributes = useAuth().user?.attributes ?? {};
-    
-    console.log('FriendRequestComponent props:', props);
-    console.log('FriendRequestComponent friendRequest:', friendRequest);
-    console.log('FriendRequestComponent key:', key);
+    const { allUsers, myUser } = useContext(UserContext);
 
 
     const handleDeleteFriendRequest = async () => {
@@ -27,7 +25,7 @@ export default function FriendRequest(props) {
         query: deleteFriendRequest.replaceAll("__typename", ""),
         variables: {
             input: {
-                id: friendRequest?.id,
+                id: friendRequest.id,
             },
         },
         });
@@ -36,13 +34,24 @@ export default function FriendRequest(props) {
     };
 
     const handleAddFriend = async () => {
+        // Insert friend record for current user
         await client.graphql({
         query: createFriend.replaceAll("__typename", ""),
         variables: {
             input: {
-                UserId: authAttributes.sub,
-                FriendId: friendRequest?.SenderId,
-                FriendUsername: friendRequest?.SenderUsername,
+                Username: myUser.username,
+                FriendUsername: friendRequest.SenderUsername,
+            },
+        },
+        });
+
+        // Insert friend record for friend user
+        await client.graphql({
+        query: createFriend.replaceAll("__typename", ""),
+        variables: {
+            input: {
+                Username: friendRequest.SenderUsername,
+                FriendUsername: myUser.username,
             },
         },
         });

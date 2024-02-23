@@ -5,7 +5,9 @@
  **************************************************************************/
 
 /* eslint-disable */
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { UserContext } from './../../UserContext';
+
 import { generateClient } from "aws-amplify/api";
 import { deleteFriend } from "../../graphql/mutations";
 // import { getOverrideProps, useAuth } from "../../ui-components/utils";
@@ -14,18 +16,41 @@ import { Button, Icon, Text, View } from "@aws-amplify/ui-react";
 const client = generateClient();
 
 export default function Friend(props) {
-  const { key, friend, onClickEvent } = props;
+  const { key, friend, onClickEvent, otherFriend } = props;
+  const { allUsers, myUser } = useContext(UserContext);
 
   const handleRemoveFriend = async () => {
-    console.log('Clicked remove friend id: ', friend.friendId)
-    await client.graphql({
-      query: deleteFriend.replaceAll("__typename", ""),
-      variables: {
-        input: {
-          id: friend.id,
+    console.log('Clicked remove friend: ', friend.FriendUsername)
+    // Remove Friend record for current user
+    try {
+      await client.graphql({
+        query: deleteFriend.replaceAll("__typename", ""),
+        variables: {
+          input: {
+            id: friend.id,
+          },
         },
-      },
-    });
+      });
+    } catch (error) {
+      console.log('Removing Friend record for current user failed: ', error);
+    }
+
+    console.log('friend: ', friend);
+    console.log('otherFriend: ', otherFriend);
+
+    // Remove Friend record for ex-friend user
+    try {
+      await client.graphql({
+        query: deleteFriend.replaceAll("__typename", ""),
+        variables: {
+          input: {
+            id: otherFriend.id,
+          },
+        },
+      });
+    } catch (error) {
+      console.log('Removing Friend record for ex-friend user failed: ', error);
+    }
 
     onClickEvent();
   };
