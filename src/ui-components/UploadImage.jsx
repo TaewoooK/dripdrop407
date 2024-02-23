@@ -60,6 +60,7 @@ const UploadImage = () => {
   // Handler function to toggle the checkbox state
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
+    console.log(isChecked)
     console.log("comments checked/unchecked");
   };
 
@@ -68,6 +69,7 @@ const UploadImage = () => {
     // Handle post submission logic here
     console.log("Image:", image);
     console.log("Description:", description);
+    console.log(isChecked)
 
     const currDate = new Date().toISOString();
 
@@ -80,7 +82,7 @@ const UploadImage = () => {
           comments: String,
           drip_points: 0,
           createdAt: currDate,
-          enable_comments: true,
+          enable_comments: !isChecked,
           postImageKey: "",
         },
       },
