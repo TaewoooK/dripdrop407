@@ -12,7 +12,7 @@ import {
   Button,
 } from "@aws-amplify/ui-react";
 import { getUrl } from "aws-amplify/storage";
-import EditProfile from "./EditProfile";
+import EditProfileNew from "../components/EditProfileNew";
 
 const client = generateClient();
 
@@ -20,7 +20,7 @@ const Modal = ({ onClose }) => {
   return (
     <div style={modalContainerStyles}>
       <div style={modalStyles}>
-        <EditProfile />
+        <EditProfileNew />
         <button onClick={onClose}>Close</button>
       </div>
     </div>
