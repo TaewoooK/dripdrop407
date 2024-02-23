@@ -144,7 +144,7 @@ const Friends = () => {
     const existingRequest = allRequests.find(request => request.Username === myUser.username && request.SenderUsername === search);
 
     if (existingRequest) {
-      alert(`Existing Friend Request`);
+      alert(search + ` already sent you a friend request.`);
       return;
     }
 
@@ -155,29 +155,32 @@ const Friends = () => {
       );
 
     if (existingFriend) {
-      alert(`Existing Friend`);
+      alert(search + ' is already your friend.');
       return;
     }
 
-    // If user does not exist
-    const existingUser = allUsers.find(user => user.Username === search);
-    if (!existingUser) {
-      alert('User does not exist.');
+    if (!userExists(search)) {
+      alert(search + ' is not an existing user.');
+      return;
     }
 
     sendFriendRequest(search);
   }
 
+  const handleClickRefresh = () => {
+    fetchRequestsAndFriends(myUser.username);
+  }
+
   // # HELPER METHODS
-  // const userExists = (username) => {
-  //   const existingUser = allUsers.find(user => user.Username === search);
-  //   return 
-  // }
+  // Checks if given username exists in pool of users
+  const userExists = (username) => {
+    const existingUser = allUsers.find(user => user.Username === username);
+    return !(existingUser === undefined);
+  }
 
   // Re-fetch requests and friends after click event
   const handleClickChild = () => {
-    console.log('Received click event');
-    fetchRequestsAndFriends(myUser?.username);
+    fetchRequestsAndFriends(myUser.username);
   }
 
   // # GETTER METHODS
@@ -226,6 +229,15 @@ const Friends = () => {
             onClick={handleClickAdd}
           >
             Add
+          </Button>
+
+          <Button
+            isLoading={false}
+            variation="primary"
+            size="small"
+            onClick={handleClickRefresh}
+          >
+            Refresh
           </Button>
         </Flex>
         {isEmptyFriendReqs() ? 
