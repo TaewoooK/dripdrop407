@@ -34,7 +34,7 @@ export const UserProvider = ({ children }) => {
                 ]
             }
 
-            // Establish credentials via Justin's IAM user before making AWS SDK API call
+            // Establish credentials via IAM user before making AWS SDK API call
             AWS.config.update({
                 region: process.env.REACT_APP_AWS_REGION,
                 accessKeyId: process.env.REACT_APP_ACCESS_KEY_ID,

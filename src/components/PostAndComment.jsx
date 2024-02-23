@@ -53,8 +53,8 @@ const PostAndComment = () => {
             } else {
                 setNextToken(null);
             }
-            //console.log("posts")
-            //console.log(postData)
+            console.log("posts")
+            console.log(postData)
             const imagePromises = postData.map(async (post) => {
                 const postData = await getUrl({ key: post.postImageKey });
                     return {
@@ -64,9 +64,10 @@ const PostAndComment = () => {
                 });
             const fetchedImages = await Promise.all(imagePromises);
             setImages(fetchedImages); 
-            //console.log("Fetched images")
-            //console.log(fetchedImages)
+            console.log("Fetched images")
+            console.log(fetchedImages)
             setImage(fetchedImages[0].imageUrl);
+            setCurrentImageIndex(0);
             //console.log("End of fetchPost logging")       
         } catch (error) {
             console.error("Error fetching posts: ", error);
@@ -85,31 +86,23 @@ const PostAndComment = () => {
     
     useEffect(() => {
         if (posts.length > 0 && images.length > 0) {
-            /*console.log("Debugging surya code")
-            console.log(currentImageIndex)
-            console.log(images.length)
-            console.log(posts.length)
-            console.log(currentImageIndex % images.length)
-            console.log(posts[currentImageIndex % images.length])
-            console.log("End of surya code")*/
-            setCurrPostID(posts[currentImageIndex % images.length].id);
+            setCurrPostID(posts[currentImageIndex].id);
         }
     }, [posts, currentImageIndex])
 
     const[scope, animate] = useAnimate();
     const handleGreenButtonClick = async () => {
         setShow(false);
-        /*console.log("Green button initial")
-        console.log(currentImageIndex + 1)
-        console.log(images.length)
-        console.log((currentImageIndex + 1) % 10)*/
+        console.log("Green button initial")
+        console.log("Image index")
+        console.log(currentImageIndex)
         if ((currentImageIndex + 1) % images.length == 0) {
             //console.log("Green Calls fetch post")
             await fetchPost();
-            setCurrentImageIndex(1);
         } else {
             setCurrentImageIndex((currentImageIndex) => (currentImageIndex + 1) % images.length);
-            setImage(images[currentImageIndex].imageUrl);
+            let tempImgIndex = (currentImageIndex + 1) % images.length;
+            setImage(images[tempImgIndex].imageUrl);
         }
        // await fetchPost();
         await animate(scope.current, {x: "80vw"});
@@ -122,10 +115,10 @@ const PostAndComment = () => {
         if ((currentImageIndex + 1) % images.length == 0) {
             //console.log("Green Calls fetch post")
             await fetchPost();
-            setCurrentImageIndex(1);
         } else {
             setCurrentImageIndex((currentImageIndex) => (currentImageIndex + 1) % images.length);
-            setImage(images[currentImageIndex].imageUrl);
+            let tempImgIndex = (currentImageIndex + 1) % images.length;
+            setImage(images[tempImgIndex].imageUrl);
         }
         await animate(scope.current, {x: "-80vw"});
         await animate(scope.current, {x: 0});
@@ -134,16 +127,23 @@ const PostAndComment = () => {
       };
 
       const handleCommentsExpansionClick = async () => {
-        setShow(!showComment);
-        if (!showComment) {
+        const currPostFields = await client.graphql({
+            query: getPost,
+            variables: { id: currPostID }
+        });
+        console.log(currPostFields)
+        let enableCommentsValue = currPostFields.data.getPost.enable_comments && !showComment;
+        setShow(enableCommentsValue);
+        if (enableCommentsValue) {
             const getComments = await client.graphql({
                 query: commentsByPostId,
-                variables: { postId: posts[currentImageIndex].id }
+                variables: { postId: currPostID }
             });
             const commentsList = getComments.data.commentsByPostId.items
             const commentsTextArray = commentsList.map(comment => comment.text);
             setComments(commentsList);
             setCommentsText(commentsTextArray);
+            console.log(commentsList)
         }
       }
 
@@ -181,6 +181,14 @@ const PostAndComment = () => {
     const toggleReportPost = () => {
         setShowReportPost(!showReportPost);
         setShowActionCenter(false);
+    };
+
+    const [isCommentDeleted, setIsCommentDeleted] = useState(false);
+
+    // Handler function to toggle the comment deletion state
+    const handleIconClick = () => {
+      setIsCommentDeleted(!isCommentDeleted);
+      console.log("comment deleted");
     };
 
 
@@ -442,23 +450,42 @@ const PostAndComment = () => {
                                 .reduce((acc, curr) => acc + (curr.length > 50 ? 90 : 60), 11); // Adjust the height accordingly
                             return (
                                 <Card
-                                    key={index} // Make sure to add a unique key for each card
-                                    width="240px"
-                                    height="auto" // Change height to "auto" to allow the card's height to adjust based on content
-                                    position="absolute"
-                                    backgroundColor="rgba(70,70,70,1)"
-                                    top={`${topPosition}px`} // Adjust the top position dynamically
-                                    left="10px"
-                                    borderRadius="25px"
-                                    variation="outline"
-                                    style={{ margin: 10, wordBreak: "break-all" }}
+                                key={index}
+                                width="240px"
+                                height="auto"
+                                position="absolute"
+                                display="flex"
+                                backgroundColor="rgba(70,70,70,1)"
+                                top={`${topPosition}px`}
+                                left="10px"
+                                borderRadius="25px"
+                                variation="outline"
+                                style={{ margin: 10, display: 'flex', alignItems: 'center' }}
                                 >
-                                    <Text
-                                        color="rgba(255,255,255,1)"
-                                        style={{ fontSize: 12, margin: 2, wordBreak: "break-word" }} // Use "break-word" to allow long words to break
-                                    >
-                                        {text}
-                                    </Text>
+                                <Text
+                                    color="rgba(255,255,255,1)"
+                                    style={{ fontSize: 12, margin: 2, wordBreak: 'break-word' }}
+                                >
+                                    {text}
+                                </Text>
+                                <Icon
+                                    width="22.5px"
+                                    height="25px"
+                                    viewBox={{ minX: 0, minY: 0, width: 22.5, height: 25 }}
+                                    position="absolute"
+                                    left="210px"
+                                    style={{ cursor: 'pointer' }} // Add cursor: pointer style
+                                    onClick={handleIconClick} // Call the handler function on icon click
+                                    paths={[
+                                        {
+                                        d: "m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
+                                        stroke: "rgba(255,255,255,1)",
+                                        fillRule: "nonzero",
+                                        strokeLinejoin: "round",
+                                        strokeWidth: 2,
+                                        },
+                                    ]}
+                                ></Icon>
                                 </Card>
                             );
                         })}
