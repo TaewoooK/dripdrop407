@@ -55,6 +55,14 @@ const UploadImage = () => {
     setDescription(event.target.value);
   };
 
+  const [isChecked, setIsChecked] = useState(false);
+
+  // Handler function to toggle the checkbox state
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+    console.log("comments checked/unchecked");
+  };
+
   const handleSubmit = async () => {
     setSucceeded(2);
     // Handle post submission logic here
@@ -151,6 +159,14 @@ const UploadImage = () => {
           onClick={() => alert("📸 Say cheese!")}
         />
       )}
+      <label style={{ padding: '10px 0 20px 0'}}>
+        <input 
+        type="checkbox"
+        checked={isChecked} // Bind the checkbox state to the isChecked variable
+        onChange={handleCheckboxChange} // Call the handler function on checkbox change
+        style={{ padding: '10px 0 20px 0'}}></input>
+        <span>Enable comments?</span>
+      </label>
       <textarea
         placeholder="Enter description"
         value={description}
