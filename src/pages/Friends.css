@@ -6,21 +6,21 @@
     background-color: rgba(34, 34, 34, 1);
 }
 
-.amplify-heading {
+.Friends .amplify-heading {
     color: white;
 }
 
 /* Styling for Search Field */
-.amplify-searchfield {
+.Friends .amplify-searchfield {
     width: 350px;   
     text-align: left;
 }
 
-.amplify-input {
+.Friends .amplify-input {
     color: white;
 }
 
-.amplify-input:focus {
+.Friends .amplify-input:focus {
     border-color: white;
 }
 /* -------------------------- */
