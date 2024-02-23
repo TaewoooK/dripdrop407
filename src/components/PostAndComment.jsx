@@ -85,13 +85,6 @@ const PostAndComment = () => {
     
     useEffect(() => {
         if (posts.length > 0 && images.length > 0) {
-            /*console.log("Debugging surya code")
-            console.log(currentImageIndex)
-            console.log(images.length)
-            console.log(posts.length)
-            console.log(currentImageIndex % images.length)
-            console.log(posts[currentImageIndex % images.length])
-            console.log("End of surya code")*/
             setCurrPostID(posts[currentImageIndex % images.length].id);
         }
     }, [posts, currentImageIndex])
@@ -134,11 +127,16 @@ const PostAndComment = () => {
       };
 
       const handleCommentsExpansionClick = async () => {
+        const currPostFields = await client.graphql({
+            query: getPost,
+            variables: { id: currPostID }
+        });
+        let enableCommentsValue = currPostFields.data.getPost.enable_comments;
         setShow(!showComment);
-        if (!showComment) {
+        if (!showComment && enableCommentsValue) {
             const getComments = await client.graphql({
                 query: commentsByPostId,
-                variables: { postId: posts[currentImageIndex].id }
+                variables: { postId: currPostID }
             });
             const commentsList = getComments.data.commentsByPostId.items
             const commentsTextArray = commentsList.map(comment => comment.text);
