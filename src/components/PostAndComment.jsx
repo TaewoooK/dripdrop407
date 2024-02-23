@@ -132,9 +132,9 @@ const PostAndComment = () => {
             variables: { id: currPostID }
         });
         console.log(currPostFields)
-        let enableCommentsValue = currPostFields.data.getPost.enable_comments;
-        setShow(!showComment);
-        if (!showComment && enableCommentsValue) {
+        let enableCommentsValue = currPostFields.data.getPost.enable_comments && !showComment;
+        setShow(enableCommentsValue);
+        if (enableCommentsValue) {
             const getComments = await client.graphql({
                 query: commentsByPostId,
                 variables: { postId: currPostID }

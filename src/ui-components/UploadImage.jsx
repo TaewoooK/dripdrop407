@@ -60,7 +60,7 @@ const UploadImage = () => {
   // Handler function to toggle the checkbox state
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
-    console.log(isChecked)
+    console.log(!isChecked)
     console.log("comments checked/unchecked");
   };
 
@@ -69,7 +69,7 @@ const UploadImage = () => {
     // Handle post submission logic here
     console.log("Image:", image);
     console.log("Description:", description);
-    console.log(isChecked)
+    let commentEnabled = isChecked;
 
     const currDate = new Date().toISOString();
 
@@ -82,11 +82,14 @@ const UploadImage = () => {
           comments: String,
           drip_points: 0,
           createdAt: currDate,
-          enable_comments: !isChecked,
+          enable_comments: commentEnabled,
           postImageKey: "",
         },
       },
     });
+
+    // console.log("Logging response from createPost")
+    // console.log(response)
 
     const postContext = response.data.createPost;
     if (!postContext) {
@@ -104,6 +107,7 @@ const UploadImage = () => {
     const updatePostDetails = {
       id: postContext.id,
       postImageKey: imageUpload?.key,
+      enable_comments: commentEnabled
     };
 
     const updatePostResponse = await client.graphql({
@@ -112,6 +116,8 @@ const UploadImage = () => {
     });
 
     const updatedPost = updatePostResponse.data.updatePost;
+    // console.log("Logging response from updatePost")
+    // console.log(updatedPost)
     if (!updatedPost.postImageKey) return;
     const signedURL = await getUrl({ key: updatedPost.postImageKey });
     console.log(signedURL);
