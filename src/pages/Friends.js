@@ -16,7 +16,8 @@ import {
 } from "./../graphql/queries";
 import {
   createFriend,
-  createFriendRequest
+  createFriendRequest,
+  deleteFriendRequest
 } from "./../graphql/mutations";
 
 // UI imports
@@ -74,6 +75,27 @@ const Friends = () => {
     setFriends(friendsFromAPI.filter(friend => friend.Username === username));
   }
 
+  async function rescindFriendRequest(requestedUsername) {
+    const requestToDelete = allRequests.find(request => request.Username === requestedUsername);
+
+    try {
+      await client.graphql({
+        query: deleteFriendRequest.replaceAll("__typename", ""),
+        variables: {
+          input: {
+            id: requestToDelete.id,
+          },
+        },
+      });
+
+      alert('Friend Request sent to ' + requestedUsername + ' was rescinded.');
+
+      fetchRequestsAndFriends(myUser.username);
+    } catch (error) {
+      console.log('Error rescinding friend request: ', error);
+    }
+  }
+
   async function sendFriendRequest(requestedUsername) {
     // Insert friend request for requested user
     try {
@@ -110,11 +132,16 @@ const Friends = () => {
       return;
     }
 
-    // If there's an existing friend request
-    const existingRequest = allRequests.find(request =>
-      (request.Username === myUser.username && request.SenderUsername === search)
-      || (request.Username === search && request.SenderUsername === myUser.username)
-      );
+    // If there's an existing outgoing friend request to the search, then rescind it
+    const existingSentRequest = allRequests.find(request => request.Username === search && request.SenderUsername === myUser.username);
+    
+    if (existingSentRequest) {
+      rescindFriendRequest(search);
+      return;
+    }
+
+    // If there's an existing incoming friend request from search
+    const existingRequest = allRequests.find(request => request.Username === myUser.username && request.SenderUsername === search);
 
     if (existingRequest) {
       alert(`Existing Friend Request`);
@@ -140,6 +167,12 @@ const Friends = () => {
 
     sendFriendRequest(search);
   }
+
+  // # HELPER METHODS
+  // const userExists = (username) => {
+  //   const existingUser = allUsers.find(user => user.Username === search);
+  //   return 
+  // }
 
   // Re-fetch requests and friends after click event
   const handleClickChild = () => {
