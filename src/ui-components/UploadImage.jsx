@@ -159,28 +159,32 @@ const UploadImage = () => {
           onClick={() => alert("📸 Say cheese!")}
         />
       )}
-      <label style={{ padding: '10px 0 20px 0'}}>
-        <input 
-        type="checkbox"
-        checked={isChecked} // Bind the checkbox state to the isChecked variable
-        onChange={handleCheckboxChange} // Call the handler function on checkbox change
-        style={{ padding: '10px 0 20px 0'}}></input>
-        <span>Enable comments?</span>
-      </label>
-      <textarea
-        placeholder="Enter description"
-        value={description}
-        onChange={handleDescriptionChange}
-        style={{
-          width: "100%",
-          height: "150px", // Increased height of textarea
-          marginBottom: "30px",
-          padding: "10px",
-          border: "1px solid #ddd",
-          borderRadius: "5px",
-          boxSizing: "border-box",
-        }}
-      ></textarea>
+      <div style={{ marginBottom: "30px"}}>
+        <textarea
+          placeholder="Enter description"
+          value={description}
+          onChange={handleDescriptionChange}
+          style={{
+            width: "100%",
+            height: "150px", // Increased height of textarea
+            marginBottom: "0px",
+            padding: "10px",
+            border: "1px solid #ddd",
+            borderRadius: "5px",
+            boxSizing: "border-box",
+          }}
+        ></textarea>
+
+        <label style={{ marginBottom: "30px"}}>
+          <input 
+          type="checkbox"
+          checked={isChecked} // Bind the checkbox state to the isChecked variable
+          onChange={handleCheckboxChange} // Call the handler function on checkbox change
+          style={{ padding: '10px 0 20px 0'}}></input>
+          <span>Enable comments?</span>
+        </label>
+      </div>
+
       <button
         onClick={handleSubmit}
         style={{
