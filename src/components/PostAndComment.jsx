@@ -11,6 +11,7 @@ import { listPosts, getPost, commentsByPostId } from "../graphql/queries";
 import { getUrl } from "aws-amplify/storage";
 import PostActionCenter from "./PostActionCenter";
 import ReportPost from "./ReportPost";
+import toast, { Toaster } from "react-hot-toast";
 
 const client = generateClient();
 
@@ -183,6 +184,10 @@ const PostAndComment = () => {
         setShowActionCenter(false);
     };
 
+    const showReportNotification = () => {
+        toast.success("Post reported successfully");
+    };
+
     // const [isCommentDeleted, setIsCommentDeleted] = useState(false);
 
     // Handler function to toggle the comment deletion state
@@ -205,6 +210,7 @@ const PostAndComment = () => {
         const commentsTextArray = commentsList.map(comment => comment.text);
         setComments(commentsList);
         setCommentsText(commentsTextArray);
+        toast.success("Comment deleted successfully");
     };
 
 
@@ -214,6 +220,27 @@ const PostAndComment = () => {
           justifyContent="center"
           gap="0.5rem"
         >
+        <Toaster
+                position="top-right"
+                reverseOrder={false}
+        />
+        {showActionCenter && (
+            <div className="overlay" onClick={toggleActionCenter}>
+                <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
+                <PostActionCenter toggleReportPost={toggleReportPost}/>
+                </div>
+            </div>
+            )}
+
+            {showReportPost && (
+            <div className="overlay" onClick={toggleReportPost}>
+                <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
+                <>{console.log(currPostID)}</>
+                <ReportPost toggleReportPost={toggleReportPost} currPostID={currPostID} showReportNotification={showReportNotification}/>
+                </div>
+            </div>
+            )}
+
         <View className="big-post-container">
             <motion.View className="post-container" 
                 initial={{x: "100vw"}}
@@ -286,22 +313,6 @@ const PostAndComment = () => {
 
                 <MyIcon className="more-icon" type="more_vert" onClick={toggleActionCenter}/>
 
-                {showActionCenter && (
-                <div className="overlay" onClick={toggleActionCenter}>
-                    <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
-                    <PostActionCenter toggleReportPost={toggleReportPost}/>
-                    </div>
-                </div>
-                )}
-
-                {showReportPost && (
-                <div className="overlay" onClick={toggleReportPost}>
-                    <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
-                    <>{console.log(currPostID)}</>
-                    <ReportPost toggleReportPost={toggleReportPost} currPostID={currPostID}/>
-                    </div>
-                </div>
-                )}
 
                 <Flex gap="22px" direction="column" width="unset" height="unset" justifyContent="center" alignItems="center" position="absolute" top="457px" left="190px" padding="0px 0px 0px 0px">
                 <Icon className="profile-picture"
