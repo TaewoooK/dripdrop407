@@ -48,7 +48,6 @@ const modalStyles = {
 };
 
 const ProfilePage = () => {
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => {
@@ -59,7 +58,7 @@ const ProfilePage = () => {
     setIsModalOpen(false);
   };
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({ email: "" });
   const [currUser, setCurrUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [show, setEdit] = useState(false);
@@ -74,12 +73,9 @@ const ProfilePage = () => {
       try {
         const userAttributes = await fetchUserAttributes();
         const currUserAttributes = await getCurrentUser();
-        console.log(userAttributes);
-        console.log(currUserAttributes);
-        console.log(currUserAttributes.signInDetails);
         setUser(userAttributes);
         setCurrUser(currUserAttributes);
-        setVariables({ filter: { owner: { eq: userAttributes.email } } });
+        setVariables({ filter: { owner: { eq: user.email } } });
       } catch (error) {
         console.error("Error fetching user data: ", error);
       } finally {
@@ -142,16 +138,17 @@ const ProfilePage = () => {
         boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <div backgroundColor="rgba(0,0,0,0.5)">
-      {isModalOpen && <Modal onClose={closeModal} />}
+      <div backgroundcolor="rgba(0,0,0,0.5)">
+        {isModalOpen && <Modal onClose={closeModal} />}
       </div>
-
 
       {loading ? (
         <p>Loading...</p>
       ) : user ? (
         <div style={styles.profile}>
-          <Button style={styles.editButton} onClick={openModal}>Edit Profile</Button>
+          <Button style={styles.editButton} onClick={openModal}>
+            Edit Profile
+          </Button>
           <h1 style={styles.heading}>Welcome {currUser.username}!</h1>
           <h2 style={styles.info}>Email: {user.email}</h2>
           <h2 style={styles.info}>
@@ -225,6 +222,5 @@ const styles = {
     marginBottom: "20px",
   },
 };
-
 
 export default ProfilePage;
