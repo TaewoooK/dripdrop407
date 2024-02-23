@@ -158,11 +158,12 @@ export default function EditProfileNew(props) {
             shrink="0"
             alignSelf="stretch"
             size="default"
+            style={{ color: 'black' }} // Set the text color to black
             isDisabled={false}
             labelHidden={false}
             variation="default"
             {...getOverrideProps(overrides, "TextField29766922")}
-          ></TextField>
+          />
           <TextField
             width="unset"
             height="unset"
@@ -171,6 +172,7 @@ export default function EditProfileNew(props) {
             shrink="0"
             alignSelf="stretch"
             size="default"
+            style={{ color: 'black' }} // Set the text color to black
             isDisabled={false}
             labelHidden={false}
             variation="default"

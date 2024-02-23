@@ -183,6 +183,14 @@ const PostAndComment = () => {
         setShowActionCenter(false);
     };
 
+    const [isCommentDeleted, setIsCommentDeleted] = useState(false);
+
+    // Handler function to toggle the comment deletion state
+    const handleIconClick = () => {
+      setIsCommentDeleted(!isCommentDeleted);
+      console.log("comment deleted");
+    };
+
 
   return (
     <Flex
@@ -442,23 +450,42 @@ const PostAndComment = () => {
                                 .reduce((acc, curr) => acc + (curr.length > 50 ? 90 : 60), 11); // Adjust the height accordingly
                             return (
                                 <Card
-                                    key={index} // Make sure to add a unique key for each card
-                                    width="240px"
-                                    height="auto" // Change height to "auto" to allow the card's height to adjust based on content
-                                    position="absolute"
-                                    backgroundColor="rgba(70,70,70,1)"
-                                    top={`${topPosition}px`} // Adjust the top position dynamically
-                                    left="10px"
-                                    borderRadius="25px"
-                                    variation="outline"
-                                    style={{ margin: 10, wordBreak: "break-all" }}
+                                key={index}
+                                width="240px"
+                                height="auto"
+                                position="absolute"
+                                display="flex"
+                                backgroundColor="rgba(70,70,70,1)"
+                                top={`${topPosition}px`}
+                                left="10px"
+                                borderRadius="25px"
+                                variation="outline"
+                                style={{ margin: 10, display: 'flex', alignItems: 'center' }}
                                 >
-                                    <Text
-                                        color="rgba(255,255,255,1)"
-                                        style={{ fontSize: 12, margin: 2, wordBreak: "break-word" }} // Use "break-word" to allow long words to break
-                                    >
-                                        {text}
-                                    </Text>
+                                <Text
+                                    color="rgba(255,255,255,1)"
+                                    style={{ fontSize: 12, margin: 2, wordBreak: 'break-word' }}
+                                >
+                                    {text}
+                                </Text>
+                                <Icon
+                                    width="22.5px"
+                                    height="25px"
+                                    viewBox={{ minX: 0, minY: 0, width: 22.5, height: 25 }}
+                                    position="absolute"
+                                    left="210px"
+                                    style={{ cursor: 'pointer' }} // Add cursor: pointer style
+                                    onClick={handleIconClick} // Call the handler function on icon click
+                                    paths={[
+                                        {
+                                        d: "m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
+                                        stroke: "rgba(255,255,255,1)",
+                                        fillRule: "nonzero",
+                                        strokeLinejoin: "round",
+                                        strokeWidth: 2,
+                                        },
+                                    ]}
+                                ></Icon>
                                 </Card>
                             );
                         })}
