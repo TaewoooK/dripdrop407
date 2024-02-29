@@ -6,6 +6,7 @@ import { fetchUserAttributes } from "aws-amplify/auth";
 import awsExports from "../aws-exports";
 import { Message, Image } from "@aws-amplify/ui-react";
 import { Loader } from "@aws-amplify/ui-react";
+import HidePeople from "./HidePeople";
 
 const client = generateClient();
 
@@ -60,7 +61,7 @@ const UploadImage = () => {
   // Handler function to toggle the checkbox state
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
-    console.log(!isChecked)
+    console.log(!isChecked);
     console.log("comments checked/unchecked");
   };
 
@@ -107,7 +108,7 @@ const UploadImage = () => {
     const updatePostDetails = {
       id: postContext.id,
       postImageKey: imageUpload?.key,
-      enable_comments: commentEnabled
+      enable_comments: commentEnabled,
     };
 
     const updatePostResponse = await client.graphql({
@@ -167,7 +168,7 @@ const UploadImage = () => {
           onClick={() => alert("📸 Say cheese!")}
         />
       )}
-      <div style={{ marginBottom: "30px"}}>
+      <div style={{ marginBottom: "30px" }}>
         <textarea
           placeholder="Enter description"
           value={description}
@@ -183,16 +184,24 @@ const UploadImage = () => {
           }}
         ></textarea>
 
-        <label style={{ marginBottom: "30px"}}>
-          <input 
-          type="checkbox"
-          checked={isChecked} // Bind the checkbox state to the isChecked variable
-          onChange={handleCheckboxChange} // Call the handler function on checkbox change
-          style={{ padding: '10px 0 20px 0'}}></input>
+        <label>
+          <input
+            type="checkbox"
+            checked={isChecked} // Bind the checkbox state to the isChecked variable
+            onChange={handleCheckboxChange} // Call the handler function on checkbox change
+            style={{ padding: "10px 0 20px 0" }}
+          ></input>
           <span>Enable comments?</span>
         </label>
       </div>
-
+      <div
+        style={{
+          padding: "30px", // Increased padding for spacing
+        }}
+      >
+        <HidePeople />
+      </div>
+      {/* Added empty div for spacing */}
       <button
         onClick={handleSubmit}
         style={{

@@ -1,95 +1,96 @@
 .navbar_container {
-    width: 260px;
-    height: 100vh;
-    display: block;
-    overflow: hidden;
-    top: 0;
-    position: sticky;
-    padding: 0px;
-    background-color: rgba(34,34,34,1);
+  width: 260px;
+  height: 100vh;
+  display: block;
+  overflow: hidden;
+  top: 0;
+  position: sticky;
+  padding: 0px;
+  background-color: rgba(34, 34, 34, 1);
+  z-index: 2;
 }
 
 .logo-text {
-    font-family: Inter;
-    font-size: 32px;
-    font-weight: 700;
-    color: rgba(255,255,255,1);
-    line-height: 24px;
-    text-align: left;
-    display: block;
-    flex-direction: column;
-    justify-content: unset;
-    width: unset;
-    height: unset;
-    gap: unset;
-    align-items: unset;
-    position: absolute;
-    top: 20px;
-    left: 29px;
-    padding: 0px;
-    white-space: pre-wrap;
+  font-family: Inter;
+  font-size: 32px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 1);
+  line-height: 24px;
+  text-align: left;
+  display: block;
+  flex-direction: column;
+  justify-content: unset;
+  width: unset;
+  height: unset;
+  gap: unset;
+  align-items: unset;
+  position: absolute;
+  top: 20px;
+  left: 29px;
+  padding: 0px;
+  white-space: pre-wrap;
 }
 
 .blue-text {
-    color: #047D95;
+  color: #047d95;
 }
 
 .selections-container {
-    gap: 40px;
-    flex-direction: column;
-    width: unset;
-    height: unset;
-    justify-content: center;
-    align-items: flex-start;
-    position: absolute;
-    top: 115px;
-    left: 31px;
-    padding: 0px;
+  gap: 40px;
+  flex-direction: column;
+  width: unset;
+  height: unset;
+  justify-content: center;
+  align-items: flex-start;
+  position: absolute;
+  top: 115px;
+  left: 31px;
+  padding: 0px;
 }
 
 .bullets-container {
-    gap: 16px;
-    display: flex;
-    flex-direction: row;
-    width: unset;
-    height: unset;
-    justify-content: flex-start;
-    align-items: center;
-    flex-shrink: 0;
-    position: relative;
-    padding: 0px;
+  gap: 16px;
+  display: flex;
+  flex-direction: row;
+  width: unset;
+  height: unset;
+  justify-content: flex-start;
+  align-items: center;
+  flex-shrink: 0;
+  position: relative;
+  padding: 0px;
 }
 
 .nav-container {
-    width: 18px;
-    height: 18px;
-    display: block;
-    gap: unset;
-    align-items: unset;
-    justify-content: unset;
-    overflow: hidden;
-    flex-shrink: 0;
-    position: relative;
-    padding: 0px;
+  width: 18px;
+  height: 18px;
+  display: block;
+  gap: unset;
+  align-items: unset;
+  justify-content: unset;
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+  padding: 0px;
 }
 
 .nav-text {
-    font-family: 'Inter';
-    font-size: 18px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 1);
-    line-height: 18px;
-    text-align: left;
-    display: block;
-    flex-direction: column;
-    justify-content: unset;
-    width: 50px;
-    height: 18px;
-    gap: unset;
-    align-items: unset;
-    flex-shrink: 0;
-    position: relative;
-    padding: 0px;
+  font-family: "Inter";
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 1);
+  line-height: 18px;
+  text-align: left;
+  display: block;
+  flex-direction: column;
+  justify-content: unset;
+  width: 50px;
+  height: 18px;
+  gap: unset;
+  align-items: unset;
+  flex-shrink: 0;
+  position: relative;
+  padding: 0px;
 }
 
 .signout-container {
@@ -124,21 +125,21 @@
 }
 
 .user-container {
-    gap: 25px;
-    display: flex;
-    flex-direction: row;
-    width: unset;
-    height: unset;
-    justify-content: flex-start;
-    align-items: center;
-    position: absolute;
-    top: 520px;
-    left: 40px;
-    padding: 0;
+  gap: 25px;
+  display: flex;
+  flex-direction: row;
+  width: unset;
+  height: unset;
+  justify-content: flex-start;
+  align-items: center;
+  position: absolute;
+  top: 520px;
+  left: 40px;
+  padding: 0;
 }
 
 .username {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 18px;
   font-weight: 500;
   color: rgba(255, 255, 255, 1);
