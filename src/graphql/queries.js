@@ -79,6 +79,7 @@ export const getPost = /* GraphQL */ `
         nextToken
         __typename
       }
+      hiddenPeople
       updatedAt
       __typename
     }
@@ -99,6 +100,7 @@ export const listPosts = /* GraphQL */ `
         createdAt
         enable_comments
         postImageKey
+        hiddenPeople
         updatedAt
         __typename
       }
@@ -122,6 +124,7 @@ export const getComment = /* GraphQL */ `
         createdAt
         enable_comments
         postImageKey
+        hiddenPeople
         updatedAt
         __typename
       }

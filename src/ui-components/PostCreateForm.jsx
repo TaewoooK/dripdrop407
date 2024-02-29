@@ -7,16 +7,177 @@
 /* eslint-disable */
 import * as React from "react";
 import {
+  Badge,
   Button,
+  Divider,
   Flex,
   Grid,
+  Icon,
+  ScrollView,
   SwitchField,
+  Text,
   TextField,
+  useTheme,
 } from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { createPost } from "../graphql/mutations";
 const client = generateClient();
+function ArrayField({
+  items = [],
+  onChange,
+  label,
+  inputFieldRef,
+  children,
+  hasError,
+  setFieldValue,
+  currentFieldValue,
+  defaultFieldValue,
+  lengthLimit,
+  getBadgeText,
+  runValidationTasks,
+  errorMessage,
+}) {
+  const labelElement = <Text>{label}</Text>;
+  const {
+    tokens: {
+      components: {
+        fieldmessages: { error: errorStyles },
+      },
+    },
+  } = useTheme();
+  const [selectedBadgeIndex, setSelectedBadgeIndex] = React.useState();
+  const [isEditing, setIsEditing] = React.useState();
+  React.useEffect(() => {
+    if (isEditing) {
+      inputFieldRef?.current?.focus();
+    }
+  }, [isEditing]);
+  const removeItem = async (removeIndex) => {
+    const newItems = items.filter((value, index) => index !== removeIndex);
+    await onChange(newItems);
+    setSelectedBadgeIndex(undefined);
+  };
+  const addItem = async () => {
+    const { hasError } = runValidationTasks();
+    if (
+      currentFieldValue !== undefined &&
+      currentFieldValue !== null &&
+      currentFieldValue !== "" &&
+      !hasError
+    ) {
+      const newItems = [...items];
+      if (selectedBadgeIndex !== undefined) {
+        newItems[selectedBadgeIndex] = currentFieldValue;
+        setSelectedBadgeIndex(undefined);
+      } else {
+        newItems.push(currentFieldValue);
+      }
+      await onChange(newItems);
+      setIsEditing(false);
+    }
+  };
+  const arraySection = (
+    <React.Fragment>
+      {!!items?.length && (
+        <ScrollView height="inherit" width="inherit" maxHeight={"7rem"}>
+          {items.map((value, index) => {
+            return (
+              <Badge
+                key={index}
+                style={{
+                  cursor: "pointer",
+                  alignItems: "center",
+                  marginRight: 3,
+                  marginTop: 3,
+                  backgroundColor:
+                    index === selectedBadgeIndex ? "#B8CEF9" : "",
+                }}
+                onClick={() => {
+                  setSelectedBadgeIndex(index);
+                  setFieldValue(items[index]);
+                  setIsEditing(true);
+                }}
+              >
+                {getBadgeText ? getBadgeText(value) : value.toString()}
+                <Icon
+                  style={{
+                    cursor: "pointer",
+                    paddingLeft: 3,
+                    width: 20,
+                    height: 20,
+                  }}
+                  viewBox={{ width: 20, height: 20 }}
+                  paths={[
+                    {
+                      d: "M10 10l5.09-5.09L10 10l5.09 5.09L10 10zm0 0L4.91 4.91 10 10l-5.09 5.09L10 10z",
+                      stroke: "black",
+                    },
+                  ]}
+                  ariaLabel="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    removeItem(index);
+                  }}
+                />
+              </Badge>
+            );
+          })}
+        </ScrollView>
+      )}
+      <Divider orientation="horizontal" marginTop={5} />
+    </React.Fragment>
+  );
+  if (lengthLimit !== undefined && items.length >= lengthLimit && !isEditing) {
+    return (
+      <React.Fragment>
+        {labelElement}
+        {arraySection}
+      </React.Fragment>
+    );
+  }
+  return (
+    <React.Fragment>
+      {labelElement}
+      {isEditing && children}
+      {!isEditing ? (
+        <>
+          <Button
+            onClick={() => {
+              setIsEditing(true);
+            }}
+          >
+            Add item
+          </Button>
+          {errorMessage && hasError && (
+            <Text color={errorStyles.color} fontSize={errorStyles.fontSize}>
+              {errorMessage}
+            </Text>
+          )}
+        </>
+      ) : (
+        <Flex justifyContent="flex-end">
+          {(currentFieldValue || isEditing) && (
+            <Button
+              children="Cancel"
+              type="button"
+              size="small"
+              onClick={() => {
+                setFieldValue(defaultFieldValue);
+                setIsEditing(false);
+                setSelectedBadgeIndex(undefined);
+              }}
+            ></Button>
+          )}
+          <Button size="small" variation="link" onClick={addItem}>
+            {selectedBadgeIndex !== undefined ? "Save" : "Add"}
+          </Button>
+        </Flex>
+      )}
+      {arraySection}
+    </React.Fragment>
+  );
+}
 export default function PostCreateForm(props) {
   const {
     clearOnSuccess = true,
@@ -35,6 +196,7 @@ export default function PostCreateForm(props) {
     createdAt: "",
     enable_comments: false,
     postImageKey: "",
+    hiddenPeople: [],
   };
   const [owner, setOwner] = React.useState(initialValues.owner);
   const [description, setDescription] = React.useState(
@@ -50,6 +212,9 @@ export default function PostCreateForm(props) {
   const [postImageKey, setPostImageKey] = React.useState(
     initialValues.postImageKey
   );
+  const [hiddenPeople, setHiddenPeople] = React.useState(
+    initialValues.hiddenPeople
+  );
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setOwner(initialValues.owner);
@@ -58,8 +223,13 @@ export default function PostCreateForm(props) {
     setCreatedAt(initialValues.createdAt);
     setEnable_comments(initialValues.enable_comments);
     setPostImageKey(initialValues.postImageKey);
+    setHiddenPeople(initialValues.hiddenPeople);
+    setCurrentHiddenPeopleValue("");
     setErrors({});
   };
+  const [currentHiddenPeopleValue, setCurrentHiddenPeopleValue] =
+    React.useState("");
+  const hiddenPeopleRef = React.createRef();
   const validations = {
     owner: [{ type: "Required" }],
     description: [{ type: "Required" }],
@@ -67,6 +237,7 @@ export default function PostCreateForm(props) {
     createdAt: [],
     enable_comments: [],
     postImageKey: [],
+    hiddenPeople: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -100,6 +271,7 @@ export default function PostCreateForm(props) {
           createdAt,
           enable_comments,
           postImageKey,
+          hiddenPeople,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -168,6 +340,7 @@ export default function PostCreateForm(props) {
               createdAt,
               enable_comments,
               postImageKey,
+              hiddenPeople,
             };
             const result = onChange(modelFields);
             value = result?.owner ?? value;
@@ -197,6 +370,7 @@ export default function PostCreateForm(props) {
               createdAt,
               enable_comments,
               postImageKey,
+              hiddenPeople,
             };
             const result = onChange(modelFields);
             value = result?.description ?? value;
@@ -230,6 +404,7 @@ export default function PostCreateForm(props) {
               createdAt,
               enable_comments,
               postImageKey,
+              hiddenPeople,
             };
             const result = onChange(modelFields);
             value = result?.drip_points ?? value;
@@ -259,6 +434,7 @@ export default function PostCreateForm(props) {
               createdAt: value,
               enable_comments,
               postImageKey,
+              hiddenPeople,
             };
             const result = onChange(modelFields);
             value = result?.createdAt ?? value;
@@ -288,6 +464,7 @@ export default function PostCreateForm(props) {
               createdAt,
               enable_comments: value,
               postImageKey,
+              hiddenPeople,
             };
             const result = onChange(modelFields);
             value = result?.enable_comments ?? value;
@@ -317,6 +494,7 @@ export default function PostCreateForm(props) {
               createdAt,
               enable_comments,
               postImageKey: value,
+              hiddenPeople,
             };
             const result = onChange(modelFields);
             value = result?.postImageKey ?? value;
@@ -331,6 +509,59 @@ export default function PostCreateForm(props) {
         hasError={errors.postImageKey?.hasError}
         {...getOverrideProps(overrides, "postImageKey")}
       ></TextField>
+      <ArrayField
+        onChange={async (items) => {
+          let values = items;
+          if (onChange) {
+            const modelFields = {
+              owner,
+              description,
+              drip_points,
+              createdAt,
+              enable_comments,
+              postImageKey,
+              hiddenPeople: values,
+            };
+            const result = onChange(modelFields);
+            values = result?.hiddenPeople ?? values;
+          }
+          setHiddenPeople(values);
+          setCurrentHiddenPeopleValue("");
+        }}
+        currentFieldValue={currentHiddenPeopleValue}
+        label={"Hidden people"}
+        items={hiddenPeople}
+        hasError={errors?.hiddenPeople?.hasError}
+        runValidationTasks={async () =>
+          await runValidationTasks("hiddenPeople", currentHiddenPeopleValue)
+        }
+        errorMessage={errors?.hiddenPeople?.errorMessage}
+        setFieldValue={setCurrentHiddenPeopleValue}
+        inputFieldRef={hiddenPeopleRef}
+        defaultFieldValue={""}
+      >
+        <TextField
+          label="Hidden people"
+          isRequired={false}
+          isReadOnly={false}
+          value={currentHiddenPeopleValue}
+          onChange={(e) => {
+            let { value } = e.target;
+            if (errors.hiddenPeople?.hasError) {
+              runValidationTasks("hiddenPeople", value);
+            }
+            setCurrentHiddenPeopleValue(value);
+          }}
+          onBlur={() =>
+            runValidationTasks("hiddenPeople", currentHiddenPeopleValue)
+          }
+          errorMessage={errors.hiddenPeople?.errorMessage}
+          hasError={errors.hiddenPeople?.hasError}
+          ref={hiddenPeopleRef}
+          labelHidden={true}
+          {...getOverrideProps(overrides, "hiddenPeople")}
+        ></TextField>
+      </ArrayField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}

@@ -28,6 +28,7 @@ export declare type PostUpdateFormInputValues = {
     createdAt?: string;
     enable_comments?: boolean;
     postImageKey?: string;
+    hiddenPeople?: string[];
 };
 export declare type PostUpdateFormValidationValues = {
     owner?: ValidationFunction<string>;
@@ -36,6 +37,7 @@ export declare type PostUpdateFormValidationValues = {
     createdAt?: ValidationFunction<string>;
     enable_comments?: ValidationFunction<boolean>;
     postImageKey?: ValidationFunction<string>;
+    hiddenPeople?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type PostUpdateFormOverridesProps = {
@@ -46,6 +48,7 @@ export declare type PostUpdateFormOverridesProps = {
     createdAt?: PrimitiveOverrideProps<TextFieldProps>;
     enable_comments?: PrimitiveOverrideProps<SwitchFieldProps>;
     postImageKey?: PrimitiveOverrideProps<TextFieldProps>;
+    hiddenPeople?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type PostUpdateFormProps = React.PropsWithChildren<{
     overrides?: PostUpdateFormOverridesProps | undefined | null;
