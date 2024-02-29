@@ -14,6 +14,8 @@ const UploadImage = () => {
   const [image, setImage] = useState(null);
   const [description, setDescription] = useState("");
 
+  const [hiddenSelect, setHiddenSelect] = useState([]);
+
   const [succeeded, setSucceeded] = useState(0);
 
   const [user, setUser] = useState(null);
@@ -126,6 +128,8 @@ const UploadImage = () => {
     setSucceeded(1);
   };
 
+  console.log("In Upload Image: " + hiddenSelect);
+
   return (
     <div
       style={{
@@ -199,7 +203,10 @@ const UploadImage = () => {
           padding: "30px", // Increased padding for spacing
         }}
       >
-        <HidePeople />
+        <HidePeople
+          selectedFriends={hiddenSelect}
+          setSelectedFriends={setHiddenSelect}
+        />
       </div>
       {/* Added empty div for spacing */}
       <button

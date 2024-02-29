@@ -3,8 +3,8 @@ import "./HidePeople.css";
 import { generateClient } from "aws-amplify/api";
 import { UserContext } from "./../UserContext";
 
-const HidePeople = () => {
-  const [selectedFriends, setSelectedFriends] = useState([]);
+export default function HidePeople(props) {
+  const { selectedFriends, setSelectedFriends } = props;
 
   const { allUsers, myUser } = useContext(UserContext);
 
@@ -94,6 +94,4 @@ const HidePeople = () => {
       </div>
     </div>
   );
-};
-
-export default HidePeople;
+}
