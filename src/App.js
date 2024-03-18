@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { UserProvider, UserContext } from './UserContext';
+import { UserProvider, UserContext } from "./UserContext";
 
 import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
@@ -12,6 +12,7 @@ import {
   Text,
   useTheme,
   withAuthenticator,
+  Tabs,
 } from "@aws-amplify/ui-react";
 import { Authenticator } from "@aws-amplify/ui-react";
 import awsconfig from "./amplifyconfiguration.json";
@@ -75,10 +76,50 @@ export default function App() {
   let component;
   switch (window.location.pathname) {
     case "/":
-      component = <Home />;
+      component = (
+        <Tabs
+          spacing="equal"
+          justifyContent="center"
+          defaultValue={"Global Feed"}
+          indicatorPosition="bottom"
+          margin="10px"
+          items={[
+            {
+              label: "Global Feed",
+              value: "Global Feed",
+              content: <Home />,
+            },
+            {
+              label: "Friends Feed",
+              value: "Friends Feed",
+              content: "Tab content #2",
+            },
+          ]}
+        />
+      );
       break;
     case "/home":
-      component = <Home />;
+      component = (
+        <Tabs
+          spacing="equal"
+          justifyContent="center"
+          defaultValue={"Global Feed"}
+          indicatorPosition="bottom"
+          margin="10px"
+          items={[
+            {
+              label: "Global Feed",
+              value: "Global Feed",
+              content: <Home />,
+            },
+            {
+              label: "Friends Feed",
+              value: "Friends Feed",
+              content: "Tab content #2",
+            },
+          ]}
+        />
+      );
       break;
     case "/upload":
       component = <Upload />;
@@ -92,7 +133,11 @@ export default function App() {
   }
 
   return (
-    <Authenticator variation="modal" components={components} signUpAttributes={['email', 'username']}>
+    <Authenticator
+      variation="modal"
+      components={components}
+      signUpAttributes={["email", "username"]}
+    >
       {({ signOut, user }) => (
         <UserProvider>
           <View className="App">
@@ -100,7 +145,7 @@ export default function App() {
               <Grid
                 columnGap="0.5rem"
                 rowGap="0.5rem"
-                templateColumns="1fr 4fr"
+                templateColumns="1fr 8fr"
                 alignContent="center"
               >
                 <NavBar columnStart="1" columnEnd="2" />
