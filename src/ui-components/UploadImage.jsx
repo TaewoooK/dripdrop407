@@ -131,13 +131,14 @@ const UploadImage = () => {
         maxWidth: "500px", // Increased maximum width
         margin: "0 auto",
         fontFamily: "Arial, sans-serif",
-        backgroundColor: "#d6d8db",
+        backgroundColor: "#222222",
         padding: "30px", // Increased padding for spacing
+        paddingTop: "30px",
         borderRadius: "10px",
         boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <h2 style={{ textAlign: "center", marginBottom: "30px", color: "#333" }}>
+      <h2 style={{ textAlign: "center", marginBottom: "30px", color: "white" }}>
         Make a Post
       </h2>
       <input
@@ -152,6 +153,7 @@ const UploadImage = () => {
           border: "1px solid #ddd",
           borderRadius: "5px",
           boxSizing: "border-box",
+          color: "white"
         }}
       />
       {image && (
@@ -189,7 +191,7 @@ const UploadImage = () => {
           checked={isChecked} // Bind the checkbox state to the isChecked variable
           onChange={handleCheckboxChange} // Call the handler function on checkbox change
           style={{ padding: '10px 0 20px 0'}}></input>
-          <span>Enable comments?</span>
+          <span style={{color: "white"}}>Enable comments?</span>
         </label>
       </div>
 
@@ -197,7 +199,7 @@ const UploadImage = () => {
         onClick={handleSubmit}
         style={{
           backgroundColor: "#007bff",
-          color: "#ffffff",
+          color: "white",
           border: "none",
           padding: "15px 24px", // Increased padding for the button
           borderRadius: "5px",

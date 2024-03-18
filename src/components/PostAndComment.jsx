@@ -311,7 +311,7 @@ const PostAndComment = () => {
                 )}
                 
 
-                <MyIcon className="more-icon" type="more_vert" onClick={toggleActionCenter}/>
+                <MyIcon className="more-icon" type="more_vert" onClick={toggleActionCenter} color={"#FFFAF0"}/>
 
 
                 <Flex gap="22px" direction="column" width="unset" height="unset" justifyContent="center" alignItems="center" position="absolute" top="457px" left="190px" padding="0px 0px 0px 0px">

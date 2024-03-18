@@ -30,7 +30,7 @@ const modalContainerStyles = {
 };
 
 const modalStyles = {
-  backgroundColor: "white",
+  backgroundColor: "rgba(34, 34, 34, 1)",
   padding: "20px",
   borderRadius: "8px",
   boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
@@ -142,10 +142,10 @@ const ProfilePage = () => {
   return (
     <div
       style={{
-        maxWidth: "500px", // Increased maximum width
+        maxWidth: "800px", // Increased maximum width
         margin: "0 auto",
         fontFamily: "Arial, sans-serif",
-        backgroundColor: "#d6d8db",
+        backgroundColor: "rgba(34, 34, 34, 1)",
         padding: "30px", // Increased padding for spacing
         borderRadius: "10px",
         boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
@@ -217,24 +217,29 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     height: "100vh",
+    color: "white"
   },
   profile: {
     textAlign: "center",
+    color: "white"
   },
   heading: {
     fontSize: "24px",
     fontWeight: "bold",
     marginBottom: "20px",
+    color: "white"
   },
   info: {
     fontSize: "18px",
     marginBottom: "10px",
+    color: "white"
   },
   error: {
     color: "red",
   },
   editButton: {
     marginBottom: "20px",
+    color: "white"
   },
 };
 
