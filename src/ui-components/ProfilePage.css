@@ -1,0 +1,16 @@
+  
+  
+  .more-icon {
+      width: 27px;
+      height: 27px;
+      position: absolute;
+      top: 30px;
+      left: 25px;
+      display: block;
+      gap: unset;
+      align-items: unset;
+      justify-content: unset;
+      overflow: hidden;
+      padding: 0;
+      cursor: pointer;
+  }
