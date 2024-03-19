@@ -49,17 +49,29 @@ export default function HidePeople(props) {
       if (user !== "") {
         const addButton = document.createElement("button");
         addButton.textContent = "Add";
+        addButton.style.margin = "5px"; // Increased padding for spacing
         addButton.onclick = () => handleFriendSelect(user);
         listItem.appendChild(addButton);
       }
     });
   }
 
+  const objectExists = (searchQuery) => {
+    return selectedFriends.some((item) => item === searchQuery); // Assuming objects have unique id properties
+  };
+
   const handleFriendSelect = (searchQuery) => {
-    setSelectedFriends((prevSelectedFriends) => [
-      ...prevSelectedFriends,
-      searchQuery,
-    ]);
+    console.log("Selected: " + selectedFriends);
+
+    if (!objectExists(searchQuery)) {
+      setSelectedFriends((prevSelectedFriends) => [
+        ...prevSelectedFriends,
+        searchQuery,
+      ]);
+    }
+
+    const searchResultsContainer = document.querySelector(".search-results");
+    searchResultsContainer.innerHTML = "";
   };
 
   const handleFriendDeselect = (friend) => {
@@ -79,13 +91,17 @@ export default function HidePeople(props) {
         onChange={handleSearch}
       />
       <ul class="search-results"></ul>
-      <button>Search</button>
       <div class="selected-friends">
         <ul>
           {selectedFriends.map((friend) => (
             <li key={friend}>
               {friend}
-              <button onClick={() => handleFriendDeselect(friend)}>
+              <button
+                onClick={() => handleFriendDeselect(friend)}
+                style={{
+                  margin: "5px", // Increased padding for spacing
+                }}
+              >
                 Remove
               </button>
             </li>

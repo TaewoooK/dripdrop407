@@ -20,7 +20,7 @@ import {
   createSavedPosts,
   deleteComment,
   updateSavedPosts,
-} from "../graphql/mutations";
+ } from "../graphql/mutations";
 import {
   listPosts,
   getPost,
@@ -47,65 +47,119 @@ const PostAndComment = () => {
   const [image, setImage] = React.useState("");
   const [currentImageIndex, setCurrentImageIndex] = React.useState(1);
   const [currPostID, setCurrPostID] = React.useState(null);
-  const [variablesN, setVariablesN] = React.useState({ limit: 10 });
-  const [savedPosts, setSavedPosts] = React.useState([]);
+  const [variablesN, setVariablesN] = React.useState(null);
+  const [currUser, setCurrUser] = useState(null);
+  const [gotVN, setGotVN] = useState(false);
+  const [savedPosts, setSavedPosts] = useState([]);
 
-  const { myUser } = useContext(UserContext);
-
-  const fetchPost = async () => {
-    if (!nextToken) {
-      // This means either the page just loaded or the user has scrolled to the end of the list
-      setVariablesN({ limit: 10 });
-    } else {
-      setVariablesN({ limit: 10, nextToken: nextToken });
-    }
+  const fetchUserData = async () => {
     try {
-      //console.log("Logging fetchPost begin")
-      //console.log("Variables")
-      //console.log(variablesN)
-      const postDataGraphQLResponse = await client.graphql({
-        query: listPosts,
-        variables: variablesN,
-      });
-      //console.log("graphql response")
-      //console.log(postDataGraphQLResponse)
-      let postData = [];
-      let nextTokenTemp = null;
-      if (postDataGraphQLResponse.data.listPosts.items.length != 0) {
-        postData = postDataGraphQLResponse.data.listPosts.items;
-        nextTokenTemp = postDataGraphQLResponse.data.listPosts.nextToken;
-        setPosts(postDataGraphQLResponse.data.listPosts.items);
-        setNextToken(postDataGraphQLResponse.data.listPosts.nextToken);
-        setVariablesN({ limit: 10, nextToken: nextTokenTemp });
-      } else {
-        setNextToken(null);
-      }
-      console.log("posts");
-      console.log(postData);
-      const imagePromises = postData.map(async (post) => {
-        const postData = await getUrl({ key: post.postImageKey });
-        return {
-          description: post.description,
-          imageUrl: postData.url,
-        };
-      });
-      const fetchedImages = await Promise.all(imagePromises);
-      setImages(fetchedImages);
-      console.log("Fetched images");
-      console.log(fetchedImages);
-      setImage(fetchedImages[0].imageUrl);
-      setCurrentImageIndex(0);
-      //console.log("End of fetchPost logging")
+      const currUserAttributes = await getCurrentUser();
+      setCurrUser(currUserAttributes);
     } catch (error) {
-      console.error("Error fetching posts: ", error);
+      console.error("Error fetching user data: ", error);
     }
   };
+
+  const setVariablesNFilter = () => {
+    if (currUser != null) {
+      if (!nextToken) {
+        // This means either the page just loaded or the user has scrolled to the end of the list
+        setVariablesN({
+          filter: {
+            not: {
+              hiddenPeople: { contains: currUser.username },
+            },
+          },
+          limit: 10,
+        });
+      } else {
+        setVariablesN({
+          filter: {
+            not: {
+              hiddenPeople: { contains: currUser.username },
+            },
+          },
+          limit: 10,
+          nextToken: nextToken,
+        });
+      }
+      setGotVN(true);
+    }
+  };
+
+  const fetchPost = async () => {
+    if (variablesN != null) {
+      try {
+        //console.log("Logging fetchPost begin")
+        // console.log("Variables");
+        // console.log(variablesN);
+        const postDataGraphQLResponse = await client.graphql({
+          query: listPosts,
+          variables: variablesN,
+        });
+        //console.log("graphql response"
+
+        let postData = [];
+        let nextTokenTemp = null;
+        if (postDataGraphQLResponse.data.listPosts.items.length != 0) {
+          postData = postDataGraphQLResponse.data.listPosts.items;
+          nextTokenTemp = postDataGraphQLResponse.data.listPosts.nextToken;
+          setPosts(postDataGraphQLResponse.data.listPosts.items);
+          setNextToken(postDataGraphQLResponse.data.listPosts.nextToken);
+          setVariablesN({
+            filter: {
+              not: {
+                hiddenPeople: { contains: currUser.username },
+              },
+            },
+            limit: 10,
+            nextToken: nextTokenTemp,
+          });
+        } else {
+          setNextToken(null);
+        }
+        console.log("posts");
+        console.log(postData);
+        const imagePromises = postData.map(async (post) => {
+          const postData = await getUrl({ key: post.postImageKey });
+          return {
+            description: post.description,
+            imageUrl: postData.url,
+          };
+        });
+        const fetchedImages = await Promise.all(imagePromises);
+        setImages(fetchedImages);
+        console.log("Fetched images");
+        console.log(fetchedImages);
+        setImage(fetchedImages[0].imageUrl);
+        setCurrentImageIndex(0);
+        //console.log("End of fetchPost logging")
+      } catch (error) {
+        console.error("Error fetching posts: ", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    setVariablesNFilter();
+  }, [currUser]);
+
   // When nextToken changes, fetch more posts
   useEffect(() => {
     console.log("NextTok change calls fetchPost");
+    setVariablesNFilter();
+  }, [nextToken]);
+
+  // When gotVN changes, fetch more posts
+  useEffect(() => {
+    console.log("VariablesN change calls fetchPost");
     fetchPost();
-    getSavedPosts();
-  }, []);
+  }, [gotVN]);
 
   // useEffect(() => {
   //     console.log("ReRender")
@@ -138,6 +192,7 @@ const PostAndComment = () => {
     await animate(scope.current, { x: 0 });
     // Perform any other actions or state updates as needed
   };
+
 
   const handleRedButtonClick = async () => {
     setShow(false);
@@ -187,7 +242,7 @@ const PostAndComment = () => {
         input: {
           postId: currPost.id,
           text: comment,
-          commentAuthorId: myUser.userId,
+          commentAuthorId: currUser.userId,
         },
       },
     });
@@ -226,7 +281,7 @@ const PostAndComment = () => {
     try {
       const result = await client.graphql({
         query: listSavedPosts,
-        variables: { filter: { username: { eq: myUser.username } } },
+        variables: { filter: { username: { eq: currUser.username } } },
       });
       if (result.data.listSavedPosts.items.length > 0) {
         setSavedPosts(result.data.listSavedPosts.items[0].postIds);
@@ -249,7 +304,7 @@ const PostAndComment = () => {
         const createdSavedPosts = await client.graphql({
           query: createSavedPosts,
           variables: {
-            input: { username: myUser.username, postIds: [currPost.id] },
+            input: { username: currUser.username, postIds: [currPost.id] },
           },
         });
         console.log("created saved posts");
@@ -264,7 +319,7 @@ const PostAndComment = () => {
               (id) => id != posts[currentImageIndex].id
             ),
           };
-          const condition = { username: { eq: myUser.username } };
+          const condition = { username: { eq: currUser.username } };
           const updatedSavedPosts = await client.graphql({
             query: updateSavedPosts,
             variables: { input, condition },
@@ -277,7 +332,7 @@ const PostAndComment = () => {
             id: savedPostsList.id,
             postIds: [...savedPostsList.postIds, posts[currentImageIndex].id],
           };
-          const condition = { username: { eq: myUser.username } };
+          const condition = { username: { eq: currUser.username } };
           const updatedSavedPosts = await client.graphql({
             query: updateSavedPosts,
             variables: { input, condition },
@@ -473,7 +528,22 @@ const PostAndComment = () => {
             type="chat"
             onClick={handleCommentsExpansionClick}
           ></MyIcon>
+          <MyIcon
+            className="chat-icon"
+            type="chat"
+            onClick={handleCommentsExpansionClick}
+          ></MyIcon>
 
+          <Button
+            className="green-button"
+            onClick={handleGreenButtonClick}
+            whilehover={{ x: [-2, 2, -2, 2, 0], transition: { duration: 0.3 } }}
+            whiletap={{}}
+            size="default"
+            isDisabled={false}
+            variation="default"
+            //onClick={() => setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)}
+          ></Button>
           <Button
             className="green-button"
             onClick={handleGreenButtonClick}

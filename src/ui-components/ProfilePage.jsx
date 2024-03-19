@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { fetchUserAttributes, getCurrentUser } from "aws-amplify/auth";
 import { generateClient } from "aws-amplify/api";
+import { updatePost } from "../graphql/mutations";
+import { MyIcon } from "../ui-components";
+import "./ProfilePage.css";
+import HidePeople from "./HidePeople";
+
 import {
   Collection,
   Card,
@@ -39,6 +44,16 @@ const modalStyles = {
 
 const ProfilePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showActionCenter, setShowActionCenter] = React.useState(false);
+  const [hiddenSelect, setHiddenSelect] = useState([]);
+  const [rerun, setReRun] = useState(false);
+
+  const toggleActionCenter = (image) => {
+    console.log(image);
+    setSelectedImage(image);
+    setHiddenSelect(image.hiddenPeople);
+    setShowActionCenter(!showActionCenter);
+  };
 
   const Modal = ({ onClose }) => {
     return (
@@ -122,6 +137,8 @@ const ProfilePage = () => {
 
   const [showingSavedPosts, setShowingSavedPosts] = useState(false);
 
+  const [selectedImage, setSelectedImage] = useState(null);
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -156,9 +173,8 @@ const ProfilePage = () => {
     if (user) {
       fetchPosts();
     }
-  }, [user]);
-
-  let listofimages = [];
+    setReRun(false);
+  }, [user, rerun]);
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -166,8 +182,10 @@ const ProfilePage = () => {
         const imagePromises = posts.map(async (post) => {
           const postData = await getUrl({ key: post.postImageKey });
           return {
+            id: post.id,
             description: post.description,
             imageUrl: postData.url,
+            hiddenPeople: post.hiddenPeople,
           };
         });
 
@@ -181,7 +199,27 @@ const ProfilePage = () => {
     if (posts.length > 0) {
       fetchImages();
     }
-  }, [posts]);
+    setReRun(false);
+  }, [posts, rerun]);
+
+  const onSave = async () => {
+    try {
+      const todoDetails = {
+        id: selectedImage.id,
+        hiddenPeople: hiddenSelect,
+      };
+
+      const postData = await client.graphql({
+        query: updatePost,
+        variables: { input: todoDetails },
+      });
+
+      setReRun(true);
+    } catch (error) {
+      console.error("Error fetching posts: ", error);
+    }
+    setShowActionCenter(false);
+  };
 
   return (
     <div
@@ -229,6 +267,18 @@ const ProfilePage = () => {
           Error fetching user data. Please try again later.
         </p>
       )}
+      {showActionCenter && (
+        <div className="overlay" onClick={toggleActionCenter}>
+          <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
+            <HidePeople
+              selectedFriends={hiddenSelect}
+              setSelectedFriends={setHiddenSelect}
+            />
+            <button onClick={() => onSave()}>Save</button>
+          </div>
+        </div>
+      )}
+
       {images.length > 0 && (
         <div>
           <Collection
@@ -247,7 +297,11 @@ const ProfilePage = () => {
                   maxWidth="20rem"
                   variation="outlined"
                 >
-                  <Image src={item.imageUrl} alt="Post made from user" />
+                  <Image
+                    src={item.imageUrl}
+                    alt="Post made from user"
+                    onClick={() => toggleActionCenter(item)}
+                  />
                   <View padding="xs">
                     <Divider padding="xs" />
                     <Heading padding="medium">{item.title}</Heading>
