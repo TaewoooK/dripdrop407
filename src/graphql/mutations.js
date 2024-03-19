@@ -295,3 +295,48 @@ export const deletePostReport = /* GraphQL */ `
     }
   }
 `;
+export const createSavePosts = /* GraphQL */ `
+  mutation CreateSavePosts(
+    $input: CreateSavePostsInput!
+    $condition: ModelSavePostsConditionInput
+  ) {
+    createSavePosts(input: $input, condition: $condition) {
+      id
+      username
+      postIds
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateSavePosts = /* GraphQL */ `
+  mutation UpdateSavePosts(
+    $input: UpdateSavePostsInput!
+    $condition: ModelSavePostsConditionInput
+  ) {
+    updateSavePosts(input: $input, condition: $condition) {
+      id
+      username
+      postIds
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteSavePosts = /* GraphQL */ `
+  mutation DeleteSavePosts(
+    $input: DeleteSavePostsInput!
+    $condition: ModelSavePostsConditionInput
+  ) {
+    deleteSavePosts(input: $input, condition: $condition) {
+      id
+      username
+      postIds
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;

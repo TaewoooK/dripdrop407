@@ -262,3 +262,45 @@ export const onDeletePostReport = /* GraphQL */ `
     }
   }
 `;
+export const onCreateSavePosts = /* GraphQL */ `
+  subscription OnCreateSavePosts(
+    $filter: ModelSubscriptionSavePostsFilterInput
+  ) {
+    onCreateSavePosts(filter: $filter) {
+      id
+      username
+      postIds
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateSavePosts = /* GraphQL */ `
+  subscription OnUpdateSavePosts(
+    $filter: ModelSubscriptionSavePostsFilterInput
+  ) {
+    onUpdateSavePosts(filter: $filter) {
+      id
+      username
+      postIds
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteSavePosts = /* GraphQL */ `
+  subscription OnDeleteSavePosts(
+    $filter: ModelSubscriptionSavePostsFilterInput
+  ) {
+    onDeleteSavePosts(filter: $filter) {
+      id
+      username
+      postIds
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;

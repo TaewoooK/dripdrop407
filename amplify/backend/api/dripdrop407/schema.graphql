@@ -43,3 +43,9 @@ type PostReport @model @auth(rules: [{ allow: public }]) {
   sentAt: String!
   postId: String!
 }
+
+type SavePosts @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  username: ID!
+  postIds: [String]
+}

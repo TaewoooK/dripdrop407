@@ -184,6 +184,11 @@ const PostAndComment = () => {
         setShowActionCenter(false);
     };
 
+    const toggleSavePost = () => {
+        setShowActionCenter(false);
+        toast.success("Post saved");
+    }
+
     const showReportNotification = () => {
         toast.success("Post reported successfully");
     };
@@ -225,22 +230,23 @@ const PostAndComment = () => {
                 reverseOrder={false}
         />
         {showActionCenter && (
-            <div className="overlay" onClick={toggleActionCenter}>
-                <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
-                <PostActionCenter toggleReportPost={toggleReportPost}/>
-                </div>
+        <div className="overlay" onClick={toggleActionCenter}>
+            <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
+            <PostActionCenter 
+                toggleReportPost={toggleReportPost}
+                toggleSavePost={toggleSavePost}/>
             </div>
-            )}
+        </div>
+        )}
 
-            {showReportPost && (
-            <div className="overlay" onClick={toggleReportPost}>
-                <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
-                <>{console.log(currPostID)}</>
-                <ReportPost toggleReportPost={toggleReportPost} currPostID={currPostID} showReportNotification={showReportNotification}/>
-                </div>
+        {showReportPost && (
+        <div className="overlay" onClick={toggleReportPost}>
+            <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
+            <>{console.log(currPostID)}</>
+            <ReportPost toggleReportPost={toggleReportPost} currPostID={currPostID} showReportNotification={showReportNotification}/>
             </div>
-            )}
-
+        </div>
+        )}
         <View className="big-post-container">
             <motion.View className="post-container" 
                 initial={{x: "100vw"}}
