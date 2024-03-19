@@ -58,7 +58,7 @@ const PostAndComment = () => {
               hiddenPeople: { contains: currUser.username },
             },
           },
-          limit: 10,
+          limit: 2,
         });
       } else {
         setVariablesN({
@@ -67,7 +67,7 @@ const PostAndComment = () => {
               hiddenPeople: { contains: currUser.username },
             },
           },
-          limit: 10,
+          limit: 2,
           nextToken: nextToken,
         });
       }
@@ -100,7 +100,7 @@ const PostAndComment = () => {
                 hiddenPeople: { contains: currUser.username },
               },
             },
-            limit: 10,
+            limit: 2,
             nextToken: nextTokenTemp,
           });
         } else {
@@ -139,10 +139,10 @@ const PostAndComment = () => {
   // When nextToken changes, fetch more posts
   useEffect(() => {
     console.log("NextTok change calls fetchPost");
-    fetchPost();
+    setVariablesNFilter();
   }, [nextToken]);
 
-  // When currUser changes, fetch more posts
+  // When gotVN changes, fetch more posts
   useEffect(() => {
     console.log("VariablesN change calls fetchPost");
     fetchPost();

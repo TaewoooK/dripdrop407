@@ -1,16 +1,16 @@
-type FriendRequest @model @auth(rules: [{ allow: public }]) {
+type FriendRequest @model @auth(rules: [{allow: public}]) {
   id: ID!
   Username: ID!
   SenderUsername: String!
 }
 
-type Friend @model @auth(rules: [{ allow: public }]) {
+type Friend @model @auth(rules: [{allow: public}]) {
   id: ID!
   Username: ID!
   FriendUsername: String!
 }
 
-type Post @model @auth(rules: [{ allow: public }]) {
+type Post @model @auth(rules: [{allow: public}]) {
   id: ID!
   owner: String!
   description: String!
@@ -28,7 +28,7 @@ type S3Object {
   key: String!
 }
 
-type Comment @model @auth(rules: [{ allow: public }]) {
+type Comment @model @auth(rules: [{allow: public}]) {
   id: ID!
   postId: ID! @index(name: "byPost")
   text: String!
@@ -36,10 +36,16 @@ type Comment @model @auth(rules: [{ allow: public }]) {
   CommentsPost: Post @belongsTo(fields: ["postId"])
 }
 
-type PostReport @model @auth(rules: [{ allow: public }]) {
+type PostReport @model @auth(rules: [{allow: public}]) {
   id: ID!
   reporter: String!
   reason: String
   sentAt: String!
   postId: String!
+}
+
+type SavedPosts @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  username: ID!
+  postIds: [String]
 }
