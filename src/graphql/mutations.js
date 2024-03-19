@@ -295,12 +295,12 @@ export const deletePostReport = /* GraphQL */ `
     }
   }
 `;
-export const createSavePosts = /* GraphQL */ `
-  mutation CreateSavePosts(
-    $input: CreateSavePostsInput!
-    $condition: ModelSavePostsConditionInput
+export const createSavedPosts = /* GraphQL */ `
+  mutation CreateSavedPosts(
+    $input: CreateSavedPostsInput!
+    $condition: ModelSavedPostsConditionInput
   ) {
-    createSavePosts(input: $input, condition: $condition) {
+    createSavedPosts(input: $input, condition: $condition) {
       id
       username
       postIds
@@ -310,12 +310,12 @@ export const createSavePosts = /* GraphQL */ `
     }
   }
 `;
-export const updateSavePosts = /* GraphQL */ `
-  mutation UpdateSavePosts(
-    $input: UpdateSavePostsInput!
-    $condition: ModelSavePostsConditionInput
+export const updateSavedPosts = /* GraphQL */ `
+  mutation UpdateSavedPosts(
+    $input: UpdateSavedPostsInput!
+    $condition: ModelSavedPostsConditionInput
   ) {
-    updateSavePosts(input: $input, condition: $condition) {
+    updateSavedPosts(input: $input, condition: $condition) {
       id
       username
       postIds
@@ -325,12 +325,12 @@ export const updateSavePosts = /* GraphQL */ `
     }
   }
 `;
-export const deleteSavePosts = /* GraphQL */ `
-  mutation DeleteSavePosts(
-    $input: DeleteSavePostsInput!
-    $condition: ModelSavePostsConditionInput
+export const deleteSavedPosts = /* GraphQL */ `
+  mutation DeleteSavedPosts(
+    $input: DeleteSavedPostsInput!
+    $condition: ModelSavedPostsConditionInput
   ) {
-    deleteSavePosts(input: $input, condition: $condition) {
+    deleteSavedPosts(input: $input, condition: $condition) {
       id
       username
       postIds

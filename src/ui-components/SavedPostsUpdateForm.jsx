@@ -20,7 +20,8 @@ import {
 } from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
-import { createSavePosts } from "../graphql/mutations";
+import { getSavedPosts } from "../graphql/queries";
+import { updateSavedPosts } from "../graphql/mutations";
 const client = generateClient();
 function ArrayField({
   items = [],
@@ -177,9 +178,10 @@ function ArrayField({
     </React.Fragment>
   );
 }
-export default function SavePostsCreateForm(props) {
+export default function SavedPostsUpdateForm(props) {
   const {
-    clearOnSuccess = true,
+    id: idProp,
+    savedPosts: savedPostsModelProp,
     onSuccess,
     onError,
     onSubmit,
@@ -196,11 +198,31 @@ export default function SavePostsCreateForm(props) {
   const [postIds, setPostIds] = React.useState(initialValues.postIds);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
-    setUsername(initialValues.username);
-    setPostIds(initialValues.postIds);
+    const cleanValues = savedPostsRecord
+      ? { ...initialValues, ...savedPostsRecord }
+      : initialValues;
+    setUsername(cleanValues.username);
+    setPostIds(cleanValues.postIds ?? []);
     setCurrentPostIdsValue("");
     setErrors({});
   };
+  const [savedPostsRecord, setSavedPostsRecord] =
+    React.useState(savedPostsModelProp);
+  React.useEffect(() => {
+    const queryData = async () => {
+      const record = idProp
+        ? (
+            await client.graphql({
+              query: getSavedPosts.replaceAll("__typename", ""),
+              variables: { id: idProp },
+            })
+          )?.data?.getSavedPosts
+        : savedPostsModelProp;
+      setSavedPostsRecord(record);
+    };
+    queryData();
+  }, [idProp, savedPostsModelProp]);
+  React.useEffect(resetStateValues, [savedPostsRecord]);
   const [currentPostIdsValue, setCurrentPostIdsValue] = React.useState("");
   const postIdsRef = React.createRef();
   const validations = {
@@ -234,7 +256,7 @@ export default function SavePostsCreateForm(props) {
         event.preventDefault();
         let modelFields = {
           username,
-          postIds,
+          postIds: postIds ?? null,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -265,18 +287,16 @@ export default function SavePostsCreateForm(props) {
             }
           });
           await client.graphql({
-            query: createSavePosts.replaceAll("__typename", ""),
+            query: updateSavedPosts.replaceAll("__typename", ""),
             variables: {
               input: {
+                id: savedPostsRecord.id,
                 ...modelFields,
               },
             },
           });
           if (onSuccess) {
             onSuccess(modelFields);
-          }
-          if (clearOnSuccess) {
-            resetStateValues();
           }
         } catch (err) {
           if (onError) {
@@ -285,7 +305,7 @@ export default function SavePostsCreateForm(props) {
           }
         }
       }}
-      {...getOverrideProps(overrides, "SavePostsCreateForm")}
+      {...getOverrideProps(overrides, "SavedPostsUpdateForm")}
       {...rest}
     >
       <TextField
@@ -364,13 +384,14 @@ export default function SavePostsCreateForm(props) {
         {...getOverrideProps(overrides, "CTAFlex")}
       >
         <Button
-          children="Clear"
+          children="Reset"
           type="reset"
           onClick={(event) => {
             event.preventDefault();
             resetStateValues();
           }}
-          {...getOverrideProps(overrides, "ClearButton")}
+          isDisabled={!(idProp || savedPostsModelProp)}
+          {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
           gap="15px"
@@ -380,7 +401,10 @@ export default function SavePostsCreateForm(props) {
             children="Submit"
             type="submit"
             variation="primary"
-            isDisabled={Object.values(errors).some((e) => e?.hasError)}
+            isDisabled={
+              !(idProp || savedPostsModelProp) ||
+              Object.values(errors).some((e) => e?.hasError)
+            }
             {...getOverrideProps(overrides, "SubmitButton")}
           ></Button>
         </Flex>

@@ -262,11 +262,11 @@ export const onDeletePostReport = /* GraphQL */ `
     }
   }
 `;
-export const onCreateSavePosts = /* GraphQL */ `
-  subscription OnCreateSavePosts(
-    $filter: ModelSubscriptionSavePostsFilterInput
+export const onCreateSavedPosts = /* GraphQL */ `
+  subscription OnCreateSavedPosts(
+    $filter: ModelSubscriptionSavedPostsFilterInput
   ) {
-    onCreateSavePosts(filter: $filter) {
+    onCreateSavedPosts(filter: $filter) {
       id
       username
       postIds
@@ -276,11 +276,11 @@ export const onCreateSavePosts = /* GraphQL */ `
     }
   }
 `;
-export const onUpdateSavePosts = /* GraphQL */ `
-  subscription OnUpdateSavePosts(
-    $filter: ModelSubscriptionSavePostsFilterInput
+export const onUpdateSavedPosts = /* GraphQL */ `
+  subscription OnUpdateSavedPosts(
+    $filter: ModelSubscriptionSavedPostsFilterInput
   ) {
-    onUpdateSavePosts(filter: $filter) {
+    onUpdateSavedPosts(filter: $filter) {
       id
       username
       postIds
@@ -290,11 +290,11 @@ export const onUpdateSavePosts = /* GraphQL */ `
     }
   }
 `;
-export const onDeleteSavePosts = /* GraphQL */ `
-  subscription OnDeleteSavePosts(
-    $filter: ModelSubscriptionSavePostsFilterInput
+export const onDeleteSavedPosts = /* GraphQL */ `
+  subscription OnDeleteSavedPosts(
+    $filter: ModelSubscriptionSavedPostsFilterInput
   ) {
-    onDeleteSavePosts(filter: $filter) {
+    onDeleteSavedPosts(filter: $filter) {
       id
       username
       postIds

@@ -220,9 +220,9 @@ export const listPostReports = /* GraphQL */ `
     }
   }
 `;
-export const getSavePosts = /* GraphQL */ `
-  query GetSavePosts($id: ID!) {
-    getSavePosts(id: $id) {
+export const getSavedPosts = /* GraphQL */ `
+  query GetSavedPosts($id: ID!) {
+    getSavedPosts(id: $id) {
       id
       username
       postIds
@@ -232,13 +232,13 @@ export const getSavePosts = /* GraphQL */ `
     }
   }
 `;
-export const listSavePosts = /* GraphQL */ `
-  query ListSavePosts(
-    $filter: ModelSavePostsFilterInput
+export const listSavedPosts = /* GraphQL */ `
+  query ListSavedPosts(
+    $filter: ModelSavedPostsFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listSavePosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listSavedPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
         username

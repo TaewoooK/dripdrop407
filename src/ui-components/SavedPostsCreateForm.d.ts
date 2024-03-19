@@ -21,29 +21,28 @@ export declare type ValidationResponse = {
     errorMessage?: string;
 };
 export declare type ValidationFunction<T> = (value: T, validationResponse: ValidationResponse) => ValidationResponse | Promise<ValidationResponse>;
-export declare type SavePostsUpdateFormInputValues = {
+export declare type SavedPostsCreateFormInputValues = {
     username?: string;
     postIds?: string[];
 };
-export declare type SavePostsUpdateFormValidationValues = {
+export declare type SavedPostsCreateFormValidationValues = {
     username?: ValidationFunction<string>;
     postIds?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
-export declare type SavePostsUpdateFormOverridesProps = {
-    SavePostsUpdateFormGrid?: PrimitiveOverrideProps<GridProps>;
+export declare type SavedPostsCreateFormOverridesProps = {
+    SavedPostsCreateFormGrid?: PrimitiveOverrideProps<GridProps>;
     username?: PrimitiveOverrideProps<TextFieldProps>;
     postIds?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
-export declare type SavePostsUpdateFormProps = React.PropsWithChildren<{
-    overrides?: SavePostsUpdateFormOverridesProps | undefined | null;
+export declare type SavedPostsCreateFormProps = React.PropsWithChildren<{
+    overrides?: SavedPostsCreateFormOverridesProps | undefined | null;
 } & {
-    id?: string;
-    savePosts?: any;
-    onSubmit?: (fields: SavePostsUpdateFormInputValues) => SavePostsUpdateFormInputValues;
-    onSuccess?: (fields: SavePostsUpdateFormInputValues) => void;
-    onError?: (fields: SavePostsUpdateFormInputValues, errorMessage: string) => void;
-    onChange?: (fields: SavePostsUpdateFormInputValues) => SavePostsUpdateFormInputValues;
-    onValidate?: SavePostsUpdateFormValidationValues;
+    clearOnSuccess?: boolean;
+    onSubmit?: (fields: SavedPostsCreateFormInputValues) => SavedPostsCreateFormInputValues;
+    onSuccess?: (fields: SavedPostsCreateFormInputValues) => void;
+    onError?: (fields: SavedPostsCreateFormInputValues, errorMessage: string) => void;
+    onChange?: (fields: SavedPostsCreateFormInputValues) => SavedPostsCreateFormInputValues;
+    onValidate?: SavedPostsCreateFormValidationValues;
 } & React.CSSProperties>;
-export default function SavePostsUpdateForm(props: SavePostsUpdateFormProps): React.ReactElement;
+export default function SavedPostsCreateForm(props: SavedPostsCreateFormProps): React.ReactElement;
