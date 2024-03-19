@@ -25,4 +25,6 @@ export { default as PostReportCreateForm } from "./PostReportCreateForm";
 export { default as PostReportUpdateForm } from "./PostReportUpdateForm";
 export { default as PostUpdateForm } from "./PostUpdateForm";
 export { default as ReportPost } from "./ReportPost";
+export { default as SavedPostsCreateForm } from "./SavedPostsCreateForm";
+export { default as SavedPostsUpdateForm } from "./SavedPostsUpdateForm";
 export { default as studioTheme } from "./studioTheme";

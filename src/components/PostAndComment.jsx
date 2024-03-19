@@ -35,61 +35,118 @@ const PostAndComment = () => {
   const [image, setImage] = React.useState("");
   const [currentImageIndex, setCurrentImageIndex] = React.useState(1);
   const [currPostID, setCurrPostID] = React.useState(null);
-  const [variablesN, setVariablesN] = React.useState({ limit: 10 });
+  const [variablesN, setVariablesN] = React.useState(null);
+  const [currUser, setCurrUser] = useState(null);
+  const [gotVN, setGotVN] = useState(false);
 
-  const fetchPost = async () => {
-    if (!nextToken) {
-      // This means either the page just loaded or the user has scrolled to the end of the list
-      setVariablesN({ limit: 10 });
-    } else {
-      setVariablesN({ limit: 10, nextToken: nextToken });
-    }
+  const fetchUserData = async () => {
     try {
-      //console.log("Logging fetchPost begin")
-      //console.log("Variables")
-      //console.log(variablesN)
-      const postDataGraphQLResponse = await client.graphql({
-        query: listPosts,
-        variables: variablesN,
-      });
-      //console.log("graphql response")
-      //console.log(postDataGraphQLResponse)
-      let postData = [];
-      let nextTokenTemp = null;
-      if (postDataGraphQLResponse.data.listPosts.items.length != 0) {
-        postData = postDataGraphQLResponse.data.listPosts.items;
-        nextTokenTemp = postDataGraphQLResponse.data.listPosts.nextToken;
-        setPosts(postDataGraphQLResponse.data.listPosts.items);
-        setNextToken(postDataGraphQLResponse.data.listPosts.nextToken);
-        setVariablesN({ limit: 10, nextToken: nextTokenTemp });
-      } else {
-        setNextToken(null);
-      }
-      console.log("posts");
-      console.log(postData);
-      const imagePromises = postData.map(async (post) => {
-        const postData = await getUrl({ key: post.postImageKey });
-        return {
-          description: post.description,
-          imageUrl: postData.url,
-        };
-      });
-      const fetchedImages = await Promise.all(imagePromises);
-      setImages(fetchedImages);
-      console.log("Fetched images");
-      console.log(fetchedImages);
-      setImage(fetchedImages[0].imageUrl);
-      setCurrentImageIndex(0);
-      //console.log("End of fetchPost logging")
+      const currUserAttributes = await getCurrentUser();
+      setCurrUser(currUserAttributes);
     } catch (error) {
-      console.error("Error fetching posts: ", error);
+      console.error("Error fetching user data: ", error);
     }
   };
+
+  const setVariablesNFilter = () => {
+    if (currUser != null) {
+      if (!nextToken) {
+        // This means either the page just loaded or the user has scrolled to the end of the list
+        setVariablesN({
+          filter: {
+            not: {
+              hiddenPeople: { contains: currUser.username },
+            },
+          },
+          limit: 10,
+        });
+      } else {
+        setVariablesN({
+          filter: {
+            not: {
+              hiddenPeople: { contains: currUser.username },
+            },
+          },
+          limit: 10,
+          nextToken: nextToken,
+        });
+      }
+      setGotVN(true);
+    }
+  };
+
+  const fetchPost = async () => {
+    if (variablesN != null) {
+      try {
+        //console.log("Logging fetchPost begin")
+        // console.log("Variables");
+        // console.log(variablesN);
+        const postDataGraphQLResponse = await client.graphql({
+          query: listPosts,
+          variables: variablesN,
+        });
+        //console.log("graphql response"
+
+        let postData = [];
+        let nextTokenTemp = null;
+        if (postDataGraphQLResponse.data.listPosts.items.length != 0) {
+          postData = postDataGraphQLResponse.data.listPosts.items;
+          nextTokenTemp = postDataGraphQLResponse.data.listPosts.nextToken;
+          setPosts(postDataGraphQLResponse.data.listPosts.items);
+          setNextToken(postDataGraphQLResponse.data.listPosts.nextToken);
+          setVariablesN({
+            filter: {
+              not: {
+                hiddenPeople: { contains: currUser.username },
+              },
+            },
+            limit: 10,
+            nextToken: nextTokenTemp,
+          });
+        } else {
+          setNextToken(null);
+        }
+        console.log("posts");
+        console.log(postData);
+        const imagePromises = postData.map(async (post) => {
+          const postData = await getUrl({ key: post.postImageKey });
+          return {
+            description: post.description,
+            imageUrl: postData.url,
+          };
+        });
+        const fetchedImages = await Promise.all(imagePromises);
+        setImages(fetchedImages);
+        console.log("Fetched images");
+        console.log(fetchedImages);
+        setImage(fetchedImages[0].imageUrl);
+        setCurrentImageIndex(0);
+        //console.log("End of fetchPost logging")
+      } catch (error) {
+        console.error("Error fetching posts: ", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    setVariablesNFilter();
+  }, [currUser]);
+
   // When nextToken changes, fetch more posts
   useEffect(() => {
     console.log("NextTok change calls fetchPost");
+    setVariablesNFilter();
+  }, [nextToken]);
+
+  // When gotVN changes, fetch more posts
+  useEffect(() => {
+    console.log("VariablesN change calls fetchPost");
     fetchPost();
-  }, []);
+  }, [gotVN]);
 
   // useEffect(() => {
   //     console.log("ReRender")
