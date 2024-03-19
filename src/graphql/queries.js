@@ -220,3 +220,35 @@ export const listPostReports = /* GraphQL */ `
     }
   }
 `;
+export const getSavedPosts = /* GraphQL */ `
+  query GetSavedPosts($id: ID!) {
+    getSavedPosts(id: $id) {
+      id
+      username
+      postIds
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listSavedPosts = /* GraphQL */ `
+  query ListSavedPosts(
+    $filter: ModelSavedPostsFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listSavedPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        username
+        postIds
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
