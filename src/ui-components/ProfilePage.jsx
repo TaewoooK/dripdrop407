@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { fetchUserAttributes, getCurrentUser } from "aws-amplify/auth";
 import { generateClient } from "aws-amplify/api";
-import { listPosts } from "../graphql/queries";
 import {
   Collection,
   Card,
@@ -13,6 +12,8 @@ import {
 } from "@aws-amplify/ui-react";
 import { getUrl } from "aws-amplify/storage";
 import EditProfileNew from "../components/EditProfileNew";
+import { listPosts, listSavedPosts } from "../graphql/queries";
+import toast, { Toaster } from "react-hot-toast";
 
 const client = generateClient();
 
@@ -37,16 +38,13 @@ const modalStyles = {
 };
 
 const ProfilePage = () => {
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const Modal = ({ onClose }) => {
     return (
       <div style={modalContainerStyles}>
         <div style={modalStyles}>
-          <EditProfileNew 
-            onClickEvent={handleClickChild}
-          />
+          <EditProfileNew onClickEvent={handleClickChild} />
           <button onClick={onClose}>Close</button>
         </div>
       </div>
@@ -62,11 +60,55 @@ const ProfilePage = () => {
   };
 
   const handleClickChild = async () => {
-    console.log('Received click event');
+    console.log("Received click event");
     closeModal();
     const userAttributes = await fetchUserAttributes();
     setUser(userAttributes);
-  }
+  };
+
+  const handleViewSavedPosts = async () => {
+    console.log(showingSavedPosts);
+    if (showingSavedPosts) {
+      setShowingSavedPosts(false);
+      console.log("View posts by:", currUser.username);
+      try {
+        const postData = await client.graphql({ query: listPosts, variables });
+        setPosts(postData.data.listPosts.items);
+      } catch (error) {
+        console.error("Error fetching posts: ", error);
+      }
+    } else {
+      setShowingSavedPosts(true);
+      console.log("View saved posts for:", currUser.username);
+      try {
+        const savedPosts = await client.graphql({
+          query: listSavedPosts,
+          variables: { filter: { username: { eq: currUser.username } } },
+        });
+        const savedPostIds = savedPosts.data.listSavedPosts.items[0].postIds;
+        console.log("Saved post ids:", savedPostIds);
+        if (savedPostIds.length === 0) {
+          // setPosts([]);
+          toast.error("No saved posts found");
+          setShowingSavedPosts(false);
+        } else {
+          // Fetch saved posts
+          let filterMembers = savedPostIds.map((id) =>
+            JSON.parse(`{"id": {"eq": "${id}"}}`)
+          );
+          let filter = { or: filterMembers };
+          const savedPostsData = await client.graphql({
+            query: listPosts,
+            variables: { filter: filter },
+          });
+          console.log("Saved posts data:", savedPostsData.data.listPosts.items);
+          setPosts(savedPostsData.data.listPosts.items);
+        }
+      } catch (error) {
+        console.error("Error fetching saved posts:", error);
+      }
+    }
+  };
 
   const [user, setUser] = useState(null);
   const [currUser, setCurrUser] = useState(null);
@@ -77,6 +119,8 @@ const ProfilePage = () => {
 
   const [posts, setPosts] = useState([]);
   const [images, setImages] = useState([]);
+
+  const [showingSavedPosts, setShowingSavedPosts] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -152,22 +196,32 @@ const ProfilePage = () => {
       }}
     >
       <div backgroundColor="rgba(0,0,0,0.5)">
-      {isModalOpen && <Modal onClose={closeModal} />}
+        {isModalOpen && <Modal onClose={closeModal} />}
       </div>
-
 
       {loading ? (
         <p>Loading...</p>
       ) : user ? (
         <div style={styles.profile}>
-          <Button style={styles.editButton} onClick={openModal}>Edit Profile</Button>
+          <Toaster position="top-right" reverseOrder={false} />
+          <Button style={styles.editButton} onClick={openModal}>
+            Edit Profile
+          </Button>
+          <span style={{ margin: "0 10px" }}></span>
+          <Button onClick={handleViewSavedPosts}>
+            {showingSavedPosts ? "Show Posts" : "Saved Posts"}
+          </Button>
           <h1 style={styles.heading}>Welcome {currUser.username}!</h1>
-          <h2 style={styles.info}>Preferred Username: {user.preferred_username}</h2>
+          <h2 style={styles.info}>
+            Preferred Username: {user.preferred_username}
+          </h2>
           <h2 style={styles.info}>Email: {user.email}</h2>
           <h2 style={styles.info}>
             Email Verified: {user.email_verified ? "Yes" : "No"}
           </h2>
-          <h2 style={styles.info}>Name: {user.name} {user.family_name}</h2>
+          <h2 style={styles.info}>
+            Name: {user.name} {user.family_name}
+          </h2>
           <h2 style={styles.info}>Gender: {user.gender}</h2>
         </div>
       ) : (
@@ -237,6 +291,5 @@ const styles = {
     marginBottom: "20px",
   },
 };
-
 
 export default ProfilePage;

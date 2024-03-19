@@ -104,6 +104,7 @@ const PostAndComment = () => {
   useEffect(() => {
     console.log("NextTok change calls fetchPost");
     fetchPost();
+    getSavedPosts();
   }, []);
 
   // useEffect(() => {
@@ -217,25 +218,31 @@ const PostAndComment = () => {
     setShowActionCenter(false);
   };
 
-  async function getSavedPosts() {
+  const showReportNotification = () => {
+    toast.success("Post reported successfully");
+  };
+
+  const getSavedPosts = async () => {
     try {
       const result = await client.graphql({
         query: listSavedPosts,
         variables: { filter: { username: { eq: myUser.username } } },
       });
+      if (result.data.listSavedPosts.items.length > 0) {
+        setSavedPosts(result.data.listSavedPosts.items[0].postIds);
+        console.log("saved posts:", result.data.listSavedPosts.items[0].postIds);
+      }
       return result.data.listSavedPosts.items; // Return the data from the GraphQL response
     } catch (error) {
       console.error("Error fetching saved posts:", error);
       return null; // Return null in case of error
     }
-  }
+  };
 
   const toggleSavePost = async () => {
     setShowActionCenter(false);
-    // const getSavedPosts = null;
     try {
       const savedPostsList = (await getSavedPosts())[0];
-      //   console.log("list before creation", savedPostsList);
       if (savedPostsList.length == 0) {
         console.log("no saved posts data");
         const currPost = posts[currentImageIndex];
@@ -245,9 +252,9 @@ const PostAndComment = () => {
             input: { username: myUser.username, postIds: [currPost.id] },
           },
         });
-        toast.success("Post save created");
-        setSavedPosts(createdSavedPosts.data.updateSavedPosts.postId);
-        // console.log("list after creation", (await getSavedPosts())[0].postIds);
+        console.log("created saved posts");
+        toast.success("Post saved");
+        setSavedPosts(createdSavedPosts.data.updateSavedPosts.postIds);
       } else {
         if (savedPostsList.postIds.includes(posts[currentImageIndex].id)) {
           console.log("unsaving post");
@@ -276,18 +283,13 @@ const PostAndComment = () => {
             variables: { input, condition },
           });
           setSavedPosts(updatedSavedPosts.data.updateSavedPosts.postIds);
-          toast.success("Post saved successfully");
+          toast.success("Post saved");
         }
       }
-      //   console.log("list after creation", (await getSavedPosts())[0].postIds);
     } catch (e) {
       console.log("error:", e);
-      toast.error("error saving post");
+      toast.error("error saving/unsaving post");
     }
-  };
-
-  const showReportNotification = () => {
-    toast.success("Post reported successfully");
   };
 
   // const [isCommentDeleted, setIsCommentDeleted] = useState(false);
