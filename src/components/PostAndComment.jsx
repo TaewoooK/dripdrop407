@@ -147,6 +147,7 @@ const PostAndComment = () => {
 
   useEffect(() => {
     setVariablesNFilter();
+    getSavedPosts();
   }, [currUser]);
 
   // When nextToken changes, fetch more posts
@@ -279,6 +280,7 @@ const PostAndComment = () => {
 
   const getSavedPosts = async () => {
     try {
+        console.log("fetching saved posts");
       const result = await client.graphql({
         query: listSavedPosts,
         variables: { filter: { username: { eq: currUser.username } } },
@@ -528,22 +530,7 @@ const PostAndComment = () => {
             type="chat"
             onClick={handleCommentsExpansionClick}
           ></MyIcon>
-          <MyIcon
-            className="chat-icon"
-            type="chat"
-            onClick={handleCommentsExpansionClick}
-          ></MyIcon>
 
-          <Button
-            className="green-button"
-            onClick={handleGreenButtonClick}
-            whilehover={{ x: [-2, 2, -2, 2, 0], transition: { duration: 0.3 } }}
-            whiletap={{}}
-            size="default"
-            isDisabled={false}
-            variation="default"
-            //onClick={() => setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)}
-          ></Button>
           <Button
             className="green-button"
             onClick={handleGreenButtonClick}
