@@ -93,6 +93,7 @@ export const onCreatePost = /* GraphQL */ `
         nextToken
         __typename
       }
+      hiddenPeople
       updatedAt
       __typename
     }
@@ -112,6 +113,7 @@ export const onUpdatePost = /* GraphQL */ `
         nextToken
         __typename
       }
+      hiddenPeople
       updatedAt
       __typename
     }
@@ -131,6 +133,7 @@ export const onDeletePost = /* GraphQL */ `
         nextToken
         __typename
       }
+      hiddenPeople
       updatedAt
       __typename
     }
@@ -151,6 +154,7 @@ export const onCreateComment = /* GraphQL */ `
         createdAt
         enable_comments
         postImageKey
+        hiddenPeople
         updatedAt
         __typename
       }
@@ -175,6 +179,7 @@ export const onUpdateComment = /* GraphQL */ `
         createdAt
         enable_comments
         postImageKey
+        hiddenPeople
         updatedAt
         __typename
       }
@@ -199,6 +204,7 @@ export const onDeleteComment = /* GraphQL */ `
         createdAt
         enable_comments
         postImageKey
+        hiddenPeople
         updatedAt
         __typename
       }
