@@ -58,7 +58,7 @@ const PostAndComment = () => {
               hiddenPeople: { contains: currUser.username },
             },
           },
-          limit: 2,
+          limit: 10,
         });
       } else {
         setVariablesN({
@@ -67,7 +67,7 @@ const PostAndComment = () => {
               hiddenPeople: { contains: currUser.username },
             },
           },
-          limit: 2,
+          limit: 10,
           nextToken: nextToken,
         });
       }
@@ -100,7 +100,7 @@ const PostAndComment = () => {
                 hiddenPeople: { contains: currUser.username },
               },
             },
-            limit: 2,
+            limit: 10,
             nextToken: nextTokenTemp,
           });
         } else {
