@@ -15,12 +15,24 @@ import { motion, useAnimate } from "framer-motion";
 import awsconfig from "../aws-exports";
 import { fetchUserAttributes, getCurrentUser } from "aws-amplify/auth";
 import { generateClient, post } from "aws-amplify/api";
-import { createComment, deleteComment } from "../graphql/mutations";
-import { listPosts, getPost, commentsByPostId } from "../graphql/queries";
+import {
+  createComment,
+  createSavedPosts,
+  deleteComment,
+  updateSavedPosts,
+ } from "../graphql/mutations";
+import {
+  listPosts,
+  getPost,
+  commentsByPostId,
+  listSavedPosts,
+} from "../graphql/queries";
 import { getUrl } from "aws-amplify/storage";
 import PostActionCenter from "./PostActionCenter";
 import ReportPost from "./ReportPost";
 import toast, { Toaster } from "react-hot-toast";
+import { useContext } from "react";
+import { UserContext } from "./../UserContext";
 
 const client = generateClient();
 
@@ -38,6 +50,7 @@ const PostAndComment = () => {
   const [variablesN, setVariablesN] = React.useState(null);
   const [currUser, setCurrUser] = useState(null);
   const [gotVN, setGotVN] = useState(false);
+  const [savedPosts, setSavedPosts] = useState([]);
 
   const fetchUserData = async () => {
     try {
@@ -134,6 +147,7 @@ const PostAndComment = () => {
 
   useEffect(() => {
     setVariablesNFilter();
+    getSavedPosts();
   }, [currUser]);
 
   // When nextToken changes, fetch more posts
@@ -179,6 +193,7 @@ const PostAndComment = () => {
     await animate(scope.current, { x: 0 });
     // Perform any other actions or state updates as needed
   };
+
 
   const handleRedButtonClick = async () => {
     setShow(false);
@@ -228,7 +243,7 @@ const PostAndComment = () => {
         input: {
           postId: currPost.id,
           text: comment,
-          commentAuthorId: await getCurrentUser().userId,
+          commentAuthorId: currUser.userId,
         },
       },
     });
@@ -263,6 +278,77 @@ const PostAndComment = () => {
     toast.success("Post reported successfully");
   };
 
+  const getSavedPosts = async () => {
+    try {
+        console.log("fetching saved posts");
+      const result = await client.graphql({
+        query: listSavedPosts,
+        variables: { filter: { username: { eq: currUser.username } } },
+      });
+      if (result.data.listSavedPosts.items.length > 0) {
+        setSavedPosts(result.data.listSavedPosts.items[0].postIds);
+        console.log("saved posts:", result.data.listSavedPosts.items[0].postIds);
+      }
+      return result.data.listSavedPosts.items; // Return the data from the GraphQL response
+    } catch (error) {
+      console.error("Error fetching saved posts:", error);
+      return null; // Return null in case of error
+    }
+  };
+
+  const toggleSavePost = async () => {
+    setShowActionCenter(false);
+    try {
+      const savedPostsList = (await getSavedPosts())[0];
+      if (savedPostsList.length == 0) {
+        console.log("no saved posts data");
+        const currPost = posts[currentImageIndex];
+        const createdSavedPosts = await client.graphql({
+          query: createSavedPosts,
+          variables: {
+            input: { username: currUser.username, postIds: [currPost.id] },
+          },
+        });
+        console.log("created saved posts");
+        toast.success("Post saved");
+        setSavedPosts(createdSavedPosts.data.updateSavedPosts.postIds);
+      } else {
+        if (savedPostsList.postIds.includes(posts[currentImageIndex].id)) {
+          console.log("unsaving post");
+          const input = {
+            id: savedPostsList.id,
+            postIds: savedPostsList.postIds.filter(
+              (id) => id != posts[currentImageIndex].id
+            ),
+          };
+          const condition = { username: { eq: currUser.username } };
+          const updatedSavedPosts = await client.graphql({
+            query: updateSavedPosts,
+            variables: { input, condition },
+          });
+          setSavedPosts(updatedSavedPosts.data.updateSavedPosts.postIds);
+          toast.success("Post unsaved");
+        } else {
+          console.log("post not saved");
+          const input = {
+            id: savedPostsList.id,
+            postIds: [...savedPostsList.postIds, posts[currentImageIndex].id],
+          };
+          const condition = { username: { eq: currUser.username } };
+          const updatedSavedPosts = await client.graphql({
+            query: updateSavedPosts,
+            variables: { input, condition },
+          });
+          setSavedPosts(updatedSavedPosts.data.updateSavedPosts.postIds);
+          toast.success("Post saved");
+        }
+      }
+    } catch (e) {
+      console.log("error:", e);
+      toast.error("error saving/unsaving post");
+    }
+  };
+
   // const [isCommentDeleted, setIsCommentDeleted] = useState(false);
 
   // Handler function to toggle the comment deletion state
@@ -294,7 +380,11 @@ const PostAndComment = () => {
       {showActionCenter && (
         <div className="overlay" onClick={toggleActionCenter}>
           <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
-            <PostActionCenter toggleReportPost={toggleReportPost} />
+            <PostActionCenter
+              toggleReportPost={toggleReportPost}
+              toggleSavePost={toggleSavePost}
+              saved={savedPosts.includes(posts[currentImageIndex].id)}
+            />
           </div>
         </div>
       )}
@@ -311,7 +401,6 @@ const PostAndComment = () => {
           </div>
         </div>
       )}
-
       <View className="big-post-container">
         <motion.View
           className="post-container"
