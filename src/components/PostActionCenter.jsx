@@ -8,11 +8,17 @@
 import * as React from "react";
 // import { getOverrideProps } from "./utils";
 import { Button, Flex } from "@aws-amplify/ui-react";
-export default function PostActionCenter({toggleReportPost}) {
+export default function PostActionCenter({toggleReportPost, toggleSavePost, saved}) {
   // const { overrides, ...rest } = props;
 
   const handleReportButtonClick = () => {
     toggleReportPost();
+  }
+
+  const handleSavePostButtonClick = () => {
+    console.log("save post");
+    toggleSavePost();
+
   }
 
   return (
@@ -37,17 +43,6 @@ export default function PostActionCenter({toggleReportPost}) {
         size="large"
         isDisabled={false}
         variation="primary"
-        children="Report Post"
-        onClick={handleReportButtonClick}
-      ></Button>
-
-      <Button
-        width="367px"
-        height="unset"
-        shrink="0"
-        size="large"
-        isDisabled={false}
-        variation="primary"
         children="View Profile"
         // onClick={"/profile"}
       ></Button>
@@ -59,7 +54,19 @@ export default function PostActionCenter({toggleReportPost}) {
         size="large"
         isDisabled={false}
         variation="primary"
-        children="Something"
+        children={saved? "Unsave Post" : "Save Post"}
+        onClick={handleSavePostButtonClick}
+      ></Button>
+
+      <Button
+        width="367px"
+        height="unset"
+        shrink="0"
+        size="large"
+        isDisabled={false}
+        variation="primary"
+        children="Report Post"
+        onClick={handleReportButtonClick}
       ></Button>
     </Flex>
   );

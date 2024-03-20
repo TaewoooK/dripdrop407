@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { fetchUserAttributes, getCurrentUser } from "aws-amplify/auth";
 import { generateClient } from "aws-amplify/api";
-import { listPosts } from "../graphql/queries";
 import { updatePost } from "../graphql/mutations";
 import { MyIcon } from "../ui-components";
 import "./ProfilePage.css";
@@ -18,6 +17,8 @@ import {
 } from "@aws-amplify/ui-react";
 import { getUrl } from "aws-amplify/storage";
 import EditProfileNew from "../components/EditProfileNew";
+import { listPosts, listSavedPosts } from "../graphql/queries";
+import toast, { Toaster } from "react-hot-toast";
 
 const client = generateClient();
 
@@ -80,6 +81,50 @@ const ProfilePage = () => {
     setUser(userAttributes);
   };
 
+  const handleViewSavedPosts = async () => {
+    console.log(showingSavedPosts);
+    if (showingSavedPosts) {
+      setShowingSavedPosts(false);
+      console.log("View posts by:", currUser.username);
+      try {
+        const postData = await client.graphql({ query: listPosts, variables });
+        setPosts(postData.data.listPosts.items);
+      } catch (error) {
+        console.error("Error fetching posts: ", error);
+      }
+    } else {
+      setShowingSavedPosts(true);
+      console.log("View saved posts for:", currUser.username);
+      try {
+        const savedPosts = await client.graphql({
+          query: listSavedPosts,
+          variables: { filter: { username: { eq: currUser.username } } },
+        });
+        const savedPostIds = savedPosts.data.listSavedPosts.items[0].postIds;
+        console.log("Saved post ids:", savedPostIds);
+        if (savedPostIds.length === 0) {
+          // setPosts([]);
+          toast.error("No saved posts found");
+          setShowingSavedPosts(false);
+        } else {
+          // Fetch saved posts
+          let filterMembers = savedPostIds.map((id) =>
+            JSON.parse(`{"id": {"eq": "${id}"}}`)
+          );
+          let filter = { or: filterMembers };
+          const savedPostsData = await client.graphql({
+            query: listPosts,
+            variables: { filter: filter },
+          });
+          console.log("Saved posts data:", savedPostsData.data.listPosts.items);
+          setPosts(savedPostsData.data.listPosts.items);
+        }
+      } catch (error) {
+        console.error("Error fetching saved posts:", error);
+      }
+    }
+  };
+
   const [user, setUser] = useState(null);
   const [currUser, setCurrUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -89,6 +134,8 @@ const ProfilePage = () => {
 
   const [posts, setPosts] = useState([]);
   const [images, setImages] = useState([]);
+
+  const [showingSavedPosts, setShowingSavedPosts] = useState(false);
 
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -194,8 +241,13 @@ const ProfilePage = () => {
         <p>Loading...</p>
       ) : user ? (
         <div style={styles.profile}>
+          <Toaster position="top-right" reverseOrder={false} />
           <Button style={styles.editButton} onClick={openModal}>
             Edit Profile
+          </Button>
+          <span style={{ margin: "0 10px" }}></span>
+          <Button onClick={handleViewSavedPosts}>
+            {showingSavedPosts ? "Show Posts" : "Saved Posts"}
           </Button>
           <h1 style={styles.heading}>Welcome {currUser.username}!</h1>
           <h2 style={styles.info}>
