@@ -27,4 +27,6 @@ export { default as PostUpdateForm } from "./PostUpdateForm";
 export { default as ReportPost } from "./ReportPost";
 export { default as SavedPostsCreateForm } from "./SavedPostsCreateForm";
 export { default as SavedPostsUpdateForm } from "./SavedPostsUpdateForm";
+export { default as UserSearchRescind } from "./UserSearchRescind";
+export { default as UserSearchSend } from "./UserSearchSend";
 export { default as studioTheme } from "./studioTheme";

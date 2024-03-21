@@ -288,8 +288,16 @@ const PostAndComment = () => {
       if (result.data.listSavedPosts.items.length > 0) {
         setSavedPosts(result.data.listSavedPosts.items[0].postIds);
         console.log("saved posts:", result.data.listSavedPosts.items[0].postIds);
+      } else {
+        const createdSavedPosts = await client.graphql({
+          query: createSavedPosts,
+          variables: {
+            input: { username: currUser.username, postIds: [] },
+          },
+        });
+        console.log("created saved posts");
+        return createdSavedPosts.data.listSavedPosts.items; // Return the data from the GraphQL response
       }
-      return result.data.listSavedPosts.items; // Return the data from the GraphQL response
     } catch (error) {
       console.error("Error fetching saved posts:", error);
       return null; // Return null in case of error
@@ -300,25 +308,25 @@ const PostAndComment = () => {
     setShowActionCenter(false);
     try {
       const savedPostsList = (await getSavedPosts())[0];
-      if (savedPostsList.length == 0) {
-        console.log("no saved posts data");
-        const currPost = posts[currentImageIndex];
-        const createdSavedPosts = await client.graphql({
-          query: createSavedPosts,
-          variables: {
-            input: { username: currUser.username, postIds: [currPost.id] },
-          },
-        });
-        console.log("created saved posts");
-        toast.success("Post saved");
-        setSavedPosts(createdSavedPosts.data.updateSavedPosts.postIds);
-      } else {
+      // if (savedPostsList.length === 0) {
+      //   console.log("no saved posts data");
+      //   const currPost = posts[currentImageIndex];
+      //   const createdSavedPosts = await client.graphql({
+      //     query: createSavedPosts,
+      //     variables: {
+      //       input: { username: currUser.username, postIds: [currPost.id] },
+      //     },
+      //   });
+      //   console.log("created saved posts");
+      //   toast.success("Post saved");
+      //   setSavedPosts(createdSavedPosts.data.updateSavedPosts.postIds);
+      // } else {
         if (savedPostsList.postIds.includes(posts[currentImageIndex].id)) {
           console.log("unsaving post");
           const input = {
             id: savedPostsList.id,
             postIds: savedPostsList.postIds.filter(
-              (id) => id != posts[currentImageIndex].id
+              (id) => id !== posts[currentImageIndex].id
             ),
           };
           const condition = { username: { eq: currUser.username } };
@@ -342,7 +350,7 @@ const PostAndComment = () => {
           setSavedPosts(updatedSavedPosts.data.updateSavedPosts.postIds);
           toast.success("Post saved");
         }
-      }
+      // }
     } catch (e) {
       console.log("error:", e);
       toast.error("error saving/unsaving post");
