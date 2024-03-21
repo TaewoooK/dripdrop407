@@ -14,15 +14,14 @@ import {
   Grid,
   Icon,
   ScrollView,
-  SwitchField,
   Text,
   TextField,
   useTheme,
 } from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
-import { getPost } from "../graphql/queries";
-import { updatePost } from "../graphql/mutations";
+import { getSavedPosts } from "../graphql/queries";
+import { updateSavedPosts } from "../graphql/mutations";
 const client = generateClient();
 function ArrayField({
   items = [],
@@ -179,10 +178,10 @@ function ArrayField({
     </React.Fragment>
   );
 }
-export default function PostUpdateForm(props) {
+export default function SavedPostsUpdateForm(props) {
   const {
     id: idProp,
-    post: postModelProp,
+    savedPosts: savedPostsModelProp,
     onSuccess,
     onError,
     onSubmit,
@@ -192,73 +191,43 @@ export default function PostUpdateForm(props) {
     ...rest
   } = props;
   const initialValues = {
-    owner: "",
-    description: "",
-    drip_points: "",
-    createdAt: "",
-    enable_comments: false,
-    postImageKey: "",
-    hiddenPeople: [],
+    username: "",
+    postIds: [],
   };
-  const [owner, setOwner] = React.useState(initialValues.owner);
-  const [description, setDescription] = React.useState(
-    initialValues.description
-  );
-  const [drip_points, setDrip_points] = React.useState(
-    initialValues.drip_points
-  );
-  const [createdAt, setCreatedAt] = React.useState(initialValues.createdAt);
-  const [enable_comments, setEnable_comments] = React.useState(
-    initialValues.enable_comments
-  );
-  const [postImageKey, setPostImageKey] = React.useState(
-    initialValues.postImageKey
-  );
-  const [hiddenPeople, setHiddenPeople] = React.useState(
-    initialValues.hiddenPeople
-  );
+  const [username, setUsername] = React.useState(initialValues.username);
+  const [postIds, setPostIds] = React.useState(initialValues.postIds);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
-    const cleanValues = postRecord
-      ? { ...initialValues, ...postRecord }
+    const cleanValues = savedPostsRecord
+      ? { ...initialValues, ...savedPostsRecord }
       : initialValues;
-    setOwner(cleanValues.owner);
-    setDescription(cleanValues.description);
-    setDrip_points(cleanValues.drip_points);
-    setCreatedAt(cleanValues.createdAt);
-    setEnable_comments(cleanValues.enable_comments);
-    setPostImageKey(cleanValues.postImageKey);
-    setHiddenPeople(cleanValues.hiddenPeople ?? []);
-    setCurrentHiddenPeopleValue("");
+    setUsername(cleanValues.username);
+    setPostIds(cleanValues.postIds ?? []);
+    setCurrentPostIdsValue("");
     setErrors({});
   };
-  const [postRecord, setPostRecord] = React.useState(postModelProp);
+  const [savedPostsRecord, setSavedPostsRecord] =
+    React.useState(savedPostsModelProp);
   React.useEffect(() => {
     const queryData = async () => {
       const record = idProp
         ? (
             await client.graphql({
-              query: getPost.replaceAll("__typename", ""),
+              query: getSavedPosts.replaceAll("__typename", ""),
               variables: { id: idProp },
             })
-          )?.data?.getPost
-        : postModelProp;
-      setPostRecord(record);
+          )?.data?.getSavedPosts
+        : savedPostsModelProp;
+      setSavedPostsRecord(record);
     };
     queryData();
-  }, [idProp, postModelProp]);
-  React.useEffect(resetStateValues, [postRecord]);
-  const [currentHiddenPeopleValue, setCurrentHiddenPeopleValue] =
-    React.useState("");
-  const hiddenPeopleRef = React.createRef();
+  }, [idProp, savedPostsModelProp]);
+  React.useEffect(resetStateValues, [savedPostsRecord]);
+  const [currentPostIdsValue, setCurrentPostIdsValue] = React.useState("");
+  const postIdsRef = React.createRef();
   const validations = {
-    owner: [{ type: "Required" }],
-    description: [{ type: "Required" }],
-    drip_points: [],
-    createdAt: [],
-    enable_comments: [],
-    postImageKey: [],
-    hiddenPeople: [],
+    username: [{ type: "Required" }],
+    postIds: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -286,13 +255,8 @@ export default function PostUpdateForm(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
-          owner,
-          description,
-          drip_points: drip_points ?? null,
-          createdAt: createdAt ?? null,
-          enable_comments: enable_comments ?? null,
-          postImageKey: postImageKey ?? null,
-          hiddenPeople: hiddenPeople ?? null,
+          username,
+          postIds: postIds ?? null,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -323,10 +287,10 @@ export default function PostUpdateForm(props) {
             }
           });
           await client.graphql({
-            query: updatePost.replaceAll("__typename", ""),
+            query: updateSavedPosts.replaceAll("__typename", ""),
             variables: {
               input: {
-                id: postRecord.id,
+                id: savedPostsRecord.id,
                 ...modelFields,
               },
             },
@@ -341,244 +305,78 @@ export default function PostUpdateForm(props) {
           }
         }
       }}
-      {...getOverrideProps(overrides, "PostUpdateForm")}
+      {...getOverrideProps(overrides, "SavedPostsUpdateForm")}
       {...rest}
     >
       <TextField
-        label="Owner"
+        label="Username"
         isRequired={true}
         isReadOnly={false}
-        value={owner}
+        value={username}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              owner: value,
-              description,
-              drip_points,
-              createdAt,
-              enable_comments,
-              postImageKey,
-              hiddenPeople,
+              username: value,
+              postIds,
             };
             const result = onChange(modelFields);
-            value = result?.owner ?? value;
+            value = result?.username ?? value;
           }
-          if (errors.owner?.hasError) {
-            runValidationTasks("owner", value);
+          if (errors.username?.hasError) {
+            runValidationTasks("username", value);
           }
-          setOwner(value);
+          setUsername(value);
         }}
-        onBlur={() => runValidationTasks("owner", owner)}
-        errorMessage={errors.owner?.errorMessage}
-        hasError={errors.owner?.hasError}
-        {...getOverrideProps(overrides, "owner")}
-      ></TextField>
-      <TextField
-        label="Description"
-        isRequired={true}
-        isReadOnly={false}
-        value={description}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              owner,
-              description: value,
-              drip_points,
-              createdAt,
-              enable_comments,
-              postImageKey,
-              hiddenPeople,
-            };
-            const result = onChange(modelFields);
-            value = result?.description ?? value;
-          }
-          if (errors.description?.hasError) {
-            runValidationTasks("description", value);
-          }
-          setDescription(value);
-        }}
-        onBlur={() => runValidationTasks("description", description)}
-        errorMessage={errors.description?.errorMessage}
-        hasError={errors.description?.hasError}
-        {...getOverrideProps(overrides, "description")}
-      ></TextField>
-      <TextField
-        label="Drip points"
-        isRequired={false}
-        isReadOnly={false}
-        type="number"
-        step="any"
-        value={drip_points}
-        onChange={(e) => {
-          let value = isNaN(parseInt(e.target.value))
-            ? e.target.value
-            : parseInt(e.target.value);
-          if (onChange) {
-            const modelFields = {
-              owner,
-              description,
-              drip_points: value,
-              createdAt,
-              enable_comments,
-              postImageKey,
-              hiddenPeople,
-            };
-            const result = onChange(modelFields);
-            value = result?.drip_points ?? value;
-          }
-          if (errors.drip_points?.hasError) {
-            runValidationTasks("drip_points", value);
-          }
-          setDrip_points(value);
-        }}
-        onBlur={() => runValidationTasks("drip_points", drip_points)}
-        errorMessage={errors.drip_points?.errorMessage}
-        hasError={errors.drip_points?.hasError}
-        {...getOverrideProps(overrides, "drip_points")}
-      ></TextField>
-      <TextField
-        label="Created at"
-        isRequired={false}
-        isReadOnly={false}
-        value={createdAt}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              owner,
-              description,
-              drip_points,
-              createdAt: value,
-              enable_comments,
-              postImageKey,
-              hiddenPeople,
-            };
-            const result = onChange(modelFields);
-            value = result?.createdAt ?? value;
-          }
-          if (errors.createdAt?.hasError) {
-            runValidationTasks("createdAt", value);
-          }
-          setCreatedAt(value);
-        }}
-        onBlur={() => runValidationTasks("createdAt", createdAt)}
-        errorMessage={errors.createdAt?.errorMessage}
-        hasError={errors.createdAt?.hasError}
-        {...getOverrideProps(overrides, "createdAt")}
-      ></TextField>
-      <SwitchField
-        label="Enable comments"
-        defaultChecked={false}
-        isDisabled={false}
-        isChecked={enable_comments}
-        onChange={(e) => {
-          let value = e.target.checked;
-          if (onChange) {
-            const modelFields = {
-              owner,
-              description,
-              drip_points,
-              createdAt,
-              enable_comments: value,
-              postImageKey,
-              hiddenPeople,
-            };
-            const result = onChange(modelFields);
-            value = result?.enable_comments ?? value;
-          }
-          if (errors.enable_comments?.hasError) {
-            runValidationTasks("enable_comments", value);
-          }
-          setEnable_comments(value);
-        }}
-        onBlur={() => runValidationTasks("enable_comments", enable_comments)}
-        errorMessage={errors.enable_comments?.errorMessage}
-        hasError={errors.enable_comments?.hasError}
-        {...getOverrideProps(overrides, "enable_comments")}
-      ></SwitchField>
-      <TextField
-        label="Post image key"
-        isRequired={false}
-        isReadOnly={false}
-        value={postImageKey}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              owner,
-              description,
-              drip_points,
-              createdAt,
-              enable_comments,
-              postImageKey: value,
-              hiddenPeople,
-            };
-            const result = onChange(modelFields);
-            value = result?.postImageKey ?? value;
-          }
-          if (errors.postImageKey?.hasError) {
-            runValidationTasks("postImageKey", value);
-          }
-          setPostImageKey(value);
-        }}
-        onBlur={() => runValidationTasks("postImageKey", postImageKey)}
-        errorMessage={errors.postImageKey?.errorMessage}
-        hasError={errors.postImageKey?.hasError}
-        {...getOverrideProps(overrides, "postImageKey")}
+        onBlur={() => runValidationTasks("username", username)}
+        errorMessage={errors.username?.errorMessage}
+        hasError={errors.username?.hasError}
+        {...getOverrideProps(overrides, "username")}
       ></TextField>
       <ArrayField
         onChange={async (items) => {
           let values = items;
           if (onChange) {
             const modelFields = {
-              owner,
-              description,
-              drip_points,
-              createdAt,
-              enable_comments,
-              postImageKey,
-              hiddenPeople: values,
+              username,
+              postIds: values,
             };
             const result = onChange(modelFields);
-            values = result?.hiddenPeople ?? values;
+            values = result?.postIds ?? values;
           }
-          setHiddenPeople(values);
-          setCurrentHiddenPeopleValue("");
+          setPostIds(values);
+          setCurrentPostIdsValue("");
         }}
-        currentFieldValue={currentHiddenPeopleValue}
-        label={"Hidden people"}
-        items={hiddenPeople}
-        hasError={errors?.hiddenPeople?.hasError}
+        currentFieldValue={currentPostIdsValue}
+        label={"Post ids"}
+        items={postIds}
+        hasError={errors?.postIds?.hasError}
         runValidationTasks={async () =>
-          await runValidationTasks("hiddenPeople", currentHiddenPeopleValue)
+          await runValidationTasks("postIds", currentPostIdsValue)
         }
-        errorMessage={errors?.hiddenPeople?.errorMessage}
-        setFieldValue={setCurrentHiddenPeopleValue}
-        inputFieldRef={hiddenPeopleRef}
+        errorMessage={errors?.postIds?.errorMessage}
+        setFieldValue={setCurrentPostIdsValue}
+        inputFieldRef={postIdsRef}
         defaultFieldValue={""}
       >
         <TextField
-          label="Hidden people"
+          label="Post ids"
           isRequired={false}
           isReadOnly={false}
-          value={currentHiddenPeopleValue}
+          value={currentPostIdsValue}
           onChange={(e) => {
             let { value } = e.target;
-            if (errors.hiddenPeople?.hasError) {
-              runValidationTasks("hiddenPeople", value);
+            if (errors.postIds?.hasError) {
+              runValidationTasks("postIds", value);
             }
-            setCurrentHiddenPeopleValue(value);
+            setCurrentPostIdsValue(value);
           }}
-          onBlur={() =>
-            runValidationTasks("hiddenPeople", currentHiddenPeopleValue)
-          }
-          errorMessage={errors.hiddenPeople?.errorMessage}
-          hasError={errors.hiddenPeople?.hasError}
-          ref={hiddenPeopleRef}
+          onBlur={() => runValidationTasks("postIds", currentPostIdsValue)}
+          errorMessage={errors.postIds?.errorMessage}
+          hasError={errors.postIds?.hasError}
+          ref={postIdsRef}
           labelHidden={true}
-          {...getOverrideProps(overrides, "hiddenPeople")}
+          {...getOverrideProps(overrides, "postIds")}
         ></TextField>
       </ArrayField>
       <Flex
@@ -592,7 +390,7 @@ export default function PostUpdateForm(props) {
             event.preventDefault();
             resetStateValues();
           }}
-          isDisabled={!(idProp || postModelProp)}
+          isDisabled={!(idProp || savedPostsModelProp)}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -604,7 +402,7 @@ export default function PostUpdateForm(props) {
             type="submit"
             variation="primary"
             isDisabled={
-              !(idProp || postModelProp) ||
+              !(idProp || savedPostsModelProp) ||
               Object.values(errors).some((e) => e?.hasError)
             }
             {...getOverrideProps(overrides, "SubmitButton")}

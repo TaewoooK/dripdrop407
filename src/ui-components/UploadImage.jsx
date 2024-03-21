@@ -6,12 +6,15 @@ import { fetchUserAttributes } from "aws-amplify/auth";
 import awsExports from "../aws-exports";
 import { Message, Image } from "@aws-amplify/ui-react";
 import { Loader } from "@aws-amplify/ui-react";
+import HidePeople from "./HidePeople";
 
 const client = generateClient();
 
 const UploadImage = () => {
   const [image, setImage] = useState(null);
   const [description, setDescription] = useState("");
+
+  const [hiddenSelect, setHiddenSelect] = useState([]);
 
   const [succeeded, setSucceeded] = useState(0);
 
@@ -60,70 +63,79 @@ const UploadImage = () => {
   // Handler function to toggle the checkbox state
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
-    console.log(!isChecked)
+    console.log(!isChecked);
     console.log("comments checked/unchecked");
   };
 
   const handleSubmit = async () => {
-    setSucceeded(2);
-    // Handle post submission logic here
-    console.log("Image:", image);
-    console.log("Description:", description);
-    let commentEnabled = isChecked;
+    console.log("hiddenSelect:" + hiddenSelect);
 
-    const currDate = new Date().toISOString();
+    try {
+      setSucceeded(2);
+      // Handle post submission logic here
+      console.log("Image:", image);
+      console.log("Description:", description);
+      let commentEnabled = isChecked;
 
-    const response = await client.graphql({
-      query: createPost,
-      variables: {
-        input: {
-          owner: user.email,
-          description: description,
-          comments: String,
-          drip_points: 0,
-          createdAt: currDate,
-          enable_comments: commentEnabled,
-          postImageKey: "",
+      const currDate = new Date().toISOString();
+
+      const response = await client.graphql({
+        query: createPost,
+        variables: {
+          input: {
+            owner: user.email,
+            description: description,
+            comments: String,
+            drip_points: 0,
+            createdAt: currDate,
+            enable_comments: commentEnabled,
+            postImageKey: "",
+            hiddenPeople: hiddenSelect,
+          },
         },
-      },
-    });
+      });
 
-    // console.log("Logging response from createPost")
-    // console.log(response)
+      console.log("Logging response from createPost");
+      console.log(response);
 
-    const postContext = response.data.createPost;
-    if (!postContext) {
-      console.log("Failed to create post");
-      return;
+      const postContext = response.data.createPost;
+      if (!postContext) {
+        console.log("Failed to create post");
+        return;
+      }
+      const imageUpload = await uploadData({
+        key: `${user.email} + ${currDate}` + "image.png",
+        data: image,
+        options: {
+          contentType: "image/png",
+        },
+      }).result;
+
+      const updatePostDetails = {
+        id: postContext.id,
+        postImageKey: imageUpload?.key,
+        enable_comments: commentEnabled,
+      };
+
+      const updatePostResponse = await client.graphql({
+        query: updatePost,
+        variables: { input: updatePostDetails },
+      });
+
+      const updatedPost = updatePostResponse.data.updatePost;
+      // console.log("Logging response from updatePost")
+      // console.log(updatedPost)
+      if (!updatedPost.postImageKey) return;
+      const signedURL = await getUrl({ key: updatedPost.postImageKey });
+      console.log(signedURL);
+
+      setSucceeded(1);
+    } catch (error) {
+      setSucceeded(3);
     }
-    const imageUpload = await uploadData({
-      key: `${user.email} + ${currDate}` + "image.png",
-      data: image,
-      options: {
-        contentType: "image/png",
-      },
-    }).result;
-
-    const updatePostDetails = {
-      id: postContext.id,
-      postImageKey: imageUpload?.key,
-      enable_comments: commentEnabled
-    };
-
-    const updatePostResponse = await client.graphql({
-      query: updatePost,
-      variables: { input: updatePostDetails },
-    });
-
-    const updatedPost = updatePostResponse.data.updatePost;
-    // console.log("Logging response from updatePost")
-    // console.log(updatedPost)
-    if (!updatedPost.postImageKey) return;
-    const signedURL = await getUrl({ key: updatedPost.postImageKey });
-    console.log(signedURL);
-
-    setSucceeded(1);
   };
+
+  console.log("In Upload Image: " + hiddenSelect);
 
   return (
     <div
@@ -169,7 +181,7 @@ const UploadImage = () => {
           onClick={() => alert("📸 Say cheese!")}
         />
       )}
-      <div style={{ marginBottom: "30px"}}>
+      <div style={{ marginBottom: "30px" }}>
         <textarea
           placeholder="Enter description"
           value={description}
@@ -185,16 +197,27 @@ const UploadImage = () => {
           }}
         ></textarea>
 
-        <label style={{ marginBottom: "30px"}}>
-          <input 
-          type="checkbox"
-          checked={isChecked} // Bind the checkbox state to the isChecked variable
-          onChange={handleCheckboxChange} // Call the handler function on checkbox change
-          style={{ padding: '10px 0 20px 0'}}></input>
-          <span style={{color: "white"}}>Enable comments?</span>
+        <label>
+          <input
+            type="checkbox"
+            checked={isChecked} // Bind the checkbox state to the isChecked variable
+            onChange={handleCheckboxChange} // Call the handler function on checkbox change
+            style={{ padding: "10px 0 20px 0" }}
+          ></input>
+          <span>Enable comments?</span>
         </label>
       </div>
-
+      <div
+        style={{
+          padding: "10px", // Increased padding for spacing
+        }}
+      >
+        <HidePeople
+          selectedFriends={hiddenSelect}
+          setSelectedFriends={setHiddenSelect}
+        />
+      </div>
+      {/* Added empty div for spacing */}
       <button
         onClick={handleSubmit}
         style={{
@@ -225,6 +248,18 @@ const UploadImage = () => {
             }}
           >
             Your new fit is uploaded!
+          </Message>
+        )}
+        {succeeded == 3 && (
+          <Message
+            colorTheme="error"
+            heading="Upload Failed"
+            isDismissible={true}
+            onDismiss={() => {
+              setSucceeded(false);
+            }}
+          >
+            Upload has failed. Please check each item and try again.
           </Message>
         )}
       </div>

@@ -79,6 +79,7 @@ export const getPost = /* GraphQL */ `
         nextToken
         __typename
       }
+      hiddenPeople
       updatedAt
       __typename
     }
@@ -99,6 +100,7 @@ export const listPosts = /* GraphQL */ `
         createdAt
         enable_comments
         postImageKey
+        hiddenPeople
         updatedAt
         __typename
       }
@@ -122,6 +124,7 @@ export const getComment = /* GraphQL */ `
         createdAt
         enable_comments
         postImageKey
+        hiddenPeople
         updatedAt
         __typename
       }
@@ -208,6 +211,38 @@ export const listPostReports = /* GraphQL */ `
         reason
         sentAt
         postId
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getSavedPosts = /* GraphQL */ `
+  query GetSavedPosts($id: ID!) {
+    getSavedPosts(id: $id) {
+      id
+      username
+      postIds
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listSavedPosts = /* GraphQL */ `
+  query ListSavedPosts(
+    $filter: ModelSavedPostsFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listSavedPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        username
+        postIds
         createdAt
         updatedAt
         __typename

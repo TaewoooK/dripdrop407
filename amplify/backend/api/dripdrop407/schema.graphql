@@ -19,6 +19,7 @@ type Post @model @auth(rules: [{allow: public}]) {
   enable_comments: Boolean
   postImageKey: String
   comments: [Comment] @hasMany(indexName: "byPost", fields: ["id"])
+  hiddenPeople: [String]
 }
 
 type S3Object {
@@ -42,4 +43,9 @@ type PostReport @model @auth(rules: [{allow: public}]) {
   sentAt: String!
   postId: String!
 }
- 
+
+type SavedPosts @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  username: ID!
+  postIds: [String]
+}

@@ -28,6 +28,7 @@ export declare type PostCreateFormInputValues = {
     createdAt?: string;
     enable_comments?: boolean;
     postImageKey?: string;
+    hiddenPeople?: string[];
 };
 export declare type PostCreateFormValidationValues = {
     owner?: ValidationFunction<string>;
@@ -36,6 +37,7 @@ export declare type PostCreateFormValidationValues = {
     createdAt?: ValidationFunction<string>;
     enable_comments?: ValidationFunction<boolean>;
     postImageKey?: ValidationFunction<string>;
+    hiddenPeople?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type PostCreateFormOverridesProps = {
@@ -46,6 +48,7 @@ export declare type PostCreateFormOverridesProps = {
     createdAt?: PrimitiveOverrideProps<TextFieldProps>;
     enable_comments?: PrimitiveOverrideProps<SwitchFieldProps>;
     postImageKey?: PrimitiveOverrideProps<TextFieldProps>;
+    hiddenPeople?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type PostCreateFormProps = React.PropsWithChildren<{
     overrides?: PostCreateFormOverridesProps | undefined | null;
