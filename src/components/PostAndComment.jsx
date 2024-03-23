@@ -286,8 +286,9 @@ const PostAndComment = () => {
         variables: { filter: { username: { eq: currUser.username } } },
       });
       if (result.data.listSavedPosts.items.length > 0) {
-        setSavedPosts(result.data.listSavedPosts.items[0].postIds);
+        setSavedPosts(result.data.listSavedPosts.items[0]);
         console.log("saved posts:", result.data.listSavedPosts.items[0].postIds);
+        // return result.data.listSavedPosts.items; // Return the data from the GraphQL response
       } else {
         const createdSavedPosts = await client.graphql({
           query: createSavedPosts,
@@ -296,7 +297,8 @@ const PostAndComment = () => {
           },
         });
         console.log("created saved posts");
-        return createdSavedPosts.data.listSavedPosts.items; // Return the data from the GraphQL response
+        setSavedPosts(createdSavedPosts.data.createSavedPosts[0]);
+        // return createdSavedPosts.data.listSavedPosts.items; // Return the data from the GraphQL response
       }
     } catch (error) {
       console.error("Error fetching saved posts:", error);
@@ -307,7 +309,7 @@ const PostAndComment = () => {
   const toggleSavePost = async () => {
     setShowActionCenter(false);
     try {
-      const savedPostsList = (await getSavedPosts())[0];
+      // const savedPostsList = (await getSavedPosts())[0];
       // if (savedPostsList.length === 0) {
       //   console.log("no saved posts data");
       //   const currPost = posts[currentImageIndex];
@@ -321,11 +323,11 @@ const PostAndComment = () => {
       //   toast.success("Post saved");
       //   setSavedPosts(createdSavedPosts.data.updateSavedPosts.postIds);
       // } else {
-        if (savedPostsList.postIds.includes(posts[currentImageIndex].id)) {
+        if (savedPosts.postIds.includes(posts[currentImageIndex].id)) {
           console.log("unsaving post");
           const input = {
-            id: savedPostsList.id,
-            postIds: savedPostsList.postIds.filter(
+            id: savedPosts.id,
+            postIds: savedPosts.postIds.filter(
               (id) => id !== posts[currentImageIndex].id
             ),
           };
@@ -334,20 +336,20 @@ const PostAndComment = () => {
             query: updateSavedPosts,
             variables: { input, condition },
           });
-          setSavedPosts(updatedSavedPosts.data.updateSavedPosts.postIds);
+          setSavedPosts(updatedSavedPosts.data.updateSavedPosts);
           toast.success("Post unsaved");
         } else {
           console.log("post not saved");
           const input = {
-            id: savedPostsList.id,
-            postIds: [...savedPostsList.postIds, posts[currentImageIndex].id],
+            id: savedPosts.id,
+            postIds: [...savedPosts.postIds, posts[currentImageIndex].id],
           };
           const condition = { username: { eq: currUser.username } };
           const updatedSavedPosts = await client.graphql({
             query: updateSavedPosts,
             variables: { input, condition },
           });
-          setSavedPosts(updatedSavedPosts.data.updateSavedPosts.postIds);
+          setSavedPosts(updatedSavedPosts.data.updateSavedPosts);
           toast.success("Post saved");
         }
       // }
@@ -391,7 +393,7 @@ const PostAndComment = () => {
             <PostActionCenter
               toggleReportPost={toggleReportPost}
               toggleSavePost={toggleSavePost}
-              saved={savedPosts.includes(posts[currentImageIndex].id)}
+              saved={savedPosts.postIds.includes(posts[currentImageIndex].id)}
             />
           </div>
         </div>
