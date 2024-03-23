@@ -61,6 +61,7 @@ const PostAndComment = () => {
     }
   };
 
+
   const setVariablesNFilter = () => {
     if (currUser != null) {
       if (!nextToken) {

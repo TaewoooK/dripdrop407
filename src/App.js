@@ -24,6 +24,7 @@ import Upload from "./pages/Upload";
 import Friends from "./pages/Friends";
 import NavBar from "./components/NavBar";
 import ProfilePage from "./ui-components/ProfilePage";
+import FriendsOnly from "./pages/FriendsOnly";
 
 import { getOverrideProps, useAuth } from "./ui-components/utils";
 
@@ -92,7 +93,7 @@ export default function App() {
             {
               label: "Friends Feed",
               value: "Friends Feed",
-              content: "Tab content #2",
+              content: <FriendsOnly />,
             },
           ]}
         />
@@ -115,7 +116,7 @@ export default function App() {
             {
               label: "Friends Feed",
               value: "Friends Feed",
-              content: "Tab content #2",
+              content: <FriendsOnly />,
             },
           ]}
         />

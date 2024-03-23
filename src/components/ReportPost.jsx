@@ -49,13 +49,13 @@ export default function ReportPost({toggleReportPost, currPostID, showReportNoti
     const currDate = new Date().toISOString();
     // setCurrPostID(currPostID);
     // console.log("Reasoning:", reasoning, "\nUser:", (isCurrUserNull? currUser : currUser.username));
-    console.log("Reporter:", currUser.email, "\nreason:", reasoning, "\nSentAt:", currDate, "\nPostID:", currPostID);
+    console.log("Reporter:", currUser.username, "\nreason:", reasoning, "\nSentAt:", currDate, "\nPostID:", currPostID);
     
     const response = await client.graphql({
       query: createPostReport,
       variables: {
         input: {
-          reporter: currUser.email,
+          reporter: currUser.username,
           reason: reasoning,
           sentAt: currDate,
           postId: currPostID
