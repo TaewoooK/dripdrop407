@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { generateClient } from "aws-amplify/api";
 import { uploadData, getUrl } from "aws-amplify/storage";
 import { createPost, updatePost } from "../graphql/mutations";
@@ -7,6 +7,7 @@ import awsExports from "../aws-exports";
 import { Message, Image } from "@aws-amplify/ui-react";
 import { Loader } from "@aws-amplify/ui-react";
 import HidePeople from "./HidePeople";
+import { UserContext } from "../UserContext";
 
 const client = generateClient();
 
@@ -21,6 +22,7 @@ const UploadImage = () => {
   const [user, setUser] = useState(null);
 
   const [imageUrl, setImageUrl] = useState(null);
+  const { allUsers, myUser } = useContext(UserContext);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -83,7 +85,7 @@ const UploadImage = () => {
         query: createPost,
         variables: {
           input: {
-            owner: user.email,
+            owner: myUser.username,
             description: description,
             comments: String,
             drip_points: 0,
@@ -104,7 +106,7 @@ const UploadImage = () => {
         return;
       }
       const imageUpload = await uploadData({
-        key: `${user.email} + ${currDate}` + "image.png",
+        key: `${myUser.username} + ${currDate}` + "image.png",
         data: image,
         options: {
           contentType: "image/png",
