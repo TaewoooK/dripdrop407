@@ -93,7 +93,6 @@ const ProfilePage = () => {
         console.error("Error fetching posts: ", error);
       }
     } else {
-      setShowingSavedPosts(true);
       console.log("View saved posts for:", currUser.username);
       try {
         const savedPosts = await client.graphql({
@@ -116,6 +115,7 @@ const ProfilePage = () => {
             query: listPosts,
             variables: { filter: filter },
           });
+          setShowingSavedPosts(true);
           console.log("Saved posts data:", savedPostsData.data.listPosts.items);
           setPosts(savedPostsData.data.listPosts.items);
         }
