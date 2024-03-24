@@ -16,6 +16,7 @@ import {
 } from "@aws-amplify/ui-react";
 import { Authenticator } from "@aws-amplify/ui-react";
 import awsconfig from "./amplifyconfiguration.json";
+import { Toaster } from "react-hot-toast";
 
 import { DripDropNavBarBasic } from "./ui-components";
 import Home from "./pages/Home";
@@ -143,6 +144,7 @@ export default function App() {
         <UserProvider>
           <View className="App">
             <div>
+              <Toaster position="top-right" reverseOrder={false} />
               <Grid
                 columnGap="0.5rem"
                 rowGap="0.5rem"

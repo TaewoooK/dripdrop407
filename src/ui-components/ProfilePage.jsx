@@ -241,7 +241,7 @@ const ProfilePage = () => {
         <p>Loading...</p>
       ) : user ? (
         <div style={styles.profile}>
-          <Toaster position="top-right" reverseOrder={false} />
+          {/* <Toaster position="top-right" reverseOrder={false} /> */}
           <Button style={styles.editButton} onClick={openModal}>
             Edit Profile
           </Button>

@@ -387,7 +387,7 @@ const PostAndComment = () => {
 
   return (
     <Flex direction="row" justifyContent="center" gap="0.5rem">
-      <Toaster position="top-right" reverseOrder={false} />
+      {/* <Toaster position="top-right" reverseOrder={false} /> */}
       {showActionCenter && (
         <div className="overlay" onClick={toggleActionCenter}>
           <div className="overlay-content" onClick={(e) => e.stopPropagation()}>

@@ -253,10 +253,7 @@ const Friends = () => {
 
   return (
     <View className="Friends">
-    <Toaster
-      position="top-right"
-      reverseOrder={false}
-    />
+    {/* <Toaster position="top-right" reverseOrder={false} /> */}
       <Flex
         className="friends_content_container"
         direction="column"
