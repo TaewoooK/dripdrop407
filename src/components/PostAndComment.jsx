@@ -238,6 +238,7 @@ const PostAndComment = () => {
 
   const onClickHandler = async () => {
     const currPost = posts[currentImageIndex];
+    console.log("currPostID:", currPost.id, "currPostOwner:", currPost.owner, "currUserId:", currUser.userId);
     await client.graphql({
       query: createComment,
       variables: {
@@ -248,10 +249,12 @@ const PostAndComment = () => {
         },
       },
     });
+    console.log("no error");
     const getComments = await client.graphql({
       query: commentsByPostId,
       variables: { postId: currPost.id },
     });
+    console.log("no error 2");
     const commentsList = getComments.data.commentsByPostId.items;
     const commentsTextArray = commentsList.map((comment) => comment.text);
     setComments(commentsList);
