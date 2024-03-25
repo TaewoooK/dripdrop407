@@ -1,9 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { UserProvider, UserContext } from "./UserContext";
 
 import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
-import { Amplify } from "aws-amplify";
+import { Amplify, graphqlOperation, Auth } from "aws-amplify";
+import { generateClient } from "aws-amplify/api";
 import {
   Button,
   Grid,
@@ -14,6 +15,8 @@ import {
   withAuthenticator,
   Tabs,
 } from "@aws-amplify/ui-react";
+import { listNotifications } from "./graphql/queries";
+import { createNotifications } from "./graphql/mutations";
 import { Authenticator } from "@aws-amplify/ui-react";
 import awsconfig from "./amplifyconfiguration.json";
 import { Toaster } from "react-hot-toast";
@@ -28,6 +31,8 @@ import ProfilePage from "./ui-components/ProfilePage";
 import FriendsOnly from "./pages/FriendsOnly";
 
 import { getOverrideProps, useAuth } from "./ui-components/utils";
+
+import { onUpdateNotifications } from "./graphql/subscriptions";
 
 Amplify.configure(awsconfig);
 
@@ -72,6 +77,62 @@ const components = {
       </View>
     );
   },
+};
+
+const client = generateClient();
+
+const UserNotificationSubscriber = ({ user, signOut }) => {
+  useEffect(() => {
+    const generateNotifs = async (currUser) => {
+      try {
+        console.log("fetching notif list for user");
+        const result = await client.graphql({
+          query: listNotifications,
+          variables: { filter: { username: { eq: currUser.username } } },
+        });
+        if (result.data.listNotifications.items === null) {
+          console.log("creating notification list ");
+          await client.graphql({
+            query: createNotifications,
+            variables: {
+              input: { username: currUser.username, notificationsList: [] },
+            },
+          });
+          console.log("created notification list");
+        } else {
+          console.log("notification list already exists");
+        }
+      } catch (error) {
+        console.error("Error fetching notification list:", error);
+      }
+    };
+
+    let notifSubscription;
+
+    if (user) {
+      generateNotifs(user);
+
+      console.log("from app.js:", user.username);
+
+      notifSubscription = client.graphql({
+        query: onUpdateNotifications,
+        filter: { username: { eq: user.username } },
+      }).subscribe({
+        next: (notificationData) => {
+          console.log("notificationData:", notificationData);
+        }
+      });
+      console.log("subscribed to notifications for:", user.username);
+    } else {
+      console.log("no user signed in");
+    }
+  }, [user]);
+
+  // const handleSignOut = () => {
+  //   console.log("signing out");
+  //   signOut();
+  // }
+  return null;
 };
 
 export default function App() {
@@ -144,6 +205,7 @@ export default function App() {
         <UserProvider>
           <View className="App">
             <div>
+              <UserNotificationSubscriber user={user} signOut={signOut} />
               <Toaster position="top-right" reverseOrder={false} />
               <Grid
                 columnGap="0.5rem"

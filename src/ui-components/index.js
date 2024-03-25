@@ -18,6 +18,8 @@ export { default as FriendUpdateForm } from "./FriendUpdateForm";
 export { default as FriendsList } from "./FriendsList";
 export { default as FullFriends } from "./FullFriends";
 export { default as MyIcon } from "./MyIcon";
+export { default as NotificationsCreateForm } from "./NotificationsCreateForm";
+export { default as NotificationsUpdateForm } from "./NotificationsUpdateForm";
 export { default as PostActionCenter } from "./PostActionCenter";
 export { default as PostComponent } from "./PostComponent";
 export { default as PostCreateForm } from "./PostCreateForm";

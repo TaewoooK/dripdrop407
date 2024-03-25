@@ -20,12 +20,14 @@ import {
   createSavedPosts,
   deleteComment,
   updateSavedPosts,
- } from "../graphql/mutations";
+  updateNotifications,
+} from "../graphql/mutations";
 import {
   listPosts,
   getPost,
   commentsByPostId,
   listSavedPosts,
+  listNotifications,
 } from "../graphql/queries";
 import { getUrl } from "aws-amplify/storage";
 import PostActionCenter from "./PostActionCenter";
@@ -60,7 +62,6 @@ const PostAndComment = () => {
       console.error("Error fetching user data: ", error);
     }
   };
-
 
   const setVariablesNFilter = () => {
     if (currUser != null) {
@@ -148,7 +149,10 @@ const PostAndComment = () => {
 
   useEffect(() => {
     setVariablesNFilter();
-    getSavedPosts();
+    if (currUser) {
+      getSavedPosts();
+      // generateNotifs();
+    }
   }, [currUser]);
 
   // When nextToken changes, fetch more posts
@@ -195,7 +199,6 @@ const PostAndComment = () => {
     // Perform any other actions or state updates as needed
   };
 
-
   const handleRedButtonClick = async () => {
     setShow(false);
     if ((currentImageIndex + 1) % images.length == 0) {
@@ -238,17 +241,51 @@ const PostAndComment = () => {
 
   const onClickHandler = async () => {
     const currPost = posts[currentImageIndex];
-    console.log("currPostID:", currPost.id, "currPostOwner:", currPost.owner, "currUserId:", currUser.userId);
+    console.log(
+      "currPostID:",
+      currPost.id,
+      "currPostOwner:",
+      currPost.owner,
+      "currUserId:",
+      currUser.username
+    );
     await client.graphql({
       query: createComment,
       variables: {
         input: {
           postId: currPost.id,
           text: comment,
-          commentAuthorId: currUser.userId,
+          // commentAuthorId: currUser.username,
         },
       },
     });
+
+    // notifify post owner
+    const notif = ["Comment", currUser.username, currPost.id, comment];
+    console.log("send notif to:", currPost.owner);
+    console.log("notif:", notif);
+
+    const notifToPostOwner = await client.graphql({
+      query: listNotifications,
+      variables: { filter: { username: { eq: currPost.owner } } },
+    });
+    if (notifToPostOwner.data.listNotifications.items != null) {
+      console.log("notifToPostOwner:", notifToPostOwner);
+      const notifList = notifToPostOwner.data.listNotifications.items[0];
+      const input = {
+        id : notifList.id,
+        notificationsList: [...notifList.notificationsList, notif],
+      };
+      const condition = { username: { eq: currPost.owner } };
+      await client.graphql({
+        query: updateNotifications,
+        variables: { input, condition },
+      });
+      console.log("notif sent to post owner");
+    } else {
+      console.log("no notif list for post owner");
+    }
+
     console.log("no error");
     const getComments = await client.graphql({
       query: commentsByPostId,
@@ -284,14 +321,17 @@ const PostAndComment = () => {
 
   const getSavedPosts = async () => {
     try {
-        console.log("fetching saved posts");
+      console.log("fetching saved posts");
       const result = await client.graphql({
         query: listSavedPosts,
         variables: { filter: { username: { eq: currUser.username } } },
       });
-      if (result.data.listSavedPosts.items.length > 0) {
+      if (result.data.listSavedPosts.items != null) {
         setSavedPosts(result.data.listSavedPosts.items[0]);
-        console.log("saved posts:", result.data.listSavedPosts.items[0].postIds);
+        console.log(
+          "saved posts:",
+          result.data.listSavedPosts.items[0].postIds
+        );
         // return result.data.listSavedPosts.items; // Return the data from the GraphQL response
       } else {
         const createdSavedPosts = await client.graphql({
@@ -310,6 +350,30 @@ const PostAndComment = () => {
     }
   };
 
+  // const generateNotifs = async () => {
+  //   try {
+  //     console.log("fetching notif list for user");
+  //     const result = await client.graphql({
+  //       query: listNotifications,
+  //       variables: { filter: { username: { eq: currUser.username } } },
+  //     });
+  //     if (result.data.listNotifications.items === null) {
+  //       console.log("creating notification list ");
+  //       await client.graphql({
+  //         query: createNotifications,
+  //         variables: {
+  //           input: { username: currUser.username, notificationsList: [] },
+  //         },
+  //       });
+  //       console.log("created notification list");
+  //     } else {
+  //       console.log("notification list already exists");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching notification list:", error);
+  //   }
+  // };
+
   const toggleSavePost = async () => {
     setShowActionCenter(false);
     try {
@@ -327,35 +391,35 @@ const PostAndComment = () => {
       //   toast.success("Post saved");
       //   setSavedPosts(createdSavedPosts.data.updateSavedPosts.postIds);
       // } else {
-        if (savedPosts.postIds.includes(posts[currentImageIndex].id)) {
-          console.log("unsaving post");
-          const input = {
-            id: savedPosts.id,
-            postIds: savedPosts.postIds.filter(
-              (id) => id !== posts[currentImageIndex].id
-            ),
-          };
-          const condition = { username: { eq: currUser.username } };
-          const updatedSavedPosts = await client.graphql({
-            query: updateSavedPosts,
-            variables: { input, condition },
-          });
-          setSavedPosts(updatedSavedPosts.data.updateSavedPosts);
-          toast.success("Post unsaved");
-        } else {
-          console.log("post not saved");
-          const input = {
-            id: savedPosts.id,
-            postIds: [...savedPosts.postIds, posts[currentImageIndex].id],
-          };
-          const condition = { username: { eq: currUser.username } };
-          const updatedSavedPosts = await client.graphql({
-            query: updateSavedPosts,
-            variables: { input, condition },
-          });
-          setSavedPosts(updatedSavedPosts.data.updateSavedPosts);
-          toast.success("Post saved");
-        }
+      if (savedPosts.postIds.includes(posts[currentImageIndex].id)) {
+        console.log("unsaving post");
+        const input = {
+          id: savedPosts.id,
+          postIds: savedPosts.postIds.filter(
+            (id) => id !== posts[currentImageIndex].id
+          ),
+        };
+        const condition = { username: { eq: currUser.username } };
+        const updatedSavedPosts = await client.graphql({
+          query: updateSavedPosts,
+          variables: { input, condition },
+        });
+        setSavedPosts(updatedSavedPosts.data.updateSavedPosts);
+        toast.success("Post unsaved");
+      } else {
+        console.log("post not saved");
+        const input = {
+          id: savedPosts.id,
+          postIds: [...savedPosts.postIds, posts[currentImageIndex].id],
+        };
+        const condition = { username: { eq: currUser.username } };
+        const updatedSavedPosts = await client.graphql({
+          query: updateSavedPosts,
+          variables: { input, condition },
+        });
+        setSavedPosts(updatedSavedPosts.data.updateSavedPosts);
+        toast.success("Post saved");
+      }
       // }
     } catch (e) {
       console.log("error:", e);
