@@ -152,9 +152,10 @@ const UploadImage = () => {
         boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <h2 style={{ textAlign: "center", marginBottom: "30px", color: "white" }}>
-        Make a Post
-      </h2>
+      <h1 style={{ textAlign: "left", marginBottom: "30px", color: "white" }}>
+          make a <span style={{ color: "#047d95" }}>post</span>
+      </h1>
+
       <input
         type="file"
         accept="image/*"
@@ -196,6 +197,7 @@ const UploadImage = () => {
             border: "1px solid #ddd",
             borderRadius: "5px",
             boxSizing: "border-box",
+            resize: "none",
           }}
         ></textarea>
 
@@ -206,7 +208,7 @@ const UploadImage = () => {
             onChange={handleCheckboxChange} // Call the handler function on checkbox change
             style={{ padding: "10px 0 20px 0" }}
           ></input>
-          <span>Enable comments?</span>
+          <span style={{textAlign: "left", color: "white"}}>Enable comments?</span>
         </label>
       </div>
       <div
@@ -214,7 +216,7 @@ const UploadImage = () => {
           padding: "10px", // Increased padding for spacing
         }}
       >
-        <HidePeople
+        <HidePeople style={{position: "absolute", left:"0"}}
           selectedFriends={hiddenSelect}
           setSelectedFriends={setHiddenSelect}
         />
@@ -223,7 +225,7 @@ const UploadImage = () => {
       <button
         onClick={handleSubmit}
         style={{
-          backgroundColor: "#007bff",
+          backgroundColor: "#047d95",
           color: "white",
           border: "none",
           padding: "15px 24px", // Increased padding for the button
@@ -235,7 +237,7 @@ const UploadImage = () => {
           fontWeight: "bold",
         }}
       >
-        Submit
+        Post
       </button>
       <div style={{ height: "20px" }}></div> {/* Added empty div for spacing */}
       <div>
