@@ -304,3 +304,45 @@ export const onDeleteSavedPosts = /* GraphQL */ `
     }
   }
 `;
+export const onCreateNotifications = /* GraphQL */ `
+  subscription OnCreateNotifications(
+    $filter: ModelSubscriptionNotificationsFilterInput
+  ) {
+    onCreateNotifications(filter: $filter) {
+      id
+      username
+      notificationsList
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateNotifications = /* GraphQL */ `
+  subscription OnUpdateNotifications(
+    $filter: ModelSubscriptionNotificationsFilterInput
+  ) {
+    onUpdateNotifications(filter: $filter) {
+      id
+      username
+      notificationsList
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteNotifications = /* GraphQL */ `
+  subscription OnDeleteNotifications(
+    $filter: ModelSubscriptionNotificationsFilterInput
+  ) {
+    onDeleteNotifications(filter: $filter) {
+      id
+      username
+      notificationsList
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
