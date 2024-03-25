@@ -94,6 +94,7 @@ export const onCreatePost = /* GraphQL */ `
         __typename
       }
       hiddenPeople
+      actionedUsers
       updatedAt
       __typename
     }
@@ -114,6 +115,7 @@ export const onUpdatePost = /* GraphQL */ `
         __typename
       }
       hiddenPeople
+      actionedUsers
       updatedAt
       __typename
     }
@@ -134,6 +136,7 @@ export const onDeletePost = /* GraphQL */ `
         __typename
       }
       hiddenPeople
+      actionedUsers
       updatedAt
       __typename
     }
@@ -155,6 +158,7 @@ export const onCreateComment = /* GraphQL */ `
         enable_comments
         postImageKey
         hiddenPeople
+        actionedUsers
         updatedAt
         __typename
       }
@@ -180,6 +184,7 @@ export const onUpdateComment = /* GraphQL */ `
         enable_comments
         postImageKey
         hiddenPeople
+        actionedUsers
         updatedAt
         __typename
       }
@@ -205,6 +210,7 @@ export const onDeleteComment = /* GraphQL */ `
         enable_comments
         postImageKey
         hiddenPeople
+        actionedUsers
         updatedAt
         __typename
       }
@@ -298,6 +304,48 @@ export const onDeleteSavedPosts = /* GraphQL */ `
       id
       username
       postIds
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onCreateNotifications = /* GraphQL */ `
+  subscription OnCreateNotifications(
+    $filter: ModelSubscriptionNotificationsFilterInput
+  ) {
+    onCreateNotifications(filter: $filter) {
+      id
+      username
+      notificationsList
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateNotifications = /* GraphQL */ `
+  subscription OnUpdateNotifications(
+    $filter: ModelSubscriptionNotificationsFilterInput
+  ) {
+    onUpdateNotifications(filter: $filter) {
+      id
+      username
+      notificationsList
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteNotifications = /* GraphQL */ `
+  subscription OnDeleteNotifications(
+    $filter: ModelSubscriptionNotificationsFilterInput
+  ) {
+    onDeleteNotifications(filter: $filter) {
+      id
+      username
+      notificationsList
       createdAt
       updatedAt
       __typename

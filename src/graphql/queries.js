@@ -80,6 +80,7 @@ export const getPost = /* GraphQL */ `
         __typename
       }
       hiddenPeople
+      actionedUsers
       updatedAt
       __typename
     }
@@ -101,6 +102,7 @@ export const listPosts = /* GraphQL */ `
         enable_comments
         postImageKey
         hiddenPeople
+        actionedUsers
         updatedAt
         __typename
       }
@@ -125,6 +127,7 @@ export const getComment = /* GraphQL */ `
         enable_comments
         postImageKey
         hiddenPeople
+        actionedUsers
         updatedAt
         __typename
       }
@@ -243,6 +246,38 @@ export const listSavedPosts = /* GraphQL */ `
         id
         username
         postIds
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getNotifications = /* GraphQL */ `
+  query GetNotifications($id: ID!) {
+    getNotifications(id: $id) {
+      id
+      username
+      notificationsList
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listNotifications = /* GraphQL */ `
+  query ListNotifications(
+    $filter: ModelNotificationsFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listNotifications(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        username
+        notificationsList
         createdAt
         updatedAt
         __typename
