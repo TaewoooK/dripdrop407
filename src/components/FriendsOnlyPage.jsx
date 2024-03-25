@@ -20,12 +20,13 @@ import {
   createSavedPosts,
   deleteComment,
   updateSavedPosts,
- } from "../graphql/mutations";
+} from "../graphql/mutations";
 import {
   listPosts,
   getPost,
   commentsByPostId,
   listSavedPosts,
+  listFriends,
 } from "../graphql/queries";
 import { getUrl } from "aws-amplify/storage";
 import PostActionCenter from "./PostActionCenter";
@@ -36,7 +37,7 @@ import { UserContext } from "./../UserContext";
 
 const client = generateClient();
 
-const PostAndComment = () => {
+const FriendsOnlyPage = () => {
   const [comment, setComment] = React.useState("");
   const [comments, setComments] = React.useState([]);
   const [commentsText, setCommentsText] = React.useState([]);
@@ -51,6 +52,9 @@ const PostAndComment = () => {
   const [currUser, setCurrUser] = useState(null);
   const [gotVN, setGotVN] = useState(false);
   const [savedPosts, setSavedPosts] = useState([]);
+  const [listOfFriends, setListOfFriends] = useState([]);
+
+  let filter = {};
 
   const fetchUserData = async () => {
     try {
@@ -61,26 +65,46 @@ const PostAndComment = () => {
     }
   };
 
+  // Find Friends using updated filter
+  const fetchFriends = async () => {
+    if (currUser != null) {
+      try {
+        const friendsData = await client.graphql({
+          query: listFriends,
+          variables: { filter: { Username: { eq: currUser.username } } },
+        });
+        setListOfFriends(friendsData.data.listFriends.items);
+        let temp = friendsData.data.listFriends.items;
+        setListOfFriends(temp.map((friend) => friend.FriendUsername));
+      } catch (error) {
+        console.error("Error fetching friends: ", error);
+      }
+    }
+  };
 
   const setVariablesNFilter = () => {
     if (currUser != null) {
+      let filterMembers = listOfFriends.map((id) =>
+        JSON.parse(`{"owner": {"eq": "${id}"}}`)
+      );
+      let filter = {
+        or: filterMembers,
+        not: {
+          hiddenPeople: { contains: currUser.username },
+        },
+      };
+
+      console.log(filter);
+
       if (!nextToken) {
         // This means either the page just loaded or the user has scrolled to the end of the list
         setVariablesN({
-          filter: {
-            not: {
-              hiddenPeople: { contains: currUser.username },
-            },
-          },
+          filter: filter,
           limit: 10,
         });
       } else {
         setVariablesN({
-          filter: {
-            not: {
-              hiddenPeople: { contains: currUser.username },
-            },
-          },
+          filter: filter,
           limit: 10,
           nextToken: nextToken,
         });
@@ -109,11 +133,7 @@ const PostAndComment = () => {
           setPosts(postDataGraphQLResponse.data.listPosts.items);
           setNextToken(postDataGraphQLResponse.data.listPosts.nextToken);
           setVariablesN({
-            filter: {
-              not: {
-                hiddenPeople: { contains: currUser.username },
-              },
-            },
+            filter: filter,
             limit: 10,
             nextToken: nextTokenTemp,
           });
@@ -122,19 +142,22 @@ const PostAndComment = () => {
         }
         console.log("posts");
         console.log(postData);
-        const imagePromises = postData.map(async (post) => {
-          const postData = await getUrl({ key: post.postImageKey });
-          return {
-            description: post.description,
-            imageUrl: postData.url,
-          };
-        });
-        const fetchedImages = await Promise.all(imagePromises);
-        setImages(fetchedImages);
-        console.log("Fetched images");
-        console.log(fetchedImages);
-        setImage(fetchedImages[0].imageUrl);
-        setCurrentImageIndex(0);
+        if (postData.length != 0) {
+          const imagePromises = postData.map(async (post) => {
+            const postData = await getUrl({ key: post.postImageKey });
+            return {
+              description: post.description,
+              imageUrl: postData.url,
+            };
+          });
+          const fetchedImages = await Promise.all(imagePromises);
+          setImages(fetchedImages);
+          console.log("Fetched images");
+          console.log(fetchedImages);
+          setImage(fetchedImages[0].imageUrl);
+          setCurrentImageIndex(0);
+        }
+
         //console.log("End of fetchPost logging")
       } catch (error) {
         console.error("Error fetching posts: ", error);
@@ -147,9 +170,13 @@ const PostAndComment = () => {
   }, []);
 
   useEffect(() => {
-    setVariablesNFilter();
     getSavedPosts();
+    fetchFriends();
   }, [currUser]);
+
+  useEffect(() => {
+    setVariablesNFilter();
+  }, [listOfFriends]);
 
   // When nextToken changes, fetch more posts
   useEffect(() => {
@@ -194,7 +221,6 @@ const PostAndComment = () => {
     await animate(scope.current, { x: 0 });
     // Perform any other actions or state updates as needed
   };
-
 
   const handleRedButtonClick = async () => {
     setShow(false);
@@ -281,26 +307,19 @@ const PostAndComment = () => {
 
   const getSavedPosts = async () => {
     try {
-        console.log("fetching saved posts");
+      console.log("fetching saved posts");
       const result = await client.graphql({
         query: listSavedPosts,
         variables: { filter: { username: { eq: currUser.username } } },
       });
       if (result.data.listSavedPosts.items.length > 0) {
-        setSavedPosts(result.data.listSavedPosts.items[0]);
-        console.log("saved posts:", result.data.listSavedPosts.items[0].postIds);
-        // return result.data.listSavedPosts.items; // Return the data from the GraphQL response
-      } else {
-        const createdSavedPosts = await client.graphql({
-          query: createSavedPosts,
-          variables: {
-            input: { username: currUser.username, postIds: [] },
-          },
-        });
-        console.log("created saved posts");
-        setSavedPosts(createdSavedPosts.data.createSavedPosts[0]);
-        // return createdSavedPosts.data.listSavedPosts.items; // Return the data from the GraphQL response
+        setSavedPosts(result.data.listSavedPosts.items[0].postIds);
+        console.log(
+          "saved posts:",
+          result.data.listSavedPosts.items[0].postIds
+        );
       }
+      return result.data.listSavedPosts.items; // Return the data from the GraphQL response
     } catch (error) {
       console.error("Error fetching saved posts:", error);
       return null; // Return null in case of error
@@ -310,26 +329,26 @@ const PostAndComment = () => {
   const toggleSavePost = async () => {
     setShowActionCenter(false);
     try {
-      // const savedPostsList = (await getSavedPosts())[0];
-      // if (savedPostsList.length === 0) {
-      //   console.log("no saved posts data");
-      //   const currPost = posts[currentImageIndex];
-      //   const createdSavedPosts = await client.graphql({
-      //     query: createSavedPosts,
-      //     variables: {
-      //       input: { username: currUser.username, postIds: [currPost.id] },
-      //     },
-      //   });
-      //   console.log("created saved posts");
-      //   toast.success("Post saved");
-      //   setSavedPosts(createdSavedPosts.data.updateSavedPosts.postIds);
-      // } else {
-        if (savedPosts.postIds.includes(posts[currentImageIndex].id)) {
+      const savedPostsList = (await getSavedPosts())[0];
+      if (savedPostsList.length == 0) {
+        console.log("no saved posts data");
+        const currPost = posts[currentImageIndex];
+        const createdSavedPosts = await client.graphql({
+          query: createSavedPosts,
+          variables: {
+            input: { username: currUser.username, postIds: [currPost.id] },
+          },
+        });
+        console.log("created saved posts");
+        toast.success("Post saved");
+        setSavedPosts(createdSavedPosts.data.updateSavedPosts.postIds);
+      } else {
+        if (savedPostsList.postIds.includes(posts[currentImageIndex].id)) {
           console.log("unsaving post");
           const input = {
-            id: savedPosts.id,
-            postIds: savedPosts.postIds.filter(
-              (id) => id !== posts[currentImageIndex].id
+            id: savedPostsList.id,
+            postIds: savedPostsList.postIds.filter(
+              (id) => id != posts[currentImageIndex].id
             ),
           };
           const condition = { username: { eq: currUser.username } };
@@ -337,23 +356,23 @@ const PostAndComment = () => {
             query: updateSavedPosts,
             variables: { input, condition },
           });
-          setSavedPosts(updatedSavedPosts.data.updateSavedPosts);
+          setSavedPosts(updatedSavedPosts.data.updateSavedPosts.postIds);
           toast.success("Post unsaved");
         } else {
           console.log("post not saved");
           const input = {
-            id: savedPosts.id,
-            postIds: [...savedPosts.postIds, posts[currentImageIndex].id],
+            id: savedPostsList.id,
+            postIds: [...savedPostsList.postIds, posts[currentImageIndex].id],
           };
           const condition = { username: { eq: currUser.username } };
           const updatedSavedPosts = await client.graphql({
             query: updateSavedPosts,
             variables: { input, condition },
           });
-          setSavedPosts(updatedSavedPosts.data.updateSavedPosts);
+          setSavedPosts(updatedSavedPosts.data.updateSavedPosts.postIds);
           toast.success("Post saved");
         }
-      // }
+      }
     } catch (e) {
       console.log("error:", e);
       toast.error("error saving/unsaving post");
@@ -394,7 +413,7 @@ const PostAndComment = () => {
             <PostActionCenter
               toggleReportPost={toggleReportPost}
               toggleSavePost={toggleSavePost}
-              saved={savedPosts.postIds.includes(posts[currentImageIndex].id)}
+              saved={savedPosts.includes(posts[currentImageIndex].id)}
             />
           </div>
         </div>
@@ -720,4 +739,4 @@ const PostAndComment = () => {
   );
 };
 
-export default PostAndComment;
+export default FriendsOnlyPage;
