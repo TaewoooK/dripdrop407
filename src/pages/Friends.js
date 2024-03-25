@@ -12,12 +12,14 @@ import awsconfig from "../amplifyconfiguration.json";
 import { generateClient } from "aws-amplify/api";
 import {
   listFriendRequests,
-  listFriends
+  listFriends,
+  listNotifications
 } from "./../graphql/queries";
 import {
   createFriend,
   createFriendRequest,
-  deleteFriendRequest
+  deleteFriendRequest,
+  updateNotifications
 } from "./../graphql/mutations";
 
 // UI imports
@@ -112,14 +114,40 @@ const Friends = () => {
     // Insert friend request for requested user
     try {
       await client.graphql({
-      query: createFriendRequest.replaceAll("__typename", ""),
-      variables: {
+        query: createFriendRequest.replaceAll("__typename", ""),
+        variables: {
           input: {
-              Username: requestedUsername,
-              SenderUsername: myUser.username,
+            Username: requestedUsername,
+            SenderUsername: myUser.username,
           },
-      },
+        },
       });
+
+      // notify requested user
+      const notif = ["FR", myUser.username];
+      console.log("send notif to:", requestedUsername);
+      console.log("notif:", notif);
+
+      const notifToRequestedUser = await client.graphql({
+        query: listNotifications,
+        variables: { filter: { username: { eq: requestedUsername } } },
+      });
+      if (notifToRequestedUser.data.listNotifications.items != null) {
+        console.log("notifToPostOwner:", notifToRequestedUser);
+        const notifList = notifToRequestedUser.data.listNotifications.items[0];
+        const input = {
+          id: notifList.id,
+          notificationsList: [...notifList.notificationsList, notif],
+        };
+        const condition = { username: { eq: requestedUsername } };
+        await client.graphql({
+          query: updateNotifications,
+          variables: { input, condition },
+        });
+        console.log("notif sent to post owner");
+      } else {
+        console.log("no notif list for post owner");
+      }
 
       fetchRequestsAndFriends(myUser.username);
     } catch (error) {

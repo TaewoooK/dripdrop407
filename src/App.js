@@ -116,7 +116,7 @@ const UserNotificationSubscriber = ({ user, signOut }) => {
 
       notifSubscription = client.graphql({
         query: onUpdateNotifications,
-        filter: { username: { eq: user.username } },
+        variables: { filter: { username: { eq: user.username } } },
       }).subscribe({
         next: (notificationData) => {
           console.log("notificationData:", notificationData);
