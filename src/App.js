@@ -142,7 +142,8 @@ export default function App() {
       {({ signOut, user }) => (
         <UserProvider>
           <View className="App">
-            <div>
+            <div 
+            style={{ backgroundColor: 'rgb(24, 24, 24)'}}>
               <Grid
                 columnGap="0.5rem"
                 rowGap="0.5rem"
