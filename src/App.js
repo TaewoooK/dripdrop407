@@ -19,7 +19,7 @@ import { listNotifications } from "./graphql/queries";
 import { createNotifications } from "./graphql/mutations";
 import { Authenticator } from "@aws-amplify/ui-react";
 import awsconfig from "./amplifyconfiguration.json";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 import { DripDropNavBarBasic } from "./ui-components";
 import Home from "./pages/Home";
@@ -90,7 +90,7 @@ const UserNotificationSubscriber = ({ user, signOut }) => {
           query: listNotifications,
           variables: { filter: { username: { eq: currUser.username } } },
         });
-        if (result.data.listNotifications.items === null) {
+        if (result.data.listNotifications.items.length === 0) {
           console.log("creating notification list ");
           await client.graphql({
             query: createNotifications,
@@ -100,7 +100,10 @@ const UserNotificationSubscriber = ({ user, signOut }) => {
           });
           console.log("created notification list");
         } else {
-          console.log("notification list already exists");
+          console.log(
+            "notification list already exists:",
+            result.data.listNotifications.items
+          );
         }
       } catch (error) {
         console.error("Error fetching notification list:", error);
@@ -114,14 +117,84 @@ const UserNotificationSubscriber = ({ user, signOut }) => {
 
       console.log("from app.js:", user.username);
 
-      notifSubscription = client.graphql({
-        query: onUpdateNotifications,
-        variables: { filter: { username: { eq: user.username } } },
-      }).subscribe({
-        next: (notificationData) => {
-          console.log("notificationData:", notificationData);
-        }
-      });
+      notifSubscription = client
+        .graphql({
+          query: onUpdateNotifications,
+          variables: { filter: { username: { eq: user.username } } },
+        })
+        .subscribe({
+          next: (notificationData) => {
+            console.log("notificationData:", notificationData);
+            const notifList =
+              notificationData.data.onUpdateNotifications.notificationsList;
+            console.log("notifList:", notifList);
+            const newNotif = notifList[notifList.length - 1];
+            console.log("newNotif:", newNotif);
+            // console.log(
+            //   "newNotif[0]:",
+            //   newNotif[0] === "FR"
+            // );
+            // console.log("newNotif type:", typeof newNotif);
+            switch (newNotif[0]) {
+              case "Comment":
+                toast(`${newNotif[1]} commented ${newNotif[3]} on your post!`, {
+                  icon: "🔔",
+                });
+                break;
+              case "FR":
+                console.log("Friend request received");
+                toast(
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
+                    <p style={{ marginRight: "10px" }}>
+                      {newNotif[1]} sent you a friend request!
+                    </p>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "right",
+                      }}
+                    >
+                      <Button
+                        variation="primary"
+                        colorTheme="success"
+                        size="small"
+                        style={{ padding: "5px", fontSize: "10px", marginBottom: "5px"}}
+                        onClick={() => {
+                          console.log("Accepted");
+                        }}
+                      >
+                        Accept
+                      </Button>
+                      <Button
+                        variation="destructive"
+                        size="small"
+                        style={{ padding: "5px", fontSize: "10px" }}
+                        onClick={() => {
+                          console.log("Denied");
+                        }}
+                      >
+                        Deny
+                      </Button>
+                    </div>
+                  </div>,
+                  {
+                    icon: "👋",
+                  }
+                );
+
+                break;
+              default:
+                break;
+            }
+          },
+        });
       console.log("subscribed to notifications for:", user.username);
     } else {
       console.log("no user signed in");

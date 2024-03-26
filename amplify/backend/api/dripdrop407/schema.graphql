@@ -15,6 +15,11 @@ type Post @model @auth(rules: [{ allow: public }]) {
   owner: String!
   description: String!
   drip_points: Int
+    @index(
+      name: "postsByDate"
+      queryField: "postsByDate"
+      sortKeyFields: ["createdAt"]
+    )
   createdAt: String
   enable_comments: Boolean
   postImageKey: String
@@ -32,7 +37,7 @@ type Comment @model @auth(rules: [{ allow: public }]) {
   id: ID!
   postId: ID! @index(name: "byPost")
   text: String!
-  commentAuthorId: Int
+  commentAuthorId: String
   CommentsPost: Post @belongsTo(fields: ["postId"])
 }
 
@@ -53,5 +58,5 @@ type SavedPosts @model @auth(rules: [{ allow: public }]) {
 type Notifications @model @auth(rules: [{ allow: public }]) {
   id: ID!
   username: ID!
-  notificationsList: [String]
+  notificationsList: [[String]]
 }
