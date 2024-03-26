@@ -29,6 +29,7 @@ import Friends from "./pages/Friends";
 import NavBar from "./components/NavBar";
 import ProfilePage from "./ui-components/ProfilePage";
 import FriendsOnly from "./pages/FriendsOnly";
+import Activity from "./pages/Activity"; 
 
 import { getOverrideProps, useAuth } from "./ui-components/utils";
 
@@ -266,6 +267,8 @@ export default function App() {
     case "/profile":
       component = <ProfilePage />;
       break;
+    case "activity":
+      component = <Activity />;
   }
 
   return (
