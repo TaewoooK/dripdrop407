@@ -41,6 +41,7 @@ const PostAndComment = () => {
   const [comments, setComments] = React.useState([]);
   const [commentsText, setCommentsText] = React.useState([]);
   const [showComment, setShow] = React.useState(false);
+
   const [nextToken, setNextToken] = React.useState(null);
   const [posts, setPosts] = React.useState([]);
   const [images, setImages] = React.useState([]);
@@ -64,6 +65,7 @@ const PostAndComment = () => {
 
   const setVariablesNFilter = () => {
     if (currUser != null) {
+      console.log(currUser)
       if (!nextToken) {
         // This means either the page just loaded or the user has scrolled to the end of the list
         setVariablesN({
@@ -692,7 +694,7 @@ const PostAndComment = () => {
                   >
                     {text}
                   </Text>
-                  <Icon
+                  { currUser.username == posts[currentImageIndex].owner  &&  <Icon
                     width="22.5px"
                     height="25px"
                     viewBox={{ minX: 0, minY: 0, width: 22.5, height: 25 }}
@@ -709,7 +711,7 @@ const PostAndComment = () => {
                         strokeWidth: 2,
                       },
                     ]}
-                  ></Icon>
+                  ></Icon> }
                 </Card>
               );
             })}
