@@ -9,6 +9,7 @@ import { generateClient } from "aws-amplify/api";
 import { UserContext } from './../UserContext';
 import { listPosts, listComments, listFriends } from "../graphql/queries";
 import { deletePost, deleteComment, deleteFriend } from "../graphql/mutations";
+import { remove } from "aws-amplify/storage"
 
 const client = generateClient();
 
@@ -64,6 +65,9 @@ export default function EditProfileNew(props) {
           }
           console.log(i)
           console.log(deletePostInput)
+          await remove({
+            key: post.postImageKey
+          })
           const deletedPost = await client.graphql({
             query: deletePost,
             variables: deletePostInput
@@ -89,8 +93,9 @@ export default function EditProfileNew(props) {
       query: listComments,
       variables: commentFetchVariables
     });
-    while (userComments.data.listPosts.items.length > 0) {
-      let userCommentsArr = userComments.data.listPosts.items
+    console.log(userComments)
+    while (userComments.data.listComments.items.length > 0) {
+      let userCommentsArr = userComments.data.listComments.items
       for (let i = 0; i < userCommentsArr.length; i++) {
         const comment = userCommentsArr[i]
         const deleteCommentInput = {
@@ -105,7 +110,7 @@ export default function EditProfileNew(props) {
           variables: deleteCommentInput
         })
       }
-      userPosts = await client.graphql({
+      userComments = await client.graphql({
         query: listComments,
         variables: commentFetchVariables
       });
@@ -113,7 +118,7 @@ export default function EditProfileNew(props) {
   }
 
   async function handleDeleteFriends() {
-    
+
   }
 
   async function handleClick() {
