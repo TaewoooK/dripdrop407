@@ -111,40 +111,6 @@ export const listPosts = /* GraphQL */ `
     }
   }
 `;
-export const postsByDate = /* GraphQL */ `
-  query PostsByDate(
-    $drip_points: Int!
-    $createdAt: ModelStringKeyConditionInput
-    $sortDirection: ModelSortDirection
-    $filter: ModelPostFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    postsByDate(
-      drip_points: $drip_points
-      createdAt: $createdAt
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        owner
-        description
-        drip_points
-        createdAt
-        enable_comments
-        postImageKey
-        hiddenPeople
-        updatedAt
-        __typename
-      }
-      nextToken
-      __typename
-    }
-  }
-`;
 export const getComment = /* GraphQL */ `
   query GetComment($id: ID!) {
     getComment(id: $id) {
