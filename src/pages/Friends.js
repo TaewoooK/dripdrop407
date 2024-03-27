@@ -20,9 +20,10 @@ import awsconfig from "../amplifyconfiguration.json";
 import { generateClient } from "aws-amplify/api";
 import { listFriendRequests, listFriends } from "./../graphql/queries";
 import {
-  createFriend,
   createFriendRequest,
   deleteFriendRequest,
+  createFriend,
+  deleteFriend,
 } from "./../graphql/mutations";
 import {
   onCreateFriendRequest,
@@ -33,8 +34,8 @@ import {
 
 // UI imports
 import "./Friends.css";
-import FriendRequestComponent from "../components/FriendRequestComponent/FriendRequestComponent";
-import FriendComponent from "../components/FriendComponent/FriendComponent";
+import FriendRequestComponent from "../components/FriendRequestComponent";
+import FriendComponent from "../components/FriendComponent";
 
 // Toast notif import
 import toast, { Toaster } from "react-hot-toast";
@@ -44,6 +45,7 @@ Amplify.configure(awsconfig);
 const Friends = () => {
   // # SETTING STATES
   const { allUsers, myUser } = useContext(UserContext);
+  const [filteredUsers, setFilteredUsers] = useState([]);
 
   const [allRequests, setAllRequests] = useState([]);
   const [requests, setRequests] = useState([]);
@@ -83,12 +85,13 @@ const Friends = () => {
     );
 
     return () => {
-      subscriptionRefs.forEach(subscription => subscription.unsubscribe());
+      subscriptionRefs.forEach((subscription) => subscription.unsubscribe());
     };
   }, []);
 
   // FOR DEBUGGING
   useEffect(() => {
+    console.log("allUsers: ", allUsers);
     console.log("myUser: ", myUser);
     console.log("myUser.username: ", myUser.username);
     console.log("All Friend Requests: ", allRequests);
@@ -98,6 +101,8 @@ const Friends = () => {
     console.log("My Friends: ", friends);
     console.log("filtered friends: ", filteredFriends);
   }, [filteredFriends]);
+
+  // # GRAPHQL OPERATIONS
 
   async function fetchRequestsAndFriends(username) {
     console.log("username: ", username);
@@ -137,9 +142,28 @@ const Friends = () => {
     );
   }
 
-  async function rescindFriendRequest(requestedUsername) {
+  async function createFriendRequestByName(username) {
+    // Insert friend request for requested user
+    try {
+      await client.graphql({
+        query: createFriendRequest.replaceAll("__typename", ""),
+        variables: {
+          input: {
+            Username: username,
+            SenderUsername: myUser.username,
+          },
+        },
+      });
+
+      fetchRequestsAndFriends(myUser.username);
+    } catch (error) {
+      console.log("Error sending friend request: ", error);
+    }
+  }
+
+  async function deleteFriendRequestByName(username) {
     const requestToDelete = allRequests.find(
-      (request) => request.Username === requestedUsername
+      (request) => request.Username === username
     );
 
     try {
@@ -158,22 +182,78 @@ const Friends = () => {
     }
   }
 
-  async function sendFriendRequest(requestedUsername) {
-    // Insert friend request for requested user
+  async function deleteFriendRequestById(friendRequestId) {
+    await client.graphql({
+      query: deleteFriendRequest.replaceAll("__typename", ""),
+      variables: {
+        input: {
+          id: friendRequestId,
+        },
+      },
+    });
+  }
+
+  async function createFriendByRequest(friendRequest) {
+    // Insert friend record for current user
+    await client.graphql({
+      query: createFriend.replaceAll("__typename", ""),
+      variables: {
+        input: {
+          Username: myUser.username,
+          FriendUsername: friendRequest.SenderUsername,
+        },
+      },
+    });
+
+    // Insert friend record for friend user
+    await client.graphql({
+      query: createFriend.replaceAll("__typename", ""),
+      variables: {
+        input: {
+          Username: friendRequest.SenderUsername,
+          FriendUsername: myUser.username,
+        },
+      },
+    });
+
+    deleteFriendRequestById(friendRequest.id);
+  }
+
+  const getOtherFriend = (friend) => {
+    return allFriends.find(
+      (otherFriend) =>
+        otherFriend.Username === friend.FriendUsername &&
+        otherFriend.FriendUsername === friend.Username
+    );
+  };
+
+  async function deleteFriendByFriend(friend) {
+    // Remove Friend record for current user
     try {
       await client.graphql({
-        query: createFriendRequest.replaceAll("__typename", ""),
+        query: deleteFriend.replaceAll("__typename", ""),
         variables: {
           input: {
-            Username: requestedUsername,
-            SenderUsername: myUser.username,
+            id: friend.id,
           },
         },
       });
-
-      fetchRequestsAndFriends(myUser.username);
     } catch (error) {
-      console.log("Error sending friend request: ", error);
+      console.log("Removing Friend record for current user failed: ", error);
+    }
+
+    // Remove Friend record for ex-friend user
+    try {
+      await client.graphql({
+        query: deleteFriend.replaceAll("__typename", ""),
+        variables: {
+          input: {
+            id: getOtherFriend(friend).id,
+          },
+        },
+      });
+    } catch (error) {
+      console.log("Removing Friend record for ex-friend user failed: ", error);
     }
   }
 
@@ -182,6 +262,14 @@ const Friends = () => {
   /* User Search Handlers */
   const onUserSearchChange = (event) => {
     setUserSearch(event.target.value);
+
+    // if (userSearch != "") {
+    //   setFilteredUsers(
+    //     allUsers.filter((user) => user.Username.startsWith(event.target.value))
+    //   );
+    // } else {
+    //   setFilteredUsers([]);
+    // }
   };
 
   const onUserSearchClear = () => {
@@ -205,7 +293,7 @@ const Friends = () => {
     );
 
     if (existingSentRequest) {
-      toast.promise(rescindFriendRequest(userSearch), {
+      toast.promise(deleteFriendRequestByName(userSearch), {
         loading: "Rescinding Friend Request...",
         success: <b>Friend Request sent to {userSearch} was rescinded.</b>,
         error: <b>Failed to rescind friend Request. Please try again.</b>,
@@ -245,7 +333,7 @@ const Friends = () => {
       return;
     }
 
-    toast.promise(sendFriendRequest(userSearch), {
+    toast.promise(createFriendRequestByName(userSearch), {
       loading: "Sending Friend Request...",
       success: <b>Friend Request sent to {userSearch}!</b>,
       error: <b>Failed to send friend Request. Please try again.</b>,
@@ -297,9 +385,9 @@ const Friends = () => {
   };
 
   // Re-fetch requests and friends after click event
-  const handleClickChild = () => {
-    fetchRequestsAndFriends(myUser.username);
-  };
+  // const handleClickChild = () => {
+  //   fetchRequestsAndFriends(myUser.username);
+  // };
 
   // # GETTER METHODS
   const isEmptyFriendReqs = () => {
@@ -308,14 +396,6 @@ const Friends = () => {
 
   const isEmptyFriends = () => {
     return filteredFriends.length === 0;
-  };
-
-  const getOtherFriend = (friend) => {
-    return allFriends.find(
-      (otherFriend) =>
-        otherFriend.Username === friend.FriendUsername &&
-        otherFriend.FriendUsername === friend.Username
-    );
   };
 
   return (
@@ -388,7 +468,8 @@ const Friends = () => {
                 <FriendRequestComponent
                   key={index}
                   friendRequest={request}
-                  onClickEvent={handleClickChild}
+                  handleCreateFriend={createFriendByRequest}
+                  handleDeleteFriendRequest={deleteFriendRequestById}
                 />
               ))}
             </Flex>
@@ -425,8 +506,7 @@ const Friends = () => {
                 <FriendComponent
                   key={index}
                   friend={friend}
-                  onClickEvent={handleClickChild}
-                  otherFriend={getOtherFriend(friend)}
+                  handleDeleteFriend={deleteFriendByFriend}
                 />
               ))}
             </Flex>
