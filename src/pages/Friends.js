@@ -137,7 +137,7 @@ const Friends = () => {
         const notifList = notifToRequestedUser.data.listNotifications.items[0];
         const input = {
           id: notifList.id,
-          notificationsList: [...notifList.notificationsList, notif],
+          notificationsList: [notif, ...notifList.notificationsList],
         };
         const condition = { username: { eq: requestedUsername } };
         await client.graphql({

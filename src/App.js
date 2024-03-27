@@ -29,7 +29,7 @@ import Friends from "./pages/Friends";
 import NavBar from "./components/NavBar";
 import ProfilePage from "./ui-components/ProfilePage";
 import FriendsOnly from "./pages/FriendsOnly";
-import NotificationCenter from "./pages/NotificationCenter"; 
+import NotificationCenter from "./pages/NotificationCenter";
 
 import { getOverrideProps, useAuth } from "./ui-components/utils";
 
@@ -82,7 +82,7 @@ const components = {
 
 const client = generateClient();
 
-const UserNotificationSubscriber = ({ user, signOut }) => {
+const UserNotificationSubscriber = ({ user, signOut, setNotifications}) => {
   useEffect(() => {
     const generateNotifs = async (currUser) => {
       try {
@@ -100,11 +100,13 @@ const UserNotificationSubscriber = ({ user, signOut }) => {
             },
           });
           console.log("created notification list");
+          setNotifications([]);
         } else {
           console.log(
             "notification list already exists:",
             result.data.listNotifications.items
           );
+          setNotifications(result.data.listNotifications.items[0].notificationsList);
         }
       } catch (error) {
         console.error("Error fetching notification list:", error);
@@ -117,6 +119,7 @@ const UserNotificationSubscriber = ({ user, signOut }) => {
       generateNotifs(user);
 
       console.log("from app.js:", user.username);
+      
 
       notifSubscription = client
         .graphql({
@@ -129,70 +132,80 @@ const UserNotificationSubscriber = ({ user, signOut }) => {
             const notifList =
               notificationData.data.onUpdateNotifications.notificationsList;
             console.log("notifList:", notifList);
-            const newNotif = notifList[notifList.length - 1];
-            console.log("newNotif:", newNotif);
-            // console.log(
-            //   "newNotif[0]:",
-            //   newNotif[0] === "FR"
-            // );
-            // console.log("newNotif type:", typeof newNotif);
-            switch (newNotif[0]) {
-              case "Comment":
-                toast(`${newNotif[1]} commented ${newNotif[3]} on your post!`, {
-                  icon: "🔔",
-                });
-                break;
-              case "FR":
-                console.log("Friend request received");
-                toast(
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                  >
-                    <p style={{ marginRight: "10px" }}>
-                      {newNotif[1]} sent you a friend request!
-                    </p>
+            setNotifications(notifList);
+            if (notifList.length !== 0) {
+              const newNotif = notifList[notifList.length - 1];
+              console.log("newNotif:", newNotif);
+              // console.log(
+              //   "newNotif[0]:",
+              //   newNotif[0] === "FR"
+              // );
+              // console.log("newNotif type:", typeof newNotif);
+              switch (newNotif[0]) {
+                case "Comment":
+                  toast(
+                    `${newNotif[1]} commented ${newNotif[3]} on your post!`,
+                    {
+                      icon: "🔔",
+                    }
+                  );
+                  break;
+                case "FR":
+                  console.log("Friend request received");
+                  toast(
                     <div
                       style={{
                         display: "flex",
-                        flexDirection: "column",
-                        alignItems: "right",
+                        flexDirection: "row",
+                        alignItems: "center",
                       }}
                     >
-                      <Button
-                        variation="primary"
-                        colorTheme="success"
-                        size="small"
-                        style={{ padding: "5px", fontSize: "10px", marginBottom: "5px"}}
-                        onClick={() => {
-                          console.log("Accepted");
+                      <p style={{ marginRight: "10px" }}>
+                        {newNotif[1]} sent you a friend request!
+                      </p>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "right",
                         }}
                       >
-                        Accept
-                      </Button>
-                      <Button
-                        variation="destructive"
-                        size="small"
-                        style={{ padding: "5px", fontSize: "10px" }}
-                        onClick={() => {
-                          console.log("Denied");
-                        }}
-                      >
-                        Deny
-                      </Button>
-                    </div>
-                  </div>,
-                  {
-                    icon: "👋",
-                  }
-                );
+                        <Button
+                          variation="primary"
+                          colorTheme="success"
+                          size="small"
+                          style={{
+                            padding: "5px",
+                            fontSize: "10px",
+                            marginBottom: "5px",
+                          }}
+                          onClick={() => {
+                            console.log("Accepted");
+                          }}
+                        >
+                          Accept
+                        </Button>
+                        <Button
+                          variation="destructive"
+                          size="small"
+                          style={{ padding: "5px", fontSize: "10px" }}
+                          onClick={() => {
+                            console.log("Denied");
+                          }}
+                        >
+                          Deny
+                        </Button>
+                      </div>
+                    </div>,
+                    {
+                      icon: "👋",
+                    }
+                  );
 
-                break;
-              default:
-                break;
+                  break;
+                default:
+                  break;
+              }
             }
           },
         });
@@ -210,6 +223,8 @@ const UserNotificationSubscriber = ({ user, signOut }) => {
 };
 
 export default function App() {
+  const [notifications, setNotifications] = React.useState([]);
+
   let component;
   switch (window.location.pathname) {
     case "/":
@@ -268,7 +283,7 @@ export default function App() {
       component = <ProfilePage />;
       break;
     case "/activity":
-      component = <NotificationCenter />;
+      component = <NotificationCenter subsciberNotifications={notifications} />;
       break;
   }
 
@@ -282,7 +297,7 @@ export default function App() {
         <UserProvider>
           <View className="App">
             <div>
-              <UserNotificationSubscriber user={user} signOut={signOut} />
+              <UserNotificationSubscriber user={user} signOut={signOut} setNotifications={setNotifications}/>
               <Toaster position="top-right" reverseOrder={false} />
               <Grid
                 columnGap="0.5rem"

@@ -1,19 +1,28 @@
 import React, { useEffect, useState } from "react";
 import "@aws-amplify/ui-react/styles.css";
 import { Amplify } from "aws-amplify";
-import { View, Flex, Heading, Button, withAuthenticator } from "@aws-amplify/ui-react";
+import {
+  View,
+  Flex,
+  Heading,
+  Button,
+  withAuthenticator,
+} from "@aws-amplify/ui-react";
 import awsconfig from "../amplifyconfiguration.json";
 import { listNotifications } from "../graphql/queries";
+import { updateNotifications } from "../graphql/mutations";
 import { generateClient } from "aws-amplify/api";
 import { getCurrentUser } from "aws-amplify/auth";
 import "./NotificationCenter.css";
 
+import { toast } from "react-hot-toast";
+
 Amplify.configure(awsconfig);
 const client = generateClient();
 
-const NotificationCenter = ({ signOut }) => {
+const NotificationCenter = ({ subsciberNotifications, signOut }) => {
   const [currUser, setCurrUser] = useState(null);
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState(subsciberNotifications);
 
   const fetchUserData = async () => {
     try {
@@ -24,37 +33,47 @@ const NotificationCenter = ({ signOut }) => {
     }
   };
 
-  const fetchNotifications = async () => {
-    const result = await client.graphql({
-      query: listNotifications,
-      variables: { filter: { username: { eq: currUser.username } } },
-    });
-    if (result.data.listNotifications.items.length === 0) {
-      console.log("No notifications found");
-      setNotifications([]);
-    } else {
-      // const sortedNotifications = result.data.listNotifications.items[0].notificationsList.sort(
-      //   (a, b) => b[2] - a[2]
-      // );
-      console.log("normal", result.data.listNotifications.items[0].notificationsList);
-      setNotifications(result.data.listNotifications.items[0].notificationsList.reverse());
-      console.log("revversed", result.data.listNotifications.items[0].notificationsList.reverse());
-    }
-  };
-
   useEffect(() => {
     fetchUserData();
   }, []);
 
   useEffect(() => {
-    if (currUser) {
-      fetchNotifications();
-      console.log("Notifications fetched");
-    }
-  }, [currUser]);
+    setNotifications(subsciberNotifications);
+    console.log("Notifications updated:", subsciberNotifications);
+  }, [subsciberNotifications]);
 
-  const handleClearNotifications = async () => {
-    console.log("Clearing notifications");
+  const handleClearNotifications = () => {
+    return new Promise(async (resolve, reject) => {
+      console.log("Clearing notifications");
+      try {
+        const userNotifications = await client.graphql({
+          query: listNotifications,
+          variables: { filter: { username: { eq: currUser.username } } },
+        });
+        if (userNotifications.data.listNotifications.items !== null) {
+          // console.log("notifToPostOwner:", notifToRequestedUser);
+          // const notifList = notifToRequestedUser.data.listNotifications.items[0];
+          const input = {
+            id: userNotifications.data.listNotifications.items[0].id,
+            notificationsList: [],
+          };
+          const condition = { username: { eq: currUser.username } };
+          await client.graphql({
+            query: updateNotifications,
+            variables: { input, condition },
+          });
+          console.log("Notifications cleared");
+          setNotifications([]);
+          resolve("Notifications cleared");
+        } else {
+          console.log("user not found");
+          reject("user not found");
+        }
+      } catch (error) {
+        console.error("Error clearing notifications: ", error);
+        reject("Failed to clear notifications");
+      }
+    });
   };
 
   return (
@@ -73,10 +92,20 @@ const NotificationCenter = ({ signOut }) => {
           gap={"1rem"}
         >
           <Heading level={3}>Notifications</Heading>
-          <Button variation="destructive" onClick={handleClearNotifications}>
+          <Button
+            variation="destructive"
+            onClick={() => {
+              toast.promise(handleClearNotifications(), {
+                pending: "Uploading...",
+                success: "Notifications cleared",
+                error: "Failed to clear notifications",
+              });
+            }}
+          >
             Clear
           </Button>
         </Flex>
+        {console.log("Notifications:", notifications)}
         {notifications.length === 0 ? (
           <p>No notifications</p>
         ) : (

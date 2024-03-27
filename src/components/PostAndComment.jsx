@@ -273,8 +273,8 @@ const PostAndComment = () => {
       console.log("notifToPostOwner:", notifToPostOwner);
       const notifList = notifToPostOwner.data.listNotifications.items[0];
       const input = {
-        id : notifList.id,
-        notificationsList: [...notifList.notificationsList, notif],
+        id: notifList.id,
+        notificationsList: [notif, ...notifList.notificationsList],
       };
       const condition = { username: { eq: currPost.owner } };
       await client.graphql({
