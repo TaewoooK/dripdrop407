@@ -149,7 +149,9 @@ const ProfilePage = () => {
         console.log(currUserAttributes.signInDetails);
         setUser(userAttributes);
         setCurrUser(currUserAttributes);
-        setVariables({ filter: { owner: { eq: userAttributes.email } } });
+        setVariables({
+          filter: { owner: { eq: currUserAttributes.username } },
+        });
       } catch (error) {
         console.error("Error fetching user data: ", error);
       } finally {
@@ -221,6 +223,10 @@ const ProfilePage = () => {
     setShowActionCenter(false);
   };
 
+  const onCloseHidden = () => {
+    setShowActionCenter(false);
+  };
+
   return (
     <div
       style={{
@@ -269,13 +275,14 @@ const ProfilePage = () => {
         </p>
       )}
       {showActionCenter && (
-        <div className="overlay" onClick={toggleActionCenter}>
-          <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
+        <div style={modalContainerStyles}>
+          <div style={modalStyles}>
             <HidePeople
               selectedFriends={hiddenSelect}
               setSelectedFriends={setHiddenSelect}
             />
             <button onClick={() => onSave()}>Save</button>
+            <button onClick={() => onCloseHidden()}>Close</button>
           </div>
         </div>
       )}
