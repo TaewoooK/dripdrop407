@@ -13,6 +13,8 @@ import { listNotifications } from "../graphql/queries";
 import { updateNotifications } from "../graphql/mutations";
 import { generateClient } from "aws-amplify/api";
 import { getCurrentUser } from "aws-amplify/auth";
+
+import Notification from "../components/Notification";
 import "./NotificationCenter.css";
 
 import { toast } from "react-hot-toast";
@@ -106,30 +108,73 @@ const NotificationCenter = ({ subsciberNotifications, signOut }) => {
           </Button>
         </Flex>
         {console.log("Notifications:", notifications)}
+        {/* <>
         {notifications.length === 0 ? (
           <p>No notifications</p>
         ) : (
-          <ul>
+          {notifications.map((notification, index) => {
+            <Notification key={index} index={index} notification={notification} />;
+          }
+          // <ul>
+          //   {notifications.map((notification, index) => {
+          //     switch (notification[0]) {
+          //       case "FR":
+          //         return (
+          //           <li key={notification[1]}>
+          //             {index}. Friend request from {notification[1]}
+          //           </li>
+          //         );
+          //       case "Comment":
+          //         return (
+          //           <li key={notification[1]}>
+          //             {index}. {notification[1]} commented "{notification[3]}" on your
+          //             post
+          //           </li>
+          //         );
+          //       default:
+          //         return <li key={notification[1]}>Unknown notification</li>;
+          //     }
+          //   })}
+          // </ul>
+        )}
+        </> */}
+        {notifications.length === 0 ? (
+          <p>No Notifications</p>
+        ) : (
+          <View
+            width="380px"
+            height="100%"
+            display="block"
+            gap="unset"
+            alignItems="center"
+            justifyContent="center"
+            // overflow="auto" // Set overflow to "auto" for scrollbars only when needed
+            position="relative"
+            // top="50px"
+            // left="0px"
+            padding="0px 0px 0px 0px"
+          >
             {notifications.map((notification, index) => {
-              switch (notification[0]) {
-                case "FR":
-                  return (
-                    <li key={notification[1]}>
-                      {index}. Friend request from {notification[1]}
-                    </li>
-                  );
-                case "Comment":
-                  return (
-                    <li key={notification[1]}>
-                      {index}. {notification[1]} commented "{notification[3]}" on your
-                      post
-                    </li>
-                  );
-                default:
-                  return <li key={notification[1]}>Unknown notification</li>;
-              }
+              const topPosition =
+                index === 0
+                  ? 11
+                  : notifications
+                      .slice(0, index)
+                      .reduce(
+                        (acc, curr) => acc + (curr.length > 50 ? 90 : 60),
+                        11
+                      ); // Adjust the height accordingly
+              console.log("Notification:", notification);
+              return (
+                <Notification
+                  key={index}
+                  index={index}
+                  notification={notification}
+                  topPosition={topPosition}
+                />
+              );
             })}
-          </ul>
+          </View>
         )}
       </Flex>
     </View>
