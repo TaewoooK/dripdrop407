@@ -110,18 +110,18 @@ const NotificationCenter = ({ subsciberNotifications, signOut }) => {
           <p>No notifications</p>
         ) : (
           <ul>
-            {notifications.map((notification) => {
+            {notifications.map((notification, index) => {
               switch (notification[0]) {
                 case "FR":
                   return (
                     <li key={notification[1]}>
-                      Friend request from {notification[1]}
+                      {index}. Friend request from {notification[1]}
                     </li>
                   );
                 case "Comment":
                   return (
                     <li key={notification[1]}>
-                      {notification[1]} commented "{notification[3]}" on your
+                      {index}. {notification[1]} commented "{notification[3]}" on your
                       post
                     </li>
                   );

@@ -134,7 +134,7 @@ const UserNotificationSubscriber = ({ user, signOut, setNotifications}) => {
             console.log("notifList:", notifList);
             setNotifications(notifList);
             if (notifList.length !== 0) {
-              const newNotif = notifList[notifList.length - 1];
+              const newNotif = notifList[0];
               console.log("newNotif:", newNotif);
               // console.log(
               //   "newNotif[0]:",
