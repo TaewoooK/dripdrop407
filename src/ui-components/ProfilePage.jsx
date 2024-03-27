@@ -36,7 +36,7 @@ const modalContainerStyles = {
 };
 
 const modalStyles = {
-  backgroundColor: "white",
+  backgroundColor: "rgba(34, 34, 34, 1)",
   padding: "20px",
   borderRadius: "8px",
   boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
@@ -224,10 +224,10 @@ const ProfilePage = () => {
   return (
     <div
       style={{
-        maxWidth: "500px", // Increased maximum width
+        maxWidth: "800px", // Increased maximum width
         margin: "0 auto",
         fontFamily: "Arial, sans-serif",
-        backgroundColor: "#d6d8db",
+        backgroundColor: "rgba(34, 34, 34, 1)",
         padding: "30px", // Increased padding for spacing
         borderRadius: "10px",
         boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
@@ -242,25 +242,26 @@ const ProfilePage = () => {
       ) : user ? (
         <div style={styles.profile}>
           <Toaster position="top-right" reverseOrder={false} />
+
+          <h1 style={styles.heading}>Welcome <span style={{color: "white"}}>{currUser.username}!</span></h1>
           <Button style={styles.editButton} onClick={openModal}>
             Edit Profile
           </Button>
           <span style={{ margin: "0 10px" }}></span>
-          <Button onClick={handleViewSavedPosts}>
+          <Button style={styles.editButton} onClick={handleViewSavedPosts}>
             {showingSavedPosts ? "Show Posts" : "Saved Posts"}
           </Button>
-          <h1 style={styles.heading}>Welcome {currUser.username}!</h1>
           <h2 style={styles.info}>
-            Preferred Username: {user.preferred_username}
+            Preferred Username: <span style={{color: "white"}}>{user.preferred_username}</span>
           </h2>
-          <h2 style={styles.info}>Email: {user.email}</h2>
+          <h2 style={styles.info}>Email: <span style={{color: "white"}}>{user.email}</span></h2>
           <h2 style={styles.info}>
-            Email Verified: {user.email_verified ? "Yes" : "No"}
+            Email Verified: <span style={{color: "white"}}>{user.email_verified ? "Yes" : "No"}</span>
           </h2>
           <h2 style={styles.info}>
-            Name: {user.name} {user.family_name}
+            Name: <span style={{color: "white"}}>{user.name} {user.family_name}</span>
           </h2>
-          <h2 style={styles.info}>Gender: {user.gender}</h2>
+          <h2 style={styles.info}>Gender: <span style={{color: "white"}}>{user.gender}</span></h2>
         </div>
       ) : (
         <p style={styles.error}>
@@ -325,24 +326,31 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     height: "100vh",
+    color: "white"
   },
   profile: {
     textAlign: "center",
+    color: "white"
   },
   heading: {
     fontSize: "24px",
     fontWeight: "bold",
     marginBottom: "20px",
+    textAlign: "center",
+    color: "#047d95"
   },
   info: {
     fontSize: "18px",
     marginBottom: "10px",
+    textAlign: "left",
+    color: "#047d95"
   },
   error: {
     color: "red",
   },
   editButton: {
     marginBottom: "20px",
+    color: "white"
   },
 };
 
