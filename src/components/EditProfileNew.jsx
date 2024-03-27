@@ -1,17 +1,15 @@
-/***************************************************************************
- * The contents of this file were generated with Amplify Studio.           *
- * Please refrain from making any modifications to this file.              *
- * Any changes to this file will be overwritten when running amplify pull. *
- **************************************************************************/
-
 /* eslint-disable */
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { getOverrideProps } from "../ui-components/utils";
 import MyIcon from "../ui-components/MyIcon";
 import { Button, Flex, Image, Text, TextField } from "@aws-amplify/ui-react";
-import { updateUserAttribute } from "aws-amplify/auth";
-import { deleteUser } from "aws-amplify/auth";
+import { updateUserAttribute, deleteUser } from "aws-amplify/auth";
+import { generateClient } from "aws-amplify/api";
+import { UserContext } from './../UserContext';
+import { listPosts } from "../graphql/queries";
+
+const client = generateClient();
 
 export default function EditProfileNew(props) {
   const { onClickEvent } = props;
@@ -20,6 +18,7 @@ export default function EditProfileNew(props) {
   const [lastName, setLastName] = useState(null);
   const [gender, setGender] = useState(null);
   const [showMakeSure, setShowMakeSure] = useState(false);
+  const { allUsers, myUser } = useContext(UserContext);
 
   async function handleSetAttribute(useStateFunc, value) {
     if (value == "") {
@@ -31,8 +30,20 @@ export default function EditProfileNew(props) {
 
   async function handleDeleteAccount() {
     try {
-      await deleteUser();
-      alert("DELETED");
+      console.log(myUser)
+      const variables = {
+        filter: {
+          owner: {
+            eq: myUser.username
+          }
+        },
+        limit: 10
+      }
+      const userPosts = await client.graphql({
+        query: listPosts,
+        variables: variables
+      });
+      console.log(userPosts)
     } catch (error) {
       console.log(error);
     }
