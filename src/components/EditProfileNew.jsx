@@ -7,7 +7,8 @@ import { Button, Flex, Image, Text, TextField } from "@aws-amplify/ui-react";
 import { updateUserAttribute, deleteUser } from "aws-amplify/auth";
 import { generateClient } from "aws-amplify/api";
 import { UserContext } from './../UserContext';
-import { listPosts } from "../graphql/queries";
+import { listPosts, listComments, listFriends } from "../graphql/queries";
+import { deletePost, deleteComment, deleteFriend } from "../graphql/mutations";
 
 const client = generateClient();
 
@@ -30,8 +31,17 @@ export default function EditProfileNew(props) {
 
   async function handleDeleteAccount() {
     try {
-      console.log(myUser)
-      const variables = {
+      await handleDeletePosts()
+      await handleDeleteComments()
+
+      //await deleteUser();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function handleDeletePosts() {
+      const postFetchVariables = {
         filter: {
           owner: {
             eq: myUser.username
@@ -39,14 +49,71 @@ export default function EditProfileNew(props) {
         },
         limit: 10
       }
-      const userPosts = await client.graphql({
+      let userPosts = await client.graphql({
         query: listPosts,
-        variables: variables
+        variables: postFetchVariables
       });
-      console.log(userPosts)
-    } catch (error) {
-      console.log(error);
+      while (userPosts.data.listPosts.items.length > 0) {
+        let userPostsArr = userPosts.data.listPosts.items
+        for (let i = 0; i < userPostsArr.length; i++) {
+          const post = userPostsArr[i]
+          const deletePostInput = {
+            input: {
+              id: post.id
+            }
+          }
+          console.log(i)
+          console.log(deletePostInput)
+          const deletedPost = await client.graphql({
+            query: deletePost,
+            variables: deletePostInput
+          })
+        }
+        userPosts = await client.graphql({
+          query: listPosts,
+          variables: postFetchVariables
+        });
+      }
+  }
+
+  async function handleDeleteComments() {
+    const commentFetchVariables = {
+      filter: {
+        commentAuthorId: {
+          eq: myUser.username
+        }
+      },
+      limit: 10
     }
+    let userComments = await client.graphql({
+      query: listComments,
+      variables: commentFetchVariables
+    });
+    while (userComments.data.listPosts.items.length > 0) {
+      let userCommentsArr = userComments.data.listPosts.items
+      for (let i = 0; i < userCommentsArr.length; i++) {
+        const comment = userCommentsArr[i]
+        const deleteCommentInput = {
+          input: {
+            id: comment.id
+          }
+        }
+        console.log(i)
+        console.log(deleteCommentInput)
+        const deletedComment = await client.graphql({
+          query: deleteComment,
+          variables: deleteCommentInput
+        })
+      }
+      userPosts = await client.graphql({
+        query: listComments,
+        variables: commentFetchVariables
+      });
+    }
+  }
+
+  async function handleDeleteFriends() {
+    
   }
 
   async function handleClick() {
