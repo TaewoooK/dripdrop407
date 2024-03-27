@@ -12,12 +12,55 @@ import { generateClient } from "aws-amplify/api";
 import { deleteFriend } from "../../graphql/mutations";
 // import { getOverrideProps, useAuth } from "../../ui-components/utils";
 import { Button, Icon, Text, View } from "@aws-amplify/ui-react";
+import UserProfileModal from "../UserProfileModal";
 
 const client = generateClient();
 
+const modalContainerStyles = {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent black background
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  zIndex: 9999, // higher z-index to ensure it's above other content
+};
+
+const modalStyles = {
+  backgroundColor: "white",
+  padding: "20px",
+  borderRadius: "8px",
+  boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+};
+
 export default function Friend(props) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { key, friend, onClickEvent, otherFriend } = props;
   const { allUsers, myUser } = useContext(UserContext);
+  const user = allUsers.find(user => user.Username === friend?.FriendUsername);
+
+  const Modal = ({ onClose }) => {
+    return (
+      <div style={modalContainerStyles}>
+        <div style={modalStyles}>
+          
+          <UserProfileModal user={ user }/>
+          <button onClick={onClose}>Close</button>
+        </div>
+      </div>
+    );
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   const handleRemoveFriend = async () => {
     console.log('Clicked remove friend: ', friend.FriendUsername)
@@ -54,6 +97,12 @@ export default function Friend(props) {
 
     onClickEvent();
   };
+
+  const handleViewProfile = async () => {
+    console.log("Profile Retrieved: ", user);
+
+    openModal();
+  };
   
   return (
     <View
@@ -66,6 +115,9 @@ export default function Friend(props) {
       position="relative"
       padding="0px 0px 0px 0px"
     >
+      <div backgroundColor="rgba(0,0,0,0.5)">
+        {isModalOpen && <Modal onClose={closeModal} />}
+      </div>
       <View
         width="383px"
         height="72px"
@@ -108,7 +160,7 @@ export default function Friend(props) {
         left="3.82%"
         right="84.38%"
       ></Icon>
-      <Text
+      <Button
         fontFamily="Inter"
         fontSize="16px"
         fontWeight="400"
@@ -130,7 +182,10 @@ export default function Friend(props) {
         padding="0px 0px 0px 0px"
         whiteSpace="pre-wrap"
         children={friend?.FriendUsername}
-      ></Text>
+        onClick={() => {
+          handleViewProfile();
+        }}
+      ></Button>
       <Button
         width="unset"
         height="unset"
