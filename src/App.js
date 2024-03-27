@@ -82,7 +82,7 @@ const components = {
 
 const client = generateClient();
 
-const UserNotificationSubscriber = ({ user, signOut, setNotifications}) => {
+const UserNotificationSubscriber = ({ user, signOut, notifications, setNotifications}) => {
   useEffect(() => {
     const generateNotifs = async (currUser) => {
       try {
@@ -132,8 +132,7 @@ const UserNotificationSubscriber = ({ user, signOut, setNotifications}) => {
             const notifList =
               notificationData.data.onUpdateNotifications.notificationsList;
             console.log("notifList:", notifList);
-            setNotifications(notifList);
-            if (notifList.length !== 0) {
+            if (notifList.length !== 0 && notifList.length > notifications.length) {
               const newNotif = notifList[0];
               console.log("newNotif:", newNotif);
               // console.log(
@@ -207,6 +206,7 @@ const UserNotificationSubscriber = ({ user, signOut, setNotifications}) => {
                   break;
               }
             }
+            setNotifications(notifList);
           },
         });
       console.log("subscribed to notifications for:", user.username);
@@ -297,7 +297,7 @@ export default function App() {
         <UserProvider>
           <View className="App">
             <div>
-              <UserNotificationSubscriber user={user} signOut={signOut} setNotifications={setNotifications}/>
+              <UserNotificationSubscriber user={user} signOut={signOut} notifications={notifications} setNotifications={setNotifications}/>
               <Toaster position="top-right" reverseOrder={false} />
               <Grid
                 columnGap="0.5rem"

@@ -65,7 +65,6 @@ const NotificationCenter = ({ subsciberNotifications, signOut }) => {
             variables: { input, condition },
           });
           console.log("Notifications cleared");
-          setNotifications([]);
           resolve("Notifications cleared");
         } else {
           console.log("user not found");
@@ -108,36 +107,6 @@ const NotificationCenter = ({ subsciberNotifications, signOut }) => {
           </Button>
         </Flex>
         {console.log("Notifications:", notifications)}
-        {/* <>
-        {notifications.length === 0 ? (
-          <p>No notifications</p>
-        ) : (
-          {notifications.map((notification, index) => {
-            <Notification key={index} index={index} notification={notification} />;
-          }
-          // <ul>
-          //   {notifications.map((notification, index) => {
-          //     switch (notification[0]) {
-          //       case "FR":
-          //         return (
-          //           <li key={notification[1]}>
-          //             {index}. Friend request from {notification[1]}
-          //           </li>
-          //         );
-          //       case "Comment":
-          //         return (
-          //           <li key={notification[1]}>
-          //             {index}. {notification[1]} commented "{notification[3]}" on your
-          //             post
-          //           </li>
-          //         );
-          //       default:
-          //         return <li key={notification[1]}>Unknown notification</li>;
-          //     }
-          //   })}
-          // </ul>
-        )}
-        </> */}
         {notifications.length === 0 ? (
           <p>No Notifications</p>
         ) : (
@@ -171,6 +140,8 @@ const NotificationCenter = ({ subsciberNotifications, signOut }) => {
                   index={index}
                   notification={notification}
                   topPosition={topPosition}
+                  username={currUser.username}
+                  client={client}
                 />
               );
             })}

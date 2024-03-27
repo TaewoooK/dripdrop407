@@ -1,12 +1,39 @@
 import { Card, Icon, Text, View } from "@aws-amplify/ui-react";
+import { listNotifications } from "../graphql/queries";
+import { updateNotifications } from "../graphql/mutations";
 
 export default function Notification(props) {
-  const { index, notification, topPosition } = props;
+  const { index, notification, topPosition, username, client } = props;
 
   const handleRemoveNotification = async () => {
     console.log("Clicked remove notif index: ", index);
     console.log("Clicked remove notif: ", notification);
-    
+    try {
+      const userNotifications = await client.graphql({
+        query: listNotifications,
+        variables: { filter: { username: { eq: username } } },
+      });
+      if (userNotifications.data.listNotifications.items !== null) {
+        // console.log("notifToPostOwner:", notifToRequestedUser);
+        // const notifList = notifToRequestedUser.data.listNotifications.items[0];
+        let newList = userNotifications.data.listNotifications.items[0].notificationsList;
+        newList.splice(index, 1);
+        const input = {
+          id: userNotifications.data.listNotifications.items[0].id,
+          notificationsList: newList,
+        };
+        const condition = { username: { eq: username } };
+        await client.graphql({
+          query: updateNotifications,
+          variables: { input, condition },
+        });
+        console.log("Notifications cleared");
+      } else {
+        console.log("user not found");
+      }
+    } catch (error) {
+      console.error("Error clearing notifications: ", error);
+    }
   };
 
   const displayNotification = () => {
@@ -14,7 +41,7 @@ export default function Notification(props) {
       case "FR":
         return `Friend request from ${notification[1]}`;
       case "Comment":
-        return `${notification[1]} commented ${notification[3]} on your post`;
+        return `${notification[1]} commented "${notification[3]}" on your post`;
       default:
         return `${notification[0]} Unknown notification`;
     }
