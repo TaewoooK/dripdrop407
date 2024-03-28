@@ -68,7 +68,7 @@ const PostAndComment = () => {
 
   const setVariablesNFilter = () => {
     if (currUser != null) {
-      console.log(currUser)
+      console.log(currUser);
       if (!nextToken) {
         // This means either the page just loaded or the user has scrolled to the end of the list
         setVariablesN({
@@ -139,19 +139,21 @@ const PostAndComment = () => {
         }
         console.log("posts");
         console.log(postData);
-        const imagePromises = postData.map(async (post) => {
-          const postData = await getUrl({ key: post.postImageKey });
-          return {
-            description: post.description,
-            imageUrl: postData.url,
-          };
-        });
-        const fetchedImages = await Promise.all(imagePromises);
-        setImages(fetchedImages);
-        console.log("Fetched images");
-        console.log(fetchedImages);
-        setImage(fetchedImages[0].imageUrl);
-        setCurrentImageIndex(0);
+        if (postData.length != 0) {
+          const imagePromises = postData.map(async (post) => {
+            const postData = await getUrl({ key: post.postImageKey });
+            return {
+              description: post.description,
+              imageUrl: postData.url,
+            };
+          });
+          const fetchedImages = await Promise.all(imagePromises);
+          setImages(fetchedImages);
+          console.log("Fetched images");
+          console.log(fetchedImages);
+          setImage(fetchedImages[0].imageUrl);
+          setCurrentImageIndex(0);
+        }
         //console.log("End of fetchPost logging")
       } catch (error) {
         console.error("Error fetching posts: ", error);
@@ -280,7 +282,7 @@ const PostAndComment = () => {
         input: {
           postId: currPost.id,
           text: comment,
-          commentAuthorId: currUser.userId,
+          commentAuthorId: currUser.username,
         },
       },
     });
@@ -316,33 +318,35 @@ const PostAndComment = () => {
   };
 
   const getSavedPosts = async () => {
-    try {
-      console.log("fetching saved posts");
-      const result = await client.graphql({
-        query: listSavedPosts,
-        variables: { filter: { username: { eq: currUser.username } } },
-      });
-      if (result.data.listSavedPosts.items.length > 0) {
-        setSavedPosts(result.data.listSavedPosts.items[0]);
-        console.log(
-          "saved posts:",
-          result.data.listSavedPosts.items[0].postIds
-        );
-        // return result.data.listSavedPosts.items; // Return the data from the GraphQL response
-      } else {
-        const createdSavedPosts = await client.graphql({
-          query: createSavedPosts,
-          variables: {
-            input: { username: currUser.username, postIds: [] },
-          },
+    if (currUser != null) {
+      try {
+        console.log("fetching saved posts");
+        const result = await client.graphql({
+          query: listSavedPosts,
+          variables: { filter: { username: { eq: currUser.username } } },
         });
-        console.log("created saved posts");
-        setSavedPosts(createdSavedPosts.data.createSavedPosts[0]);
-        // return createdSavedPosts.data.listSavedPosts.items; // Return the data from the GraphQL response
+        if (result.data.listSavedPosts.items.length > 0) {
+          setSavedPosts(result.data.listSavedPosts.items[0]);
+          console.log(
+            "saved posts:",
+            result.data.listSavedPosts.items[0].postIds
+          );
+          // return result.data.listSavedPosts.items; // Return the data from the GraphQL response
+        } else {
+          const createdSavedPosts = await client.graphql({
+            query: createSavedPosts,
+            variables: {
+              input: { username: currUser.username, postIds: [] },
+            },
+          });
+          console.log("created saved posts");
+          setSavedPosts(createdSavedPosts.data.createSavedPosts[0]);
+          // return createdSavedPosts.data.listSavedPosts.items; // Return the data from the GraphQL response
+        }
+      } catch (error) {
+        console.error("Error fetching saved posts:", error);
+        return null; // Return null in case of error
       }
-    } catch (error) {
-      console.error("Error fetching saved posts:", error);
-      return null; // Return null in case of error
     }
   };
 
@@ -521,7 +525,7 @@ const PostAndComment = () => {
             //src="https://cdn.discordapp.com/attachments/1120152118272213053/1201614916788965536/IMG_5675.jpg?ex=65dceb19&is=65ca7619&hm=277e5088a148d22bbb7935216d52437d827a889d0d6e4e7dded8eeb7a4af1336&"
             //src="https://images.unsplash.com/photo-1707879487614-72b421e4393f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHx8"
 
-            <div>Loading...</div>
+            <div>No More Posts, Check back later!</div>
           )}
 
           <MyIcon
@@ -731,24 +735,26 @@ const PostAndComment = () => {
                   >
                     {text}
                   </Text>
-                  { currUser.username == posts[currentImageIndex].owner  &&  <Icon
-                    width="22.5px"
-                    height="25px"
-                    viewBox={{ minX: 0, minY: 0, width: 22.5, height: 25 }}
-                    position="absolute"
-                    left="210px"
-                    style={{ cursor: "pointer" }} // Add cursor: pointer style
-                    onClick={() => handleIconClick((index = { index }))} // Call the handler function on icon click
-                    paths={[
-                      {
-                        d: "m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
-                        stroke: "rgba(255,255,255,1)",
-                        fillRule: "nonzero",
-                        strokeLinejoin: "round",
-                        strokeWidth: 2,
-                      },
-                    ]}
-                  ></Icon> }
+                  {currUser.username == posts[currentImageIndex].owner && (
+                    <Icon
+                      width="22.5px"
+                      height="25px"
+                      viewBox={{ minX: 0, minY: 0, width: 22.5, height: 25 }}
+                      position="absolute"
+                      left="210px"
+                      style={{ cursor: "pointer" }} // Add cursor: pointer style
+                      onClick={() => handleIconClick((index = { index }))} // Call the handler function on icon click
+                      paths={[
+                        {
+                          d: "m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
+                          stroke: "rgba(255,255,255,1)",
+                          fillRule: "nonzero",
+                          strokeLinejoin: "round",
+                          strokeWidth: 2,
+                        },
+                      ]}
+                    ></Icon>
+                  )}
                 </Card>
               );
             })}
