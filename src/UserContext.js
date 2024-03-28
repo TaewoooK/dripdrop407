@@ -25,9 +25,24 @@ export const UserProvider = ({ children }) => {
 
   async function fetchAllUsers() {
     try {
+      const currentEnv = process.env.REACT_APP_ENVIRONMENT_NAME;
+
+      let userPoolId;
+
+      switch (currentEnv) {
+        case "dev ":
+          userPoolId = process.env.REACT_APP_USER_POOL_ID_DEV;
+          break;
+        case "prod ":
+          userPoolId = process.env.REACT_APP_USER_POOL_ID_PROD;
+          break;
+        default:
+          userPoolId = process.env.REACT_APP_USER_POOL_ID_PROD;
+      }
+
       // Set Parameters for querying Users (pool Id and filter)
       let params = {
-        UserPoolId: process.env.REACT_APP_USER_POOL_ID,
+        UserPoolId: userPoolId,
       };
 
       // Establish credentials via IAM user before making AWS SDK API call
