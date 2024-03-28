@@ -23,6 +23,7 @@ import Upload from "./pages/Upload";
 // import Friends from "./ui-components/FullFriends";
 import Friends from "./pages/Friends";
 import NavBar from "./components/NavBar";
+import Board from "./components/Leaderboard/Board";
 import ProfilePage from "./ui-components/ProfilePage";
 import FriendsOnly from "./pages/FriendsOnly";
 
@@ -130,6 +131,9 @@ export default function App() {
       break;
     case "/profile":
       component = <ProfilePage />;
+      break;
+    case "/leaderboard":
+      component = <Board/>;
       break;
   }
 
