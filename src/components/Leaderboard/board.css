@@ -33,7 +33,7 @@
     gap: unset;
     align-items: unset;
     justify-content: unset;
-    overflow: hidden;
+    overflow: auto;
     position: absolute;
     top: 106px;
     left: 40px;
@@ -80,7 +80,7 @@
     align-items: unset;
     position: absolute;
     top: 35px;
-    left: 164px;
+    left: 265px;
     padding: 0px;
     white-space: pre-wrap;
 }
@@ -101,7 +101,7 @@
     align-items: unset;
     position: absolute;
     top: 35px;
-    left: 630px;
+    left: 590px;
     padding: 0px;
     white-space: pre-wrap;
 }
@@ -129,34 +129,58 @@
 
 .rank-column {
     width: 98px;
-    height: 438px;
     display: block;
     gap: unset;
     align-items: unset;
     justify-content: unset;
     overflow: hidden;
     position: absolute;
-    top: 96px;
     left: 20px;
     border-radius: 15px 0px 0px 15px;
     padding: 0px;
     background-color: rgba(45, 45, 45, 1);
 }
 
-.other-column {
-    width: 688px;
-    height: 438px;
+.rank-column h2 {
+    margin-bottom: 25px; /* Adjust the value as needed */
+    color: white;
+}
+
+.user-column {
+    width: 344px; /* Half of the original width */
     display: block;
     gap: unset;
     align-items: unset;
     justify-content: unset;
     overflow: hidden;
     position: absolute;
-    top: 96px;
     left: 118px;
+    padding: 0px;
+    background-color: rgba(49, 49, 49, 1);
+}
+
+.user-column h2 {
+    margin-bottom: 25px; /* Adjust the value as needed */
+    color: white;
+}
+
+.points-column {
+    width: 320px; /* Half of the original width */
+    display: block;
+    gap: unset;
+    align-items: unset;
+    justify-content: unset;
+    overflow: hidden;
+    position: absolute;
+    left: 462px; /* Adjust this position accordingly */
     padding: 0px;
     border-radius: 0px 15px 15px 0px;
     background-color: rgba(49, 49, 49, 1);
+}
+
+.points-column h2 {
+    margin-bottom: 25px; /* Adjust the value as needed */
+    color: white;
 }
 
 .separator {
@@ -189,3 +213,19 @@
 .button-by-user {
     left: 751px;
 }
+
+.columns-container {
+    width: 800px;
+    height: 470px;
+    display: flex;
+    top: 96px;
+    position: absolute;
+  }
+  
+  .rank-column,
+  .user-column,
+  .points-column {
+    flex: 1;
+    padding: 0 10px; /* Adjust padding as needed */
+  }
+  
