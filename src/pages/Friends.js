@@ -34,6 +34,7 @@ import {
 
 // UI imports
 import "./Friends.css";
+import UserComponent from "../components/UserComponent";
 import FriendRequestComponent from "../components/FriendRequestComponent";
 import FriendComponent from "../components/FriendComponent";
 
@@ -90,17 +91,17 @@ const Friends = () => {
   }, []);
 
   // FOR DEBUGGING
-  useEffect(() => {
-    // console.log("allUsers: ", allUsers);
-    // console.log("myUser: ", myUser);
-    // console.log("myUser.username: ", myUser.username);
-    // console.log("All Friend Requests: ", allRequests);
-    // console.log("My Friend Requests: ", requests);
-    // console.log("filtered requests: ", filteredRequests);
-    // console.log("All Friends: ", allFriends);
-    // console.log("My Friends: ", friends);
-    // console.log("filtered friends: ", filteredFriends);
-  }, [filteredFriends]);
+  // useEffect(() => {
+  //   console.log("allUsers: ", allUsers);
+  //   console.log("myUser: ", myUser);
+  //   console.log("myUser.username: ", myUser.username);
+  //   console.log("All Friend Requests: ", allRequests);
+  //   console.log("My Friend Requests: ", requests);
+  //   console.log("filtered requests: ", filteredRequests);
+  //   console.log("All Friends: ", allFriends);
+  //   console.log("My Friends: ", friends);
+  //   console.log("filtered friends: ", filteredFriends);
+  // }, [filteredFriends]);
 
   // # GRAPHQL OPERATIONS
 
@@ -206,18 +207,6 @@ const Friends = () => {
     });
   }
 
-  // Rejecting Friend Requests via request id
-  // async function deleteFriendRequestById(friendRequestId) {
-  //   await client.graphql({
-  //     query: deleteFriendRequest.replaceAll("__typename", ""),
-  //     variables: {
-  //       input: {
-  //         id: friendRequestId,
-  //       },
-  //     },
-  //   });
-  // }
-
   // Creating a friend with current user and SenderUsername
   async function createFriendByName(senderUsername) {
     // Insert friend record for current user
@@ -244,15 +233,6 @@ const Friends = () => {
 
     await deleteFriendRequestByName(senderUsername);
   }
-
-  // Helper method for removing a friend
-  // const getOtherFriend = (friend) => {
-  //   return allFriends.find(
-  //     (otherFriend) =>
-  //       otherFriend.Username === friend.FriendUsername &&
-  //       otherFriend.FriendUsername === friend.Username
-  //   );
-  // };
 
   // Removing current user's friend FriendUsername
   async function deleteFriendByName(friendUsername) {
@@ -303,42 +283,16 @@ const Friends = () => {
     });
   }
 
-  // Removing friend via friend id
-  // async function deleteFriendByFriend(friend) {
-  //   // Remove Friend record for current user
-  //   await client.graphql({
-  //     query: deleteFriend.replaceAll("__typename", ""),
-  //     variables: {
-  //       input: {
-  //         id: friend.id,
-  //       },
-  //     },
-  //   });
-
-  //   // Remove Friend record for ex-friend user
-  //   await client.graphql({
-  //     query: deleteFriend.replaceAll("__typename", ""),
-  //     variables: {
-  //       input: {
-  //         id: getOtherFriend(friend).id,
-  //       },
-  //     },
-  //   });
-  // }
-
   // # HANDLER METHODS
 
   /* User Search Handlers */
   const onUserSearchChange = (event) => {
+    console.log("userSearch:", event.target.value);
     setUserSearch(event.target.value);
 
-    // if (userSearch != "") {
-    //   setFilteredUsers(
-    //     allUsers.filter((user) => user.Username.startsWith(event.target.value))
-    //   );
-    // } else {
-    //   setFilteredUsers([]);
-    // }
+    setFilteredUsers(
+      allUsers.filter((user) => user.Username.startsWith(event.target.value))
+    );
   };
 
   const onUserSearchClear = () => {
@@ -452,9 +406,28 @@ const Friends = () => {
   };
 
   /* Button Handlers */
-  const clickSendButton = () => {};
-  const clickRescindButton = () => {};
-  const clickAcceptButton = (senderUsername) => {
+  const handleClickSend = (recepientUsername) => {
+    toast.promise(createFriendRequestByName(recepientUsername), {
+      loading: "Sending Friend Request...",
+      success: <b>Sent friend request to {recepientUsername}!</b>,
+      error: (error) => {
+        console.error("Failed to send friend request:", error);
+        return <b>Failed to send friend request. Please try again.</b>;
+      },
+    });
+  };
+  const handleClickRescind = (recepientUsername) => {
+    toast.promise(rescindFriendRequestByName(recepientUsername), {
+      loading: "Rescinding Friend Request...",
+      success: <b>Rescinded friend request to {recepientUsername}.</b>,
+      error: (error) => {
+        console.error("Failed to rescind friend request:", error);
+        return <b>Failed to rescind friend request. Please try again.</b>;
+      },
+    });
+  };
+  const handleClickAccept = (senderUsername) => {
+    console.log("handleClickAccept");
     toast.promise(createFriendByName(senderUsername), {
       loading: "Accepting Friend Request...",
       success: <b>Accepted friend request from {senderUsername}!</b>,
@@ -464,7 +437,7 @@ const Friends = () => {
       },
     });
   };
-  const clickDenyButton = (senderUsername) => {
+  const handleClickDeny = (senderUsername) => {
     toast.promise(deleteFriendRequestByName(senderUsername), {
       loading: "Denying Friend Request...",
       success: <b>Denied friend request from {senderUsername}.</b>,
@@ -474,7 +447,7 @@ const Friends = () => {
       },
     });
   };
-  const clickRemoveButton = (friendUsername) => {
+  const handleClickRemove = (friendUsername) => {
     toast.promise(deleteFriendByName(friendUsername), {
       loading: "Removing Friend...",
       success: <b>Removed friend {friendUsername}.</b>,
@@ -491,12 +464,30 @@ const Friends = () => {
     return !(allUsers.find((user) => user.Username === username) === undefined);
   };
 
-  // Re-fetch requests and friends after click event
-  // const handleClickChild = () => {
-  //   fetchRequestsAndFriends(myUser.username);
-  // };
-
   // # GETTER METHODS
+  const getTypeUser = (username) => {
+    if (filteredFriends.find((friend) => friend.FriendUsername === username))
+      return "friend";
+    else if (
+      filteredRequests.find((request) => request.SenderUsername === username)
+    )
+      return "requestReceived";
+    else if (
+      allRequests.find(
+        (request) =>
+          request.Username === username &&
+          request.SenderUsername === myUser.username
+      )
+    )
+      return "requestSent";
+
+    return "stranger";
+  };
+
+  const isEmptyUsers = () => {
+    return userSearch === "" || filteredUsers.length === 0;
+  };
+
   const isEmptyFriendReqs = () => {
     return filteredRequests.length === 0;
   };
@@ -515,37 +506,47 @@ const Friends = () => {
         wrap="nowrap"
         gap="1rem"
       >
-        <Flex direction="row" justifyContent="center" wrap="nowrap" gap="1rem">
-          <SearchField
-            className="UserSearch"
-            label="User Search"
-            placeholder="Search username to add..."
-            size="small"
-            hasSearchButton={false}
-            onChange={onUserSearchChange}
-            onClear={onUserSearchClear}
-            value={userSearch}
-          />
+        <Heading level={3}> Search For Users </Heading>
 
-          <Button
-            isLoading={false}
-            variation="primary"
-            colorTheme="success"
-            size="small"
-            onClick={handleClickAdd}
-          >
-            Add
-          </Button>
+        <SearchField
+          className="UserSearch"
+          label="User Search"
+          placeholder="Search users..."
+          size="small"
+          hasSearchButton={false}
+          onChange={onUserSearchChange}
+          onClear={onUserSearchClear}
+          value={userSearch}
+        />
 
-          <Button
-            isLoading={false}
-            variation="primary"
-            size="small"
-            onClick={handleClickRefresh}
-          >
-            Refresh
-          </Button>
-        </Flex>
+        {isEmptyUsers() ? (
+          <p>No Users Found</p>
+        ) : (
+          <>
+            <Flex
+              className="users_container"
+              direction="column"
+              alignItems="center"
+              wrap="nowrap"
+              gap="1rem"
+            >
+              {filteredUsers.map((user, index) => (
+                <UserComponent
+                  key={index}
+                  user={user}
+                  type={getTypeUser(user.Username)}
+                  handleClickSend={handleClickSend}
+                  handleClickRescind={handleClickRescind}
+                  handleClickAccept={handleClickAccept}
+                  handleClickDeny={handleClickDeny}
+                  handleClickRemove={handleClickRemove}
+                />
+              ))}
+            </Flex>
+          </>
+        )}
+
+        <Divider size="large"></Divider>
 
         <Heading level={3}> Friend Requests </Heading>
 
@@ -575,8 +576,8 @@ const Friends = () => {
                 <FriendRequestComponent
                   key={index}
                   friendRequest={request}
-                  handleCreateFriend={createFriendByName}
-                  handleDeleteFriendRequest={deleteFriendRequestByName}
+                  handleClickAccept={handleClickAccept}
+                  handleClickDeny={handleClickDeny}
                 />
               ))}
             </Flex>
@@ -613,7 +614,7 @@ const Friends = () => {
                 <FriendComponent
                   key={index}
                   friend={friend}
-                  handleDeleteFriend={deleteFriendByName}
+                  handleClickRemove={handleClickRemove}
                 />
               ))}
             </Flex>

@@ -5,19 +5,9 @@
  **************************************************************************/
 
 /* eslint-disable */
-import React, { useState, useContext } from "react";
-import { UserContext } from "../UserContext";
-
-import { generateClient } from "aws-amplify/api";
-import { deleteFriend } from "../graphql/mutations";
-// import { getOverrideProps, useAuth } from "../../ui-components/utils";
 import { Button, Icon, Text, View } from "@aws-amplify/ui-react";
 
-const client = generateClient();
-
-export default function Friend({ key, friend, handleDeleteFriend }) {
-  const { allUsers, myUser } = useContext(UserContext);
-
+export default function Friend({ key, friend, handleClickRemove }) {
   return (
     <View
       width="383px"
@@ -105,7 +95,7 @@ export default function Friend({ key, friend, handleDeleteFriend }) {
         variation="destructive"
         children="Remove"
         onClick={() => {
-          handleDeleteFriend(friend.FriendUsername);
+          handleClickRemove(friend.FriendUsername);
         }}
       ></Button>
     </View>

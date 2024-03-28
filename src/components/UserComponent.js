@@ -5,31 +5,19 @@
  **************************************************************************/
 
 /* eslint-disable */
-import React, { useState, useContext } from "react";
-import { UserContext } from "../UserContext";
-
-import { generateClient } from "aws-amplify/api";
-import {
-  createFriend,
-  deleteFriend,
-  deleteFriendRequest,
-} from "../graphql/mutations";
 import { Button, Icon, Text, View } from "@aws-amplify/ui-react";
-
-const client = generateClient();
 
 export default function UserComponent({
   key,
   user,
   type,
-  handleCreateFriendRequest,
-  handleDeleteFriendRequest,
-  handleCreateFriend,
-  handleDeleteFriend,
+  handleClickSend,
+  handleClickRescind,
+  handleClickAccept,
+  handleClickDeny,
+  handleClickRemove,
 }) {
-  const { allUsers, myUser } = useContext(UserContext);
-
-  const button = () => {
+  let buttons = () => {
     switch (type) {
       case "stranger":
         return (
@@ -45,6 +33,9 @@ export default function UserComponent({
             isDisabled={false}
             variation="primary"
             children="Send"
+            onClick={() => {
+              handleClickSend(user.Username);
+            }}
           ></Button>
         );
       case "requestSent":
@@ -61,6 +52,9 @@ export default function UserComponent({
             isDisabled={false}
             variation="destructive"
             children="Rescind"
+            onClick={() => {
+              handleClickRescind(user.Username);
+            }}
           ></Button>
         );
       case "requestReceived":
@@ -79,7 +73,7 @@ export default function UserComponent({
               variation="destructive"
               children="Deny"
               onClick={() => {
-                handleDeleteFriendRequest(user.Username);
+                handleClickDeny(user.Username);
               }}
             ></Button>
             <Button
@@ -93,7 +87,7 @@ export default function UserComponent({
               variation="primary"
               children="Accept"
               onClick={() => {
-                handleCreateFriend(friendRequest);
+                handleClickAccept(user.Username);
               }}
             ></Button>
           </>
@@ -111,7 +105,7 @@ export default function UserComponent({
             variation="destructive"
             children="Remove"
             onClick={() => {
-              handleDeleteFriend(friend);
+              handleClickRemove(user.Username);
             }}
           ></Button>
         );
@@ -194,22 +188,9 @@ export default function UserComponent({
         right="38.37%"
         padding="0px 0px 0px 0px"
         whiteSpace="pre-wrap"
-        children={friend?.FriendUsername}
+        children={user?.Username}
       ></Text>
-      <Button
-        width="unset"
-        height="unset"
-        position="absolute"
-        top="calc(50% - 16.5px - 0.5px)"
-        left="calc(50% - 39.5px - -134px)"
-        size="small"
-        isDisabled={false}
-        variation="destructive"
-        children="Remove"
-        onClick={() => {
-          handleRemoveFriend();
-        }}
-      ></Button>
+      {buttons()}
     </View>
   );
 }

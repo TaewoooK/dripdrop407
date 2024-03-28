@@ -5,23 +5,15 @@
  **************************************************************************/
 
 /* eslint-disable */
-import React, { useEffect, useContext } from "react";
-import { UserContext } from "../UserContext";
-
-// import { getOverrideProps, useAuth } from "../ui-components/utils";
-import { generateClient } from "aws-amplify/api";
-import { createFriend, deleteFriendRequest } from "../graphql/mutations";
 import { Button, Icon, Text, View } from "@aws-amplify/ui-react";
 
-const client = generateClient();
 
 export default function FriendRequest({
   key,
   friendRequest,
-  handleCreateFriend,
-  handleDeleteFriendRequest,
+  handleClickAccept,
+  handleClickDeny,
 }) {
-  const { allUsers, myUser } = useContext(UserContext);
 
   return (
     <View
@@ -112,7 +104,7 @@ export default function FriendRequest({
         variation="destructive"
         children="Deny"
         onClick={() => {
-          handleDeleteFriendRequest(friendRequest.SenderUsername);
+          handleClickDeny(friendRequest.SenderUsername);
         }}
       ></Button>
       <Button
@@ -126,7 +118,7 @@ export default function FriendRequest({
         variation="primary"
         children="Accept"
         onClick={() => {
-          handleCreateFriend(friendRequest.SenderUsername);
+          handleClickAccept(friendRequest.SenderUsername);
         }}
       ></Button>
     </View>
