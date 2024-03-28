@@ -41,6 +41,7 @@
       top: 495px;
       left: 46.5px;
       padding: 0;
+      filter: invert(100%);
   }
   
   .thumb-container2 {
@@ -55,6 +56,7 @@
       top: 495px;
       left: 363px;
       padding: 0;
+      filter: invert(100%);
   }
   
   .post-img {

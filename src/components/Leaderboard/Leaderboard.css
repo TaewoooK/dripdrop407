@@ -1,0 +1,34 @@
+.leaderboard-container {
+    width: 300px; /* Adjust width as needed */
+    height: 400px; /* Adjust height as needed */
+    overflow: auto; /* Enable scrolling */
+    border: 1px solid #ccc; /* Add border for visual separation */
+  }
+  
+  .leaderboard {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  
+  .leaderboard-entry {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc; /* Add border between entries */
+    padding: 5px 0;
+  }
+  
+  .rank,
+  .user,
+  .points {
+    flex: 1;
+  }
+  
+  .rank {
+    text-align: center;
+  }
+  
+  .user,
+  .points {
+    margin-left: 10px;
+  }
