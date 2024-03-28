@@ -1,5 +1,9 @@
 // React imports
-import React, { useState, useEffect, useContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  useContext,
+} from "react";
 import { UserContext } from "./../UserContext";
 
 // AWS Amplify imports
@@ -34,9 +38,7 @@ import {
 
 // UI imports
 import "./Friends.css";
-import UserComponent from "../components/UserComponent";
-import FriendRequestComponent from "../components/FriendRequestComponent";
-import FriendComponent from "../components/FriendComponent";
+import ChipComponent from "../components/ChipComponent";
 
 // Toast notif import
 import toast, { Toaster } from "react-hot-toast";
@@ -157,7 +159,6 @@ const Friends = () => {
 
   // Rescind Friend Request from senderUsername
   async function rescindFriendRequestByName(recepientUsername) {
-    console.log("recepient:", recepientUsername);
     const requestData = await client.graphql({
       query: listFriendRequests,
       variables: {
@@ -183,7 +184,6 @@ const Friends = () => {
 
   // Deleting Friend Request from senderUsername
   async function deleteFriendRequestByName(senderUsername) {
-    console.log("sender:", senderUsername);
     const requestData = await client.graphql({
       query: listFriendRequests,
       variables: {
@@ -287,7 +287,6 @@ const Friends = () => {
 
   /* User Search Handlers */
   const onUserSearchChange = (event) => {
-    console.log("userSearch:", event.target.value);
     setUserSearch(event.target.value);
 
     setFilteredUsers(
@@ -297,78 +296,6 @@ const Friends = () => {
 
   const onUserSearchClear = () => {
     setUserSearch("");
-  };
-
-  const handleClickAdd = () => {
-    // If user searches own username
-    if (userSearch === myUser.username) {
-      toast.error("Can't add self");
-      return;
-    }
-
-    // If there's an existing outgoing friend request to the search, then rescind it
-    const existingSentRequest = allRequests.find(
-      (request) =>
-        request.Username === userSearch &&
-        request.SenderUsername === myUser.username
-    );
-
-    if (existingSentRequest) {
-      toast.promise(rescindFriendRequestByName(userSearch), {
-        loading: "Rescinding Friend Request...",
-        success: <b>Friend Request sent to {userSearch} was rescinded.</b>,
-        error: (error) => {
-          console.error("Failed to rescind friend request:", error);
-          return <b>Failed to rescind friend Request. Please try again.</b>;
-        },
-      });
-
-      return;
-    }
-
-    // If there's an existing incoming friend request from search
-    const existingRequest = allRequests.find(
-      (request) =>
-        request.Username === myUser.username &&
-        request.SenderUsername === userSearch
-    );
-
-    if (existingRequest) {
-      toast.error(userSearch + ` already sent you a friend request.`);
-      return;
-    }
-
-    // If there's an existing friend relationship
-    const existingFriend = allFriends.find(
-      (friend) =>
-        (friend.Username === myUser.username &&
-          friend.FriendUsername === userSearch) ||
-        (friend.Username === userSearch &&
-          friend.FriendUsername === myUser.username)
-    );
-
-    if (existingFriend) {
-      toast.error(userSearch + " is already your friend.");
-      return;
-    }
-
-    if (!userExists(userSearch)) {
-      toast.error(userSearch + " is not an existing user.");
-      return;
-    }
-
-    toast.promise(createFriendRequestByName(userSearch), {
-      loading: "Sending Friend Request...",
-      success: <b>Friend Request sent to {userSearch}!</b>,
-      error: (error) => {
-        console.error("Failed to send friend request:", error);
-        return <b>Failed to send friend Request. Please try again.</b>;
-      },
-    });
-  };
-
-  const handleClickRefresh = () => {
-    fetchRequestsAndFriends(myUser.username);
   };
 
   /* Friend Request Search Handlers */
@@ -427,7 +354,6 @@ const Friends = () => {
     });
   };
   const handleClickAccept = (senderUsername) => {
-    console.log("handleClickAccept");
     toast.promise(createFriendByName(senderUsername), {
       loading: "Accepting Friend Request...",
       success: <b>Accepted friend request from {senderUsername}!</b>,
@@ -456,12 +382,6 @@ const Friends = () => {
         return <b>Failed to remove friend. Please try again.</b>;
       },
     });
-  };
-
-  // # HELPER METHODS
-  // Checks if given username exists in pool of users
-  const userExists = (username) => {
-    return !(allUsers.find((user) => user.Username === username) === undefined);
   };
 
   // # GETTER METHODS
@@ -530,18 +450,22 @@ const Friends = () => {
               wrap="nowrap"
               gap="1rem"
             >
-              {filteredUsers.map((user, index) => (
-                <UserComponent
-                  key={index}
-                  user={user}
-                  type={getTypeUser(user.Username)}
-                  handleClickSend={handleClickSend}
-                  handleClickRescind={handleClickRescind}
-                  handleClickAccept={handleClickAccept}
-                  handleClickDeny={handleClickDeny}
-                  handleClickRemove={handleClickRemove}
-                />
-              ))}
+              {filteredUsers.map((user, index) => {
+                if (user.Username === myUser.username) return <></>;
+
+                return (
+                  <ChipComponent
+                    key={index}
+                    username={user.Username}
+                    type={getTypeUser(user.Username)}
+                    handleClickSend={handleClickSend}
+                    handleClickRescind={handleClickRescind}
+                    handleClickAccept={handleClickAccept}
+                    handleClickDeny={handleClickDeny}
+                    handleClickRemove={handleClickRemove}
+                  />
+                );
+              })}
             </Flex>
           </>
         )}
@@ -573,11 +497,15 @@ const Friends = () => {
               gap="1rem"
             >
               {filteredRequests.map((request, index) => (
-                <FriendRequestComponent
+                <ChipComponent
                   key={index}
-                  friendRequest={request}
+                  username={request.SenderUsername}
+                  type={"requestReceived"}
+                  handleClickSend={handleClickSend}
+                  handleClickRescind={handleClickRescind}
                   handleClickAccept={handleClickAccept}
                   handleClickDeny={handleClickDeny}
+                  handleClickRemove={handleClickRemove}
                 />
               ))}
             </Flex>
@@ -611,9 +539,14 @@ const Friends = () => {
               gap="1rem"
             >
               {filteredFriends.map((friend, index) => (
-                <FriendComponent
+                <ChipComponent
                   key={index}
-                  friend={friend}
+                  username={friend.FriendUsername}
+                  type={"friend"}
+                  handleClickSend={handleClickSend}
+                  handleClickRescind={handleClickRescind}
+                  handleClickAccept={handleClickAccept}
+                  handleClickDeny={handleClickDeny}
                   handleClickRemove={handleClickRemove}
                 />
               ))}

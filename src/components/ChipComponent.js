@@ -7,9 +7,9 @@
 /* eslint-disable */
 import { Button, Icon, Text, View } from "@aws-amplify/ui-react";
 
-export default function UserComponent({
+export default function ChipComponent({
   key,
-  user,
+  username,
   type,
   handleClickSend,
   handleClickRescind,
@@ -34,7 +34,7 @@ export default function UserComponent({
             variation="primary"
             children="Send"
             onClick={() => {
-              handleClickSend(user.Username);
+              handleClickSend(username);
             }}
           ></Button>
         );
@@ -53,7 +53,7 @@ export default function UserComponent({
             variation="destructive"
             children="Rescind"
             onClick={() => {
-              handleClickRescind(user.Username);
+              handleClickRescind(username);
             }}
           ></Button>
         );
@@ -73,7 +73,7 @@ export default function UserComponent({
               variation="destructive"
               children="Deny"
               onClick={() => {
-                handleClickDeny(user.Username);
+                handleClickDeny(username);
               }}
             ></Button>
             <Button
@@ -87,7 +87,7 @@ export default function UserComponent({
               variation="primary"
               children="Accept"
               onClick={() => {
-                handleClickAccept(user.Username);
+                handleClickAccept(username);
               }}
             ></Button>
           </>
@@ -105,7 +105,7 @@ export default function UserComponent({
             variation="destructive"
             children="Remove"
             onClick={() => {
-              handleClickRemove(user.Username);
+              handleClickRemove(username);
             }}
           ></Button>
         );
@@ -188,7 +188,7 @@ export default function UserComponent({
         right="38.37%"
         padding="0px 0px 0px 0px"
         whiteSpace="pre-wrap"
-        children={user?.Username}
+        children={username}
       ></Text>
       {buttons()}
     </View>
