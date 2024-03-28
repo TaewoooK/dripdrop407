@@ -5,7 +5,7 @@
  **************************************************************************/
 
 import * as React from "react";
-import { ButtonProps, IconProps, TextProps, ViewProps } from "@aws-amplify/ui-react";
+import { IconProps, ViewProps } from "@aws-amplify/ui-react";
 export declare type EscapeHatchProps = {
     [elementHierarchy: string]: Record<string, unknown>;
 } | null;
@@ -17,15 +17,16 @@ export declare type Variant = {
     overrides: EscapeHatchProps;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
-export declare type FriendRequestOverridesProps = {
-    FriendRequest?: PrimitiveOverrideProps<ViewProps>;
-    "Profile Card"?: PrimitiveOverrideProps<ViewProps>;
-    "Profile Picture"?: PrimitiveOverrideProps<IconProps>;
-    Username?: PrimitiveOverrideProps<TextProps>;
-    Button49974147?: PrimitiveOverrideProps<ButtonProps>;
-    Button49975929?: PrimitiveOverrideProps<ButtonProps>;
+export declare type LogoWithTextOverridesProps = {
+    LogoWithText?: PrimitiveOverrideProps<ViewProps>;
+    logo?: PrimitiveOverrideProps<ViewProps>;
+    Union?: PrimitiveOverrideProps<IconProps>;
+    Vector39193044?: PrimitiveOverrideProps<IconProps>;
+    Vector39193045?: PrimitiveOverrideProps<IconProps>;
 } & EscapeHatchProps;
-export declare type FriendRequestProps = React.PropsWithChildren<Partial<ViewProps> & {
-    overrides?: FriendRequestOverridesProps | undefined | null;
+export declare type LogoWithTextProps = React.PropsWithChildren<Partial<ViewProps> & {
+    color?: "brand" | "neutral";
+} & {
+    overrides?: LogoWithTextOverridesProps | undefined | null;
 }>;
-export default function FriendRequest(props: FriendRequestProps): React.ReactElement;
+export default function LogoWithText(props: LogoWithTextProps): React.ReactElement;

@@ -15,9 +15,8 @@ import { Icon } from "@aws-amplify/ui-react";
 export default function MyIcon(props) {
   const { overrides: overridesProp, ...rest } = props;
   const variants = [
-    { variantValues: { type: "warning" }, overrides: { MyIcon: {} } },
+    { overrides: { MyIcon: {} }, variantValues: { type: "warning" } },
     {
-      variantValues: { type: "alert" },
       overrides: {
         MyIcon: {
           paths: [
@@ -30,9 +29,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "alert" },
     },
     {
-      variantValues: { type: "info" },
       overrides: {
         MyIcon: {
           paths: [
@@ -45,9 +44,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "info" },
     },
     {
-      variantValues: { type: "chat" },
       overrides: {
         MyIcon: {
           paths: [
@@ -60,9 +59,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "chat" },
     },
     {
-      variantValues: { type: "checkmark" },
       overrides: {
         MyIcon: {
           paths: [
@@ -75,9 +74,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "checkmark" },
     },
     {
-      variantValues: { type: "favorite_border" },
       overrides: {
         MyIcon: {
           paths: [
@@ -90,9 +89,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "favorite_border" },
     },
     {
-      variantValues: { type: "more_vert" },
       overrides: {
         MyIcon: {
           paths: [
@@ -105,9 +104,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "more_vert" },
     },
     {
-      variantValues: { type: "bookmark_border" },
       overrides: {
         MyIcon: {
           paths: [
@@ -120,9 +119,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "bookmark_border" },
     },
     {
-      variantValues: { type: "share" },
       overrides: {
         MyIcon: {
           paths: [
@@ -135,9 +134,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "share" },
     },
     {
-      variantValues: { type: "arrow-right" },
       overrides: {
         MyIcon: {
           paths: [
@@ -150,9 +149,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "arrow-right" },
     },
     {
-      variantValues: { type: "reply" },
       overrides: {
         MyIcon: {
           paths: [
@@ -165,9 +164,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "reply" },
     },
     {
-      variantValues: { type: "chat-bubble-outline" },
       overrides: {
         MyIcon: {
           paths: [
@@ -180,9 +179,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "chat-bubble-outline" },
     },
     {
-      variantValues: { type: "send" },
       overrides: {
         MyIcon: {
           paths: [
@@ -195,9 +194,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "send" },
     },
     {
-      variantValues: { type: "favorite" },
       overrides: {
         MyIcon: {
           paths: [
@@ -210,9 +209,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "favorite" },
     },
     {
-      variantValues: { type: "shuffle" },
       overrides: {
         MyIcon: {
           paths: [
@@ -225,9 +224,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "shuffle" },
     },
     {
-      variantValues: { type: "more_horiz" },
       overrides: {
         MyIcon: {
           paths: [
@@ -240,9 +239,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "more_horiz" },
     },
     {
-      variantValues: { type: "close" },
       overrides: {
         MyIcon: {
           paths: [
@@ -255,9 +254,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "close" },
     },
     {
-      variantValues: { type: "shopping_bag" },
       overrides: {
         MyIcon: {
           paths: [
@@ -270,9 +269,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "shopping_bag" },
     },
     {
-      variantValues: { type: "delete" },
       overrides: {
         MyIcon: {
           paths: [
@@ -285,9 +284,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "delete" },
     },
     {
-      variantValues: { type: "edit" },
       overrides: {
         MyIcon: {
           paths: [
@@ -300,9 +299,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "edit" },
     },
     {
-      variantValues: { type: "dashboard" },
       overrides: {
         MyIcon: {
           paths: [
@@ -318,9 +317,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "dashboard" },
     },
     {
-      variantValues: { type: "settings" },
       overrides: {
         MyIcon: {
           paths: [
@@ -336,9 +335,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "settings" },
     },
     {
-      variantValues: { type: "notification" },
       overrides: {
         MyIcon: {
           paths: [
@@ -354,9 +353,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "notification" },
     },
     {
-      variantValues: { type: "twitter" },
       overrides: {
         MyIcon: {
           paths: [
@@ -369,9 +368,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "twitter" },
     },
     {
-      variantValues: { type: "instagram" },
       overrides: {
         MyIcon: {
           paths: [
@@ -384,9 +383,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "instagram" },
     },
     {
-      variantValues: { type: "email" },
       overrides: {
         MyIcon: {
           paths: [
@@ -402,9 +401,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "email" },
     },
     {
-      variantValues: { type: "phone" },
       overrides: {
         MyIcon: {
           paths: [
@@ -420,9 +419,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "phone" },
     },
     {
-      variantValues: { type: "location" },
       overrides: {
         MyIcon: {
           paths: [
@@ -441,9 +440,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "location" },
     },
     {
-      variantValues: { type: "content" },
       overrides: {
         MyIcon: {
           paths: [
@@ -456,9 +455,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "content" },
     },
     {
-      variantValues: { type: "file" },
       overrides: {
         MyIcon: {
           paths: [
@@ -471,9 +470,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "file" },
     },
     {
-      variantValues: { type: "storage" },
       overrides: {
         MyIcon: {
           paths: [
@@ -486,9 +485,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "storage" },
     },
     {
-      variantValues: { type: "function" },
       overrides: {
         MyIcon: {
           paths: [
@@ -511,9 +510,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "function" },
     },
     {
-      variantValues: { type: "authentication" },
       overrides: {
         MyIcon: {
           paths: [
@@ -532,9 +531,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "authentication" },
     },
     {
-      variantValues: { type: "data" },
       overrides: {
         MyIcon: {
           paths: [
@@ -547,9 +546,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "data" },
     },
     {
-      variantValues: { type: "home" },
       overrides: {
         MyIcon: {
           paths: [
@@ -562,9 +561,9 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "home" },
     },
     {
-      variantValues: { type: "group" },
       overrides: {
         MyIcon: {
           width: "26px",
@@ -580,6 +579,7 @@ export default function MyIcon(props) {
           ],
         },
       },
+      variantValues: { type: "group" },
     },
   ];
   const overrides = mergeVariantsAndOverrides(
