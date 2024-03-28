@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect } from "react";
 import AWS from "aws-sdk";
 
 import { Amplify } from "aws-amplify";
+import { Hub } from "aws-amplify/utils";
 import awsconfig from "./amplifyconfiguration.json";
 import { getCurrentUser } from "aws-amplify/auth";
 

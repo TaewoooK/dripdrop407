@@ -17,6 +17,10 @@
       },
       "storage": {
         "s3poststorageprod": {}
+      },
+      "function": {
+        "TestLambda": {},
+        "DispatchHubSignUpEvent": {}
       }
     }
   },

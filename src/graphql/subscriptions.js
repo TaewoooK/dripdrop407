@@ -1,6 +1,42 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const onCreatePrivacy = /* GraphQL */ `
+  subscription OnCreatePrivacy($filter: ModelSubscriptionPrivacyFilterInput) {
+    onCreatePrivacy(filter: $filter) {
+      id
+      Username
+      Private
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdatePrivacy = /* GraphQL */ `
+  subscription OnUpdatePrivacy($filter: ModelSubscriptionPrivacyFilterInput) {
+    onUpdatePrivacy(filter: $filter) {
+      id
+      Username
+      Private
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeletePrivacy = /* GraphQL */ `
+  subscription OnDeletePrivacy($filter: ModelSubscriptionPrivacyFilterInput) {
+    onDeletePrivacy(filter: $filter) {
+      id
+      Username
+      Private
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const onCreateFriendRequest = /* GraphQL */ `
   subscription OnCreateFriendRequest(
     $filter: ModelSubscriptionFriendRequestFilterInput

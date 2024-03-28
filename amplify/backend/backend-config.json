@@ -53,6 +53,18 @@
       "service": "Cognito"
     }
   },
+  "function": {
+    "DispatchHubSignUpEvent": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "TestLambda": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
   "storage": {
     "s3poststorageprod": {
       "dependsOn": [],
