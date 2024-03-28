@@ -282,7 +282,7 @@ const PostAndComment = () => {
         input: {
           postId: currPost.id,
           text: comment,
-          commentAuthorId: currUser.userId,
+          commentAuthorId: currUser.username,
         },
       },
     });
