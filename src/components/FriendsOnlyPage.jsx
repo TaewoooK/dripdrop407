@@ -20,6 +20,7 @@ import {
   createSavedPosts,
   deleteComment,
   updateSavedPosts,
+  updatePost,
 } from "../graphql/mutations";
 import {
   listPosts,
@@ -56,6 +57,9 @@ const FriendsOnlyPage = () => {
 
   let filter = {};
 
+  const date = new Date();
+  let oneWeekFromToday = new Date(date.getTime() - 7 * 24 * 60 * 60 * 1000);
+
   const fetchUserData = async () => {
     try {
       const currUserAttributes = await getCurrentUser();
@@ -63,6 +67,19 @@ const FriendsOnlyPage = () => {
     } catch (error) {
       console.error("Error fetching user data: ", error);
     }
+  };
+
+  const updatePostFunction = async (currPost) => {
+    const postData = await client.graphql({
+      query: updatePost,
+      variables: {
+        input: {
+          id: currPost.id,
+          actionedUsers: [currPost.actionedUsers, currUser.username],
+        },
+      },
+    });
+    console.log(postData);
   };
 
   // Find Friends using updated filter
@@ -92,6 +109,10 @@ const FriendsOnlyPage = () => {
         not: {
           hiddenPeople: { contains: currUser.username },
         },
+        not: {
+          actionedUsers: { contains: currUser.username },
+        },
+        createdAt: { between: [oneWeekFromToday.toJSON(), date.toJSON()] },
       };
 
       console.log(filter);
@@ -206,6 +227,8 @@ const FriendsOnlyPage = () => {
     console.log("Green button initial");
     console.log("Image index");
     console.log(currentImageIndex);
+
+    updatePostFunction(posts[currentImageIndex]);
     if ((currentImageIndex + 1) % images.length == 0) {
       //console.log("Green Calls fetch post")
       await fetchPost();
@@ -224,6 +247,7 @@ const FriendsOnlyPage = () => {
 
   const handleRedButtonClick = async () => {
     setShow(false);
+    updatePostFunction(posts[currentImageIndex]);
     if ((currentImageIndex + 1) % images.length == 0) {
       //console.log("Green Calls fetch post")
       await fetchPost();
