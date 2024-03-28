@@ -5,7 +5,8 @@
  **************************************************************************/
 
 import * as React from "react";
-import { ButtonProps, IconProps, TextProps, ViewProps } from "@aws-amplify/ui-react";
+import { LeaderboardProps } from "./Leaderboard";
+import { ViewProps } from "@aws-amplify/ui-react";
 export declare type EscapeHatchProps = {
     [elementHierarchy: string]: Record<string, unknown>;
 } | null;
@@ -17,15 +18,11 @@ export declare type Variant = {
     overrides: EscapeHatchProps;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
-export declare type FriendRequestOverridesProps = {
-    FriendRequest?: PrimitiveOverrideProps<ViewProps>;
-    "Profile Card"?: PrimitiveOverrideProps<ViewProps>;
-    "Profile Picture"?: PrimitiveOverrideProps<IconProps>;
-    Username?: PrimitiveOverrideProps<TextProps>;
-    Button49974147?: PrimitiveOverrideProps<ButtonProps>;
-    Button49975929?: PrimitiveOverrideProps<ButtonProps>;
+export declare type DDLeaderboardOverridesProps = {
+    DDLeaderboard?: PrimitiveOverrideProps<ViewProps>;
+    Leaderboard?: LeaderboardProps;
 } & EscapeHatchProps;
-export declare type FriendRequestProps = React.PropsWithChildren<Partial<ViewProps> & {
-    overrides?: FriendRequestOverridesProps | undefined | null;
+export declare type DDLeaderboardProps = React.PropsWithChildren<Partial<ViewProps> & {
+    overrides?: DDLeaderboardOverridesProps | undefined | null;
 }>;
-export default function FriendRequest(props: FriendRequestProps): React.ReactElement;
+export default function DDLeaderboard(props: DDLeaderboardProps): React.ReactElement;

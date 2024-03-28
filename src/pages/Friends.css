@@ -10,23 +10,9 @@
     color: white;
 }
 
-/* Styling for User Search Field */
-.Friends .UserSearch {
-    width: 350px;   
-    text-align: left;
-}
-
-.Friends .RequestSearch {
-    width: 450px;   
-    text-align: left;
-}
-
-.Friends .FriendSearch {
+.Friends .amplify-input {
     width: 450px;
     text-align: left;
-}
-
-.Friends .amplify-input {
     color: white;
 }
 
