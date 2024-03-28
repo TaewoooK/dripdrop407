@@ -1,9 +1,7 @@
 /* eslint-disable */
 import * as React from "react";
-import { useState, useEffect, useContext } from "react";
-import { getOverrideProps } from "../ui-components/utils";
-import MyIcon from "../ui-components/MyIcon";
-import { Button, Flex, Image, Text, TextField } from "@aws-amplify/ui-react";
+import { useState, useContext } from "react";
+import { Button, Flex, Image, Text, TextField, CheckboxField } from "@aws-amplify/ui-react";
 import { updateUserAttribute, deleteUser } from "aws-amplify/auth";
 import { generateClient } from "aws-amplify/api";
 import { UserContext } from './../UserContext';
@@ -239,6 +237,10 @@ export default function EditProfileNew(props) {
     }
   }
 
+  const handlePrivacyChange = (event) => {
+
+  }
+
   return (
     <Flex
       gap="16px"
@@ -275,20 +277,6 @@ export default function EditProfileNew(props) {
           position="relative"
           padding="0px 0px 0px 0px"
         >
-          {/* <MyIcon
-            width="24px"
-            height="24px"
-            display="block"
-            gap="unset"
-            alignItems="unset"
-            justifyContent="unset"
-            overflow="hidden"
-            shrink="0"
-            position="relative"
-            padding="0px 0px 0px 0px"
-            type="close"
-            {...getOverrideProps(overrides, "MyIcon")}
-          ></MyIcon> */}
           <Text
             fontFamily="Inter"
             fontSize="16px"
@@ -335,27 +323,6 @@ export default function EditProfileNew(props) {
             padding="0px 0px 0px 0px"
             objectFit="cover"
           ></Image>
-          {/*<Text
-            fontFamily="Inter"
-            fontSize="16px"
-            fontWeight="400"
-            color="rgba(13,26,38,1)"
-            lineHeight="22px"
-            textAlign="left"
-            display="block"
-            direction="column"
-            justifyContent="unset"
-            textDecoration="underline"
-            width="unset"
-            height="unset"
-            gap="unset"
-            alignItems="unset"
-            shrink="0"
-            position="relative"
-            padding="0px 0px 0px 0px"
-            whiteSpace="pre-wrap"
-            children="Upload New Image"
-        ></Text>*/}
         </Flex>
         <Flex
           gap="16px"
@@ -434,6 +401,7 @@ export default function EditProfileNew(props) {
             }
           ></TextField>
         </Flex>
+        <CheckboxField label="Private" name="private" value="yes" onChange={(e) => console.log(e.currentTarget.checked)} />
 
         <div
           style={{ display: "flex", justifyContent: "center", gap: "370px" }}
