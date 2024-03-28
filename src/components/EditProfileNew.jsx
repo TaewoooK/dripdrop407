@@ -32,8 +32,10 @@ export default function EditProfileNew(props) {
 
   async function handleDeleteAccount() {
     try {
-      await handleDeletePosts()
-      await handleDeleteComments()
+      // await handleDeletePosts()
+      // await handleDeleteComments()
+      console.log("hi")
+      handleDeleteFriends()
 
       //await deleteUser();
     } catch (error) {
@@ -118,7 +120,17 @@ export default function EditProfileNew(props) {
   }
 
   async function handleDeleteFriends() {
-
+    console.log("called")
+    const friendFetchVariables = {
+      filter: {
+        or: [{ Username: { eq: myUser.username} }, { FriendUsername: { eq: myUser.username} }]
+      }
+    };
+    let userFriends = await client.graphql({
+      query: listFriends,
+      variables: friendFetchVariables
+    });
+    console.log(userFriends)
   }
 
   async function handleClick() {
