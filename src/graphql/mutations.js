@@ -1,6 +1,51 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const createPrivacy = /* GraphQL */ `
+  mutation CreatePrivacy(
+    $input: CreatePrivacyInput!
+    $condition: ModelPrivacyConditionInput
+  ) {
+    createPrivacy(input: $input, condition: $condition) {
+      id
+      Username
+      Private
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updatePrivacy = /* GraphQL */ `
+  mutation UpdatePrivacy(
+    $input: UpdatePrivacyInput!
+    $condition: ModelPrivacyConditionInput
+  ) {
+    updatePrivacy(input: $input, condition: $condition) {
+      id
+      Username
+      Private
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deletePrivacy = /* GraphQL */ `
+  mutation DeletePrivacy(
+    $input: DeletePrivacyInput!
+    $condition: ModelPrivacyConditionInput
+  ) {
+    deletePrivacy(input: $input, condition: $condition) {
+      id
+      Username
+      Private
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const createFriendRequest = /* GraphQL */ `
   mutation CreateFriendRequest(
     $input: CreateFriendRequestInput!
