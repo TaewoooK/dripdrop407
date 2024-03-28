@@ -18,42 +18,6 @@ const client = generateClient();
 export default function Friend({ key, friend, handleDeleteFriend }) {
   const { allUsers, myUser } = useContext(UserContext);
 
-  // const handleRemoveFriend = async () => {
-  //   console.log("Clicked remove friend: ", friend.FriendUsername);
-  //   // Remove Friend record for current user
-  //   try {
-  //     await client.graphql({
-  //       query: deleteFriend.replaceAll("__typename", ""),
-  //       variables: {
-  //         input: {
-  //           id: friend.id,
-  //         },
-  //       },
-  //     });
-  //   } catch (error) {
-  //     console.log("Removing Friend record for current user failed: ", error);
-  //   }
-
-  //   console.log("friend: ", friend);
-  //   console.log("otherFriend: ", otherFriend);
-
-  //   // Remove Friend record for ex-friend user
-  //   try {
-  //     await client.graphql({
-  //       query: deleteFriend.replaceAll("__typename", ""),
-  //       variables: {
-  //         input: {
-  //           id: otherFriend.id,
-  //         },
-  //       },
-  //     });
-  //   } catch (error) {
-  //     console.log("Removing Friend record for ex-friend user failed: ", error);
-  //   }
-
-  //   onClickEvent();
-  // };
-
   return (
     <View
       width="383px"
@@ -141,7 +105,7 @@ export default function Friend({ key, friend, handleDeleteFriend }) {
         variation="destructive"
         children="Remove"
         onClick={() => {
-          handleDeleteFriend(friend);
+          handleDeleteFriend(friend.FriendUsername);
         }}
       ></Button>
     </View>

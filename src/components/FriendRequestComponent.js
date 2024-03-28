@@ -15,47 +15,13 @@ import { Button, Icon, Text, View } from "@aws-amplify/ui-react";
 
 const client = generateClient();
 
-export default function FriendRequest({ key, friendRequest, handleCreateFriend, handleDeleteFriendRequest }) {
+export default function FriendRequest({
+  key,
+  friendRequest,
+  handleCreateFriend,
+  handleDeleteFriendRequest,
+}) {
   const { allUsers, myUser } = useContext(UserContext);
-
-//   const handleDeleteFriendRequest = async () => {
-//     await client.graphql({
-//       query: deleteFriendRequest.replaceAll("__typename", ""),
-//       variables: {
-//         input: {
-//           id: friendRequest.id,
-//         },
-//       },
-//     });
-
-//     onClickEvent();
-//   };
-
-//   const handleAddFriend = async () => {
-//     // Insert friend record for current user
-//     await client.graphql({
-//       query: createFriend.replaceAll("__typename", ""),
-//       variables: {
-//         input: {
-//           Username: myUser.username,
-//           FriendUsername: friendRequest.SenderUsername,
-//         },
-//       },
-//     });
-
-//     // Insert friend record for friend user
-//     await client.graphql({
-//       query: createFriend.replaceAll("__typename", ""),
-//       variables: {
-//         input: {
-//           Username: friendRequest.SenderUsername,
-//           FriendUsername: myUser.username,
-//         },
-//       },
-//     });
-
-//     handleDeleteFriendRequest();
-//   };
 
   return (
     <View
@@ -146,7 +112,7 @@ export default function FriendRequest({ key, friendRequest, handleCreateFriend, 
         variation="destructive"
         children="Deny"
         onClick={() => {
-          handleDeleteFriendRequest(friendRequest.id);
+          handleDeleteFriendRequest(friendRequest.SenderUsername);
         }}
       ></Button>
       <Button
@@ -160,7 +126,7 @@ export default function FriendRequest({ key, friendRequest, handleCreateFriend, 
         variation="primary"
         children="Accept"
         onClick={() => {
-          handleCreateFriend(friendRequest);
+          handleCreateFriend(friendRequest.SenderUsername);
         }}
       ></Button>
     </View>

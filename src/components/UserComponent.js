@@ -9,88 +9,115 @@ import React, { useState, useContext } from "react";
 import { UserContext } from "../UserContext";
 
 import { generateClient } from "aws-amplify/api";
-import { createFriend, deleteFriend, deleteFriendRequest } from "../graphql/mutations";
+import {
+  createFriend,
+  deleteFriend,
+  deleteFriendRequest,
+} from "../graphql/mutations";
 import { Button, Icon, Text, View } from "@aws-amplify/ui-react";
 
 const client = generateClient();
 
-export default function UserComponent(props) {
-  const { key, user, onClickEvent, type } = props;
+export default function UserComponent({
+  key,
+  user,
+  type,
+  handleCreateFriendRequest,
+  handleDeleteFriendRequest,
+  handleCreateFriend,
+  handleDeleteFriend,
+}) {
   const { allUsers, myUser } = useContext(UserContext);
 
-    const handleDeleteFriendRequest = async () => {
-      await client.graphql({
-        query: deleteFriendRequest.replaceAll("__typename", ""),
-        variables: {
-          input: {
-            id: friendRequest.id,
-          },
-        },
-      });
-
-      onClickEvent();
-    };
-
-    const handleAddFriend = async () => {
-      // Insert friend record for current user
-      await client.graphql({
-        query: createFriend.replaceAll("__typename", ""),
-        variables: {
-          input: {
-            Username: myUser.username,
-            FriendUsername: friendRequest.SenderUsername,
-          },
-        },
-      });
-
-      // Insert friend record for friend user
-      await client.graphql({
-        query: createFriend.replaceAll("__typename", ""),
-        variables: {
-          input: {
-            Username: friendRequest.SenderUsername,
-            FriendUsername: myUser.username,
-          },
-        },
-      });
-
-      handleDeleteFriendRequest();
-    };
-
-  const handleRemoveFriend = async () => {
-    console.log("Clicked remove friend: ", friend.FriendUsername);
-    // Remove Friend record for current user
-    try {
-      await client.graphql({
-        query: deleteFriend.replaceAll("__typename", ""),
-        variables: {
-          input: {
-            id: friend.id,
-          },
-        },
-      });
-    } catch (error) {
-      console.log("Removing Friend record for current user failed: ", error);
+  const button = () => {
+    switch (type) {
+      case "stranger":
+        return (
+          <Button
+            width="71px"
+            height="33px"
+            position="absolute"
+            top="25%"
+            bottom="29.17%"
+            left="77.55%"
+            right="3.92%"
+            size="small"
+            isDisabled={false}
+            variation="primary"
+            children="Send"
+          ></Button>
+        );
+      case "requestSent":
+        return (
+          <Button
+            width="71px"
+            height="33px"
+            position="absolute"
+            top="25%"
+            bottom="29.17%"
+            left="78.46%"
+            right="3%"
+            size="small"
+            isDisabled={false}
+            variation="destructive"
+            children="Rescind"
+          ></Button>
+        );
+      case "requestReceived":
+        return (
+          <>
+            <Button
+              width="unset"
+              height="unset"
+              position="absolute"
+              top="25%"
+              bottom="29.17%"
+              left="79.9%"
+              right="4.44%"
+              size="small"
+              isDisabled={false}
+              variation="destructive"
+              children="Deny"
+              onClick={() => {
+                handleDeleteFriendRequest(user.Username);
+              }}
+            ></Button>
+            <Button
+              width="unset"
+              height="unset"
+              position="absolute"
+              top="calc(50% - 16.5px - 1.5px)"
+              left="calc(50% - 37px - -65.5px)"
+              size="small"
+              isDisabled={false}
+              variation="primary"
+              children="Accept"
+              onClick={() => {
+                handleCreateFriend(friendRequest);
+              }}
+            ></Button>
+          </>
+        );
+      case "friend":
+        return (
+          <Button
+            width="unset"
+            height="unset"
+            position="absolute"
+            top="calc(50% - 16.5px - 0.5px)"
+            left="calc(50% - 39.5px - -134px)"
+            size="small"
+            isDisabled={false}
+            variation="destructive"
+            children="Remove"
+            onClick={() => {
+              handleDeleteFriend(friend);
+            }}
+          ></Button>
+        );
+      default:
+        return <></>;
     }
-
-    console.log("friend: ", friend);
-    console.log("otherFriend: ", otherFriend);
-
-    // Remove Friend record for ex-friend user
-    try {
-      await client.graphql({
-        query: deleteFriend.replaceAll("__typename", ""),
-        variables: {
-          input: {
-            id: otherFriend.id,
-          },
-        },
-      });
-    } catch (error) {
-      console.log("Removing Friend record for ex-friend user failed: ", error);
-    }
-
-    onClickEvent();
   };
 
   return (
