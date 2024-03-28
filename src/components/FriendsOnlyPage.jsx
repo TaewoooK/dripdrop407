@@ -330,79 +330,90 @@ const FriendsOnlyPage = () => {
   };
 
   const getSavedPosts = async () => {
-    try {
-      console.log("fetching saved posts");
-      const result = await client.graphql({
-        query: listSavedPosts,
-        variables: { filter: { username: { eq: currUser.username } } },
-      });
-      if (result.data.listSavedPosts.items.length > 0) {
-        setSavedPosts(result.data.listSavedPosts.items[0].postIds);
-        console.log(
-          "saved posts:",
-          result.data.listSavedPosts.items[0].postIds
-        );
+    if (currUser != null) {
+      try {
+        console.log("fetching saved posts");
+        const result = await client.graphql({
+          query: listSavedPosts,
+          variables: { filter: { username: { eq: currUser.username } } },
+        });
+        if (result.data.listSavedPosts.items.length > 0) {
+          setSavedPosts(result.data.listSavedPosts.items[0]);
+          console.log(
+            "saved posts:",
+            result.data.listSavedPosts.items[0].postIds
+          );
+          // return result.data.listSavedPosts.items; // Return the data from the GraphQL response
+        } else {
+          const createdSavedPosts = await client.graphql({
+            query: createSavedPosts,
+            variables: {
+              input: { username: currUser.username, postIds: [] },
+            },
+          });
+          console.log("created saved posts");
+          setSavedPosts(createdSavedPosts.data.createSavedPosts[0]);
+          // return createdSavedPosts.data.listSavedPosts.items; // Return the data from the GraphQL response
+        }
+      } catch (error) {
+        console.error("Error fetching saved posts:", error);
+        return null; // Return null in case of error
       }
-      return result.data.listSavedPosts.items; // Return the data from the GraphQL response
-    } catch (error) {
-      console.error("Error fetching saved posts:", error);
-      return null; // Return null in case of error
     }
   };
 
   const toggleSavePost = async () => {
     setShowActionCenter(false);
     try {
-      const savedPostsList = (await getSavedPosts())[0];
-      if (savedPostsList.length == 0) {
-        console.log("no saved posts data");
-        const currPost = posts[currentImageIndex];
-        const createdSavedPosts = await client.graphql({
-          query: createSavedPosts,
-          variables: {
-            input: { username: currUser.username, postIds: [currPost.id] },
-          },
+      // const savedPostsList = (await getSavedPosts())[0];
+      // if (savedPostsList.length === 0) {
+      //   console.log("no saved posts data");
+      //   const currPost = posts[currentImageIndex];
+      //   const createdSavedPosts = await client.graphql({
+      //     query: createSavedPosts,
+      //     variables: {
+      //       input: { username: currUser.username, postIds: [currPost.id] },
+      //     },
+      //   });
+      //   console.log("created saved posts");
+      //   toast.success("Post saved");
+      //   setSavedPosts(createdSavedPosts.data.updateSavedPosts.postIds);
+      // } else {
+      if (savedPosts.postIds.includes(posts[currentImageIndex].id)) {
+        console.log("unsaving post");
+        const input = {
+          id: savedPosts.id,
+          postIds: savedPosts.postIds.filter(
+            (id) => id !== posts[currentImageIndex].id
+          ),
+        };
+        const condition = { username: { eq: currUser.username } };
+        const updatedSavedPosts = await client.graphql({
+          query: updateSavedPosts,
+          variables: { input, condition },
         });
-        console.log("created saved posts");
-        toast.success("Post saved");
-        setSavedPosts(createdSavedPosts.data.updateSavedPosts.postIds);
+        setSavedPosts(updatedSavedPosts.data.updateSavedPosts);
+        toast.success("Post unsaved");
       } else {
-        if (savedPostsList.postIds.includes(posts[currentImageIndex].id)) {
-          console.log("unsaving post");
-          const input = {
-            id: savedPostsList.id,
-            postIds: savedPostsList.postIds.filter(
-              (id) => id != posts[currentImageIndex].id
-            ),
-          };
-          const condition = { username: { eq: currUser.username } };
-          const updatedSavedPosts = await client.graphql({
-            query: updateSavedPosts,
-            variables: { input, condition },
-          });
-          setSavedPosts(updatedSavedPosts.data.updateSavedPosts.postIds);
-          toast.success("Post unsaved");
-        } else {
-          console.log("post not saved");
-          const input = {
-            id: savedPostsList.id,
-            postIds: [...savedPostsList.postIds, posts[currentImageIndex].id],
-          };
-          const condition = { username: { eq: currUser.username } };
-          const updatedSavedPosts = await client.graphql({
-            query: updateSavedPosts,
-            variables: { input, condition },
-          });
-          setSavedPosts(updatedSavedPosts.data.updateSavedPosts.postIds);
-          toast.success("Post saved");
-        }
+        console.log("post not saved");
+        const input = {
+          id: savedPosts.id,
+          postIds: [...savedPosts.postIds, posts[currentImageIndex].id],
+        };
+        const condition = { username: { eq: currUser.username } };
+        const updatedSavedPosts = await client.graphql({
+          query: updateSavedPosts,
+          variables: { input, condition },
+        });
+        setSavedPosts(updatedSavedPosts.data.updateSavedPosts);
+        toast.success("Post saved");
       }
+      // }
     } catch (e) {
       console.log("error:", e);
       toast.error("error saving/unsaving post");
     }
   };
-
   // const [isCommentDeleted, setIsCommentDeleted] = useState(false);
 
   // Handler function to toggle the comment deletion state
@@ -525,7 +536,7 @@ const FriendsOnlyPage = () => {
             //src="https://cdn.discordapp.com/attachments/1120152118272213053/1201614916788965536/IMG_5675.jpg?ex=65dceb19&is=65ca7619&hm=277e5088a148d22bbb7935216d52437d827a889d0d6e4e7dded8eeb7a4af1336&"
             //src="https://images.unsplash.com/photo-1707879487614-72b421e4393f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHx8"
 
-            <div>Loading...</div>
+            <div>No More Posts, Check back later!</div>
           )}
 
           <MyIcon
