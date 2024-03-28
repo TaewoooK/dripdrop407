@@ -197,6 +197,7 @@ export default function PostCreateForm(props) {
     enable_comments: false,
     postImageKey: "",
     hiddenPeople: [],
+    actionedUsers: [],
   };
   const [owner, setOwner] = React.useState(initialValues.owner);
   const [description, setDescription] = React.useState(
@@ -215,6 +216,9 @@ export default function PostCreateForm(props) {
   const [hiddenPeople, setHiddenPeople] = React.useState(
     initialValues.hiddenPeople
   );
+  const [actionedUsers, setActionedUsers] = React.useState(
+    initialValues.actionedUsers
+  );
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setOwner(initialValues.owner);
@@ -225,11 +229,16 @@ export default function PostCreateForm(props) {
     setPostImageKey(initialValues.postImageKey);
     setHiddenPeople(initialValues.hiddenPeople);
     setCurrentHiddenPeopleValue("");
+    setActionedUsers(initialValues.actionedUsers);
+    setCurrentActionedUsersValue("");
     setErrors({});
   };
   const [currentHiddenPeopleValue, setCurrentHiddenPeopleValue] =
     React.useState("");
   const hiddenPeopleRef = React.createRef();
+  const [currentActionedUsersValue, setCurrentActionedUsersValue] =
+    React.useState("");
+  const actionedUsersRef = React.createRef();
   const validations = {
     owner: [{ type: "Required" }],
     description: [{ type: "Required" }],
@@ -238,6 +247,7 @@ export default function PostCreateForm(props) {
     enable_comments: [],
     postImageKey: [],
     hiddenPeople: [],
+    actionedUsers: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -272,6 +282,7 @@ export default function PostCreateForm(props) {
           enable_comments,
           postImageKey,
           hiddenPeople,
+          actionedUsers,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -341,6 +352,7 @@ export default function PostCreateForm(props) {
               enable_comments,
               postImageKey,
               hiddenPeople,
+              actionedUsers,
             };
             const result = onChange(modelFields);
             value = result?.owner ?? value;
@@ -371,6 +383,7 @@ export default function PostCreateForm(props) {
               enable_comments,
               postImageKey,
               hiddenPeople,
+              actionedUsers,
             };
             const result = onChange(modelFields);
             value = result?.description ?? value;
@@ -405,6 +418,7 @@ export default function PostCreateForm(props) {
               enable_comments,
               postImageKey,
               hiddenPeople,
+              actionedUsers,
             };
             const result = onChange(modelFields);
             value = result?.drip_points ?? value;
@@ -435,6 +449,7 @@ export default function PostCreateForm(props) {
               enable_comments,
               postImageKey,
               hiddenPeople,
+              actionedUsers,
             };
             const result = onChange(modelFields);
             value = result?.createdAt ?? value;
@@ -465,6 +480,7 @@ export default function PostCreateForm(props) {
               enable_comments: value,
               postImageKey,
               hiddenPeople,
+              actionedUsers,
             };
             const result = onChange(modelFields);
             value = result?.enable_comments ?? value;
@@ -495,6 +511,7 @@ export default function PostCreateForm(props) {
               enable_comments,
               postImageKey: value,
               hiddenPeople,
+              actionedUsers,
             };
             const result = onChange(modelFields);
             value = result?.postImageKey ?? value;
@@ -521,6 +538,7 @@ export default function PostCreateForm(props) {
               enable_comments,
               postImageKey,
               hiddenPeople: values,
+              actionedUsers,
             };
             const result = onChange(modelFields);
             values = result?.hiddenPeople ?? values;
@@ -560,6 +578,60 @@ export default function PostCreateForm(props) {
           ref={hiddenPeopleRef}
           labelHidden={true}
           {...getOverrideProps(overrides, "hiddenPeople")}
+        ></TextField>
+      </ArrayField>
+      <ArrayField
+        onChange={async (items) => {
+          let values = items;
+          if (onChange) {
+            const modelFields = {
+              owner,
+              description,
+              drip_points,
+              createdAt,
+              enable_comments,
+              postImageKey,
+              hiddenPeople,
+              actionedUsers: values,
+            };
+            const result = onChange(modelFields);
+            values = result?.actionedUsers ?? values;
+          }
+          setActionedUsers(values);
+          setCurrentActionedUsersValue("");
+        }}
+        currentFieldValue={currentActionedUsersValue}
+        label={"Actioned users"}
+        items={actionedUsers}
+        hasError={errors?.actionedUsers?.hasError}
+        runValidationTasks={async () =>
+          await runValidationTasks("actionedUsers", currentActionedUsersValue)
+        }
+        errorMessage={errors?.actionedUsers?.errorMessage}
+        setFieldValue={setCurrentActionedUsersValue}
+        inputFieldRef={actionedUsersRef}
+        defaultFieldValue={""}
+      >
+        <TextField
+          label="Actioned users"
+          isRequired={false}
+          isReadOnly={false}
+          value={currentActionedUsersValue}
+          onChange={(e) => {
+            let { value } = e.target;
+            if (errors.actionedUsers?.hasError) {
+              runValidationTasks("actionedUsers", value);
+            }
+            setCurrentActionedUsersValue(value);
+          }}
+          onBlur={() =>
+            runValidationTasks("actionedUsers", currentActionedUsersValue)
+          }
+          errorMessage={errors.actionedUsers?.errorMessage}
+          hasError={errors.actionedUsers?.hasError}
+          ref={actionedUsersRef}
+          labelHidden={true}
+          {...getOverrideProps(overrides, "actionedUsers")}
         ></TextField>
       </ArrayField>
       <Flex

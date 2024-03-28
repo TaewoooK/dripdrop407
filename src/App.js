@@ -296,7 +296,8 @@ export default function App() {
       {({ signOut, user }) => (
         <UserProvider>
           <View className="App">
-            <div>
+            <div 
+            style={{ backgroundColor: 'rgb(24, 24, 24)'}}>
               <UserNotificationSubscriber user={user} signOut={signOut} notifications={notifications} setNotifications={setNotifications}/>
               <Toaster position="top-right" reverseOrder={false} />
               <Grid
