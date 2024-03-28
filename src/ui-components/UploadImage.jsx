@@ -93,6 +93,7 @@ const UploadImage = () => {
             enable_comments: commentEnabled,
             postImageKey: "",
             hiddenPeople: hiddenSelect,
+            actionedUsers: [],
           },
         },
       });

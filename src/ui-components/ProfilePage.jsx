@@ -149,7 +149,9 @@ const ProfilePage = () => {
         console.log(currUserAttributes.signInDetails);
         setUser(userAttributes);
         setCurrUser(currUserAttributes);
-        setVariables({ filter: { owner: { eq: userAttributes.email } } });
+        setVariables({
+          filter: { owner: { eq: currUserAttributes.username } },
+        });
       } catch (error) {
         console.error("Error fetching user data: ", error);
       } finally {
@@ -221,6 +223,10 @@ const ProfilePage = () => {
     setShowActionCenter(false);
   };
 
+  const onCloseHidden = () => {
+    setShowActionCenter(false);
+  };
+
   return (
     <div
       style={{
@@ -243,7 +249,9 @@ const ProfilePage = () => {
         <div style={styles.profile}>
           <Toaster position="top-right" reverseOrder={false} />
 
-          <h1 style={styles.heading}>Welcome <span style={{color: "white"}}>{currUser.username}!</span></h1>
+          <h1 style={styles.heading}>
+            Welcome <span style={{ color: "white" }}>{currUser.username}!</span>
+          </h1>
           <Button style={styles.editButton} onClick={openModal}>
             Edit Profile
           </Button>
@@ -252,16 +260,27 @@ const ProfilePage = () => {
             {showingSavedPosts ? "Show Posts" : "Saved Posts"}
           </Button>
           <h2 style={styles.info}>
-            Preferred Username: <span style={{color: "white"}}>{user.preferred_username}</span>
-          </h2>
-          <h2 style={styles.info}>Email: <span style={{color: "white"}}>{user.email}</span></h2>
-          <h2 style={styles.info}>
-            Email Verified: <span style={{color: "white"}}>{user.email_verified ? "Yes" : "No"}</span>
+            Preferred Username:{" "}
+            <span style={{ color: "white" }}>{user.preferred_username}</span>
           </h2>
           <h2 style={styles.info}>
-            Name: <span style={{color: "white"}}>{user.name} {user.family_name}</span>
+            Email: <span style={{ color: "white" }}>{user.email}</span>
           </h2>
-          <h2 style={styles.info}>Gender: <span style={{color: "white"}}>{user.gender}</span></h2>
+          <h2 style={styles.info}>
+            Email Verified:{" "}
+            <span style={{ color: "white" }}>
+              {user.email_verified ? "Yes" : "No"}
+            </span>
+          </h2>
+          <h2 style={styles.info}>
+            Name:{" "}
+            <span style={{ color: "white" }}>
+              {user.name} {user.family_name}
+            </span>
+          </h2>
+          <h2 style={styles.info}>
+            Gender: <span style={{ color: "white" }}>{user.gender}</span>
+          </h2>
         </div>
       ) : (
         <p style={styles.error}>
@@ -269,13 +288,14 @@ const ProfilePage = () => {
         </p>
       )}
       {showActionCenter && (
-        <div className="overlay" onClick={toggleActionCenter}>
-          <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
+        <div style={modalContainerStyles}>
+          <div style={modalStyles}>
             <HidePeople
               selectedFriends={hiddenSelect}
               setSelectedFriends={setHiddenSelect}
             />
             <button onClick={() => onSave()}>Save</button>
+            <button onClick={() => onCloseHidden()}>Close</button>
           </div>
         </div>
       )}
@@ -326,31 +346,31 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     height: "100vh",
-    color: "white"
+    color: "white",
   },
   profile: {
     textAlign: "center",
-    color: "white"
+    color: "white",
   },
   heading: {
     fontSize: "24px",
     fontWeight: "bold",
     marginBottom: "20px",
     textAlign: "center",
-    color: "#047d95"
+    color: "#047d95",
   },
   info: {
     fontSize: "18px",
     marginBottom: "10px",
     textAlign: "left",
-    color: "#047d95"
+    color: "#047d95",
   },
   error: {
     color: "red",
   },
   editButton: {
     marginBottom: "20px",
-    color: "white"
+    color: "white",
   },
 };
 
