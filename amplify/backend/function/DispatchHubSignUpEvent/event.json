@@ -1,0 +1,16 @@
+{
+  "version": "1",
+  "region": "us-east-2",
+  "userPoolId": "us-east-2_rrVBwwVEt",
+  "userName": "sampleusername",
+  "callerContext": {},
+  "triggerSource": "PostConfirmation_ConfirmSignUp",
+  "request": {
+    "userAttributes": {
+      "sub": "432u842394802934",
+      "email_verified": "true",
+      "cognito:user_status": "CONFIRMED"
+    }
+  },
+  "response": {}
+}
