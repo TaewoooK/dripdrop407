@@ -32,12 +32,11 @@ export default function EditProfileNew(props) {
 
   async function handleDeleteAccount() {
     try {
-      // await handleDeletePosts()
-      // await handleDeleteComments()
-      console.log("hi")
-      handleDeleteFriends()
+      await handleDeletePosts()
+      await handleDeleteComments()
+      await handleDeleteFriends()
 
-      //await deleteUser();
+      await deleteUser();
     } catch (error) {
       console.log(error);
     }
@@ -120,17 +119,37 @@ export default function EditProfileNew(props) {
   }
 
   async function handleDeleteFriends() {
-    console.log("called")
     const friendFetchVariables = {
       filter: {
         or: [{ Username: { eq: myUser.username} }, { FriendUsername: { eq: myUser.username} }]
-      }
+      },
+      limit: 10
     };
     let userFriends = await client.graphql({
       query: listFriends,
       variables: friendFetchVariables
     });
-    console.log(userFriends)
+    while (userFriends.data.listFriends.items.length > 0) {
+        let userFriendsArr = userFriends.data.listFriends.items
+        for (let i = 0; i < userFriendsArr.length; i++) {
+          const friend = userFriendsArr[i]
+          const deleteFriendInput = {
+            input: {
+              id: friend.id
+            }
+          }
+          console.log(i)
+          console.log(deleteFriendInput)
+          const deletedFriend = await client.graphql({
+            query: deleteFriend,
+            variables: deleteFriendInput
+          })
+        }
+        userFriends = await client.graphql({
+          query: listFriends,
+          variables: friendFetchVariables
+        });
+    }
   }
 
   async function handleClick() {
