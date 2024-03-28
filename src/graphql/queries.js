@@ -1,6 +1,38 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getPrivacy = /* GraphQL */ `
+  query GetPrivacy($id: ID!) {
+    getPrivacy(id: $id) {
+      id
+      Username
+      Private
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listPrivacies = /* GraphQL */ `
+  query ListPrivacies(
+    $filter: ModelPrivacyFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listPrivacies(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        Username
+        Private
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
 export const getFriendRequest = /* GraphQL */ `
   query GetFriendRequest($id: ID!) {
     getFriendRequest(id: $id) {
