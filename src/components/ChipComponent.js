@@ -5,7 +5,32 @@
  **************************************************************************/
 
 /* eslint-disable */
+import React, { useState, useContext } from "react";
+import { UserContext } from "./../UserContext";
+
 import { Button, Icon, Text, View } from "@aws-amplify/ui-react";
+
+import UserProfileModal from "./UserProfileModal";
+
+const modalContainerStyles = {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent black background
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  zIndex: 9999, // higher z-index to ensure it's above other content
+};
+
+const modalStyles = {
+  backgroundColor: "white",
+  padding: "20px",
+  borderRadius: "8px",
+  boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+};
 
 export default function ChipComponent({
   key,
@@ -17,6 +42,29 @@ export default function ChipComponent({
   handleClickDeny,
   handleClickRemove,
 }) {
+  const [openUserProfileModal, setOpenUserProfileModal] = useState(false);
+  const { allUsers } = useContext(UserContext);
+  const user = allUsers.find((user) => user.Username === username);
+
+  const handleOpenUserProfileModal = () => {
+    setOpenUserProfileModal(true);
+  };
+
+  const handleCloseUserProfileModal = () => {
+    setOpenUserProfileModal(false);
+  };
+
+  const Modal = ({ onClose }) => {
+    return (
+      <div style={modalContainerStyles}>
+        <div style={modalStyles}>
+          <UserProfileModal user={user} />
+          <button onClick={onClose}>Close</button>
+        </div>
+      </div>
+    );
+  };
+
   let buttons = () => {
     switch (type) {
       case "stranger":
@@ -125,6 +173,11 @@ export default function ChipComponent({
       position="relative"
       padding="0px 0px 0px 0px"
     >
+      <div backgroundColor="rgba(0,0,0,0.5)">
+        {openUserProfileModal && (
+          <Modal onClose={handleCloseUserProfileModal} />
+        )}
+      </div>
       <View
         width="383px"
         height="72px"
@@ -189,6 +242,9 @@ export default function ChipComponent({
         padding="0px 0px 0px 0px"
         whiteSpace="pre-wrap"
         children={username}
+        onClick={() => {
+          handleOpenUserProfileModal();
+        }}
       ></Text>
       {buttons()}
     </View>
