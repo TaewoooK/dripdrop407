@@ -7,8 +7,8 @@ import { Button, Flex, Image, Text, TextField } from "@aws-amplify/ui-react";
 import { updateUserAttribute, deleteUser } from "aws-amplify/auth";
 import { generateClient } from "aws-amplify/api";
 import { UserContext } from './../UserContext';
-import { listPosts, listComments, listFriends } from "../graphql/queries";
-import { deletePost, deleteComment, deleteFriend } from "../graphql/mutations";
+import { listPosts, listComments, listFriends, listFriendRequests } from "../graphql/queries";
+import { deletePost, deleteComment, deleteFriend, deleteFriendRequest } from "../graphql/mutations";
 import { remove } from "aws-amplify/storage"
 
 const client = generateClient();
@@ -32,9 +32,10 @@ export default function EditProfileNew(props) {
 
   async function handleDeleteAccount() {
     try {
-      await handleDeletePosts()
-      await handleDeleteComments()
-      await handleDeleteFriends()
+      handleDeletePosts()
+      handleDeleteComments()
+      handleDeleteFriends()
+      handleDeleteFriendRequests()
 
       await deleteUser();
     } catch (error) {
@@ -148,6 +149,40 @@ export default function EditProfileNew(props) {
         userFriends = await client.graphql({
           query: listFriends,
           variables: friendFetchVariables
+        });
+    }
+  }
+
+  async function handleDeleteFriendRequests() {
+    const friendReqFetchVariables = {
+      filter: {
+        or: [{ Username: { eq: myUser.username} }, { SenderUsername: { eq: myUser.username} }]
+      },
+      limit: 10
+    };
+    let userFriendReqs = await client.graphql({
+      query: listFriendRequests,
+      variables: friendReqFetchVariables
+    });
+    while (userFriendReqs.data.listFriendRequests.items.length > 0) {
+        let userFriendReqArr = userFriendReqs.data.listFriendRequests.items
+        for (let i = 0; i < userFriendReqArr.length; i++) {
+          const friendReq = userFriendReqArr[i]
+          const deleteFriendReqInput = {
+            input: {
+              id: friendReq.id
+            }
+          }
+          console.log(i)
+          console.log(deleteFriendReqInput)
+          const deletedFriend = await client.graphql({
+            query: deleteFriendRequest,
+            variables: deleteFriendReqInput
+          })
+        }
+        userFriendReqs = await client.graphql({
+          query: listFriendRequests,
+          variables: friendReqFetchVariables
         });
     }
   }
