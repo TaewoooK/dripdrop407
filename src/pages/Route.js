@@ -49,15 +49,15 @@ const Route = () => {
           margin="10px"
           items={[
             {
+              label: "Friends Feed",
+              value: "2",
+              content: <FriendsOnly />,
+            },
+            {
               label: "Global Feed",
               value: "1",
               content: <Home />,
               isDisabled: getDisabledHomePrivate(),
-            },
-            {
-              label: "Friends Feed",
-              value: "2",
-              content: <FriendsOnly />,
             },
           ]}
         />
