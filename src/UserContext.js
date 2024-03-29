@@ -110,36 +110,6 @@ export const UserProvider = ({ children }) => {
     console.log("usernameToPrivacy:", tempUsernameToPrivacy);
   };
 
-  // async function addPrivacies(users) {
-  //   let privacies;
-
-  //   // Fetch all privacy records
-  //   try {
-  //     const privacyData = await client.graphql({
-  //       query: listPrivacies,
-  //     });
-
-  //     privacies = privacyData.data.listPrivacies.items;
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-
-  //   // Append private attribute to each user via corresponding private record
-  //   users.forEach((user) => {
-  //     const privateValue = privacies.find(
-  //       (privacy) => privacy.Username === user.Username
-  //     )?.Private;
-
-  //     if (privateValue === undefined) return;
-
-  //     const privateAttr = {
-  //       Name: "private",
-  //       Value: privateValue,
-  //     };
-
-  //     user.Attributes = [privateAttr, ...user.Attributes];
-  //   });
-  // }
 
   async function fetchAllUsers() {
     try {
@@ -175,9 +145,6 @@ export const UserProvider = ({ children }) => {
       const data = await cognitoIdentityServiceProvider
         .listUsers(params)
         .promise();
-
-      // Add custom private attribute
-      // addPrivacies(data.Users);
 
       // Add privacy records to username to privacy map
       getUsernameToPrivacy(data.Users);
