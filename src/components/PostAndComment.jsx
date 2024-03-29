@@ -42,6 +42,7 @@ const PostAndComment = () => {
   const [comments, setComments] = React.useState([]);
   const [commentsText, setCommentsText] = React.useState([]);
   const [showComment, setShow] = React.useState(false);
+
   const [nextToken, setNextToken] = React.useState(null);
   const [posts, setPosts] = React.useState([]);
   const [images, setImages] = React.useState([]);
@@ -53,6 +54,9 @@ const PostAndComment = () => {
   const [gotVN, setGotVN] = useState(false);
   const [savedPosts, setSavedPosts] = useState([]);
 
+  const date = new Date();
+  let oneWeekFromToday = new Date(date.getTime() - 7 * 24 * 60 * 60 * 1000);
+
   const fetchUserData = async () => {
     try {
       const currUserAttributes = await getCurrentUser();
@@ -62,9 +66,9 @@ const PostAndComment = () => {
     }
   };
 
-
   const setVariablesNFilter = () => {
     if (currUser != null) {
+      console.log(currUser);
       if (!nextToken) {
         // This means either the page just loaded or the user has scrolled to the end of the list
         setVariablesN({
@@ -72,6 +76,10 @@ const PostAndComment = () => {
             not: {
               hiddenPeople: { contains: currUser.username },
             },
+            not: {
+              actionedUsers: { contains: currUser.username },
+            },
+            createdAt: { between: [oneWeekFromToday.toJSON(), date.toJSON()] },
           },
           limit: 10,
         });
@@ -81,6 +89,10 @@ const PostAndComment = () => {
             not: {
               hiddenPeople: { contains: currUser.username },
             },
+            not: {
+              actionedUsers: { contains: currUser.username },
+            },
+            createdAt: { between: [oneWeekFromToday.toJSON(), date.toJSON()] },
           },
           limit: 10,
           nextToken: nextToken,
@@ -114,28 +126,34 @@ const PostAndComment = () => {
               not: {
                 hiddenPeople: { contains: currUser.username },
               },
+              not: {
+                actionedUsers: { contains: currUser.username },
+              },
             },
             limit: 10,
             nextToken: nextTokenTemp,
+            createdAt: { between: [oneWeekFromToday.toJSON(), date.toJSON()] },
           });
         } else {
           setNextToken(null);
         }
         console.log("posts");
         console.log(postData);
-        const imagePromises = postData.map(async (post) => {
-          const postData = await getUrl({ key: post.postImageKey });
-          return {
-            description: post.description,
-            imageUrl: postData.url,
-          };
-        });
-        const fetchedImages = await Promise.all(imagePromises);
-        setImages(fetchedImages);
-        console.log("Fetched images");
-        console.log(fetchedImages);
-        setImage(fetchedImages[0].imageUrl);
-        setCurrentImageIndex(0);
+        if (postData.length != 0) {
+          const imagePromises = postData.map(async (post) => {
+            const postData = await getUrl({ key: post.postImageKey });
+            return {
+              description: post.description,
+              imageUrl: postData.url,
+            };
+          });
+          const fetchedImages = await Promise.all(imagePromises);
+          setImages(fetchedImages);
+          console.log("Fetched images");
+          console.log(fetchedImages);
+          setImage(fetchedImages[0].imageUrl);
+          setCurrentImageIndex(0);
+        }
         //console.log("End of fetchPost logging")
       } catch (error) {
         console.error("Error fetching posts: ", error);
@@ -174,6 +192,19 @@ const PostAndComment = () => {
     }
   }, [posts, currentImageIndex]);
 
+  const updatePostFunction = async (currPost) => {
+    const postData = await client.graphql({
+      query: updatePost,
+      variables: {
+        input: {
+          id: currPost.id,
+          actionedUsers: [currPost.actionedUsers, currUser.username],
+        },
+      },
+    });
+    console.log(postData);
+  };
+
   const [scope, animate] = useAnimate();
   const handleGreenButtonClick = async () => {
     setShow(false);
@@ -188,6 +219,10 @@ const PostAndComment = () => {
       query: updatePost,
       variables: { input: greenClickUpdateDetails}
     });
+
+    console.log("THE CURRENT POST: ", posts[currentImageIndex]);
+    updatePostFunction(posts[currentImageIndex]);
+
     if ((currentImageIndex + 1) % images.length == 0) {
       //console.log("Green Calls fetch post")
       await fetchPost();
@@ -204,7 +239,6 @@ const PostAndComment = () => {
     // Perform any other actions or state updates as needed
   };
 
-
   const handleRedButtonClick = async () => {
     setShow(false);
     const redClickUpdateDetails = {
@@ -215,6 +249,9 @@ const PostAndComment = () => {
       query: updatePost,
       variables: { input: redClickUpdateDetails}
     });
+
+    updatePostFunction(posts[currentImageIndex]);
+
     if ((currentImageIndex + 1) % images.length == 0) {
       //console.log("Green Calls fetch post")
       await fetchPost();
@@ -261,7 +298,7 @@ const PostAndComment = () => {
         input: {
           postId: currPost.id,
           text: comment,
-          commentAuthorId: currUser.userId,
+          commentAuthorId: currUser.username,
         },
       },
     });
@@ -297,30 +334,35 @@ const PostAndComment = () => {
   };
 
   const getSavedPosts = async () => {
-    try {
+    if (currUser != null) {
+      try {
         console.log("fetching saved posts");
-      const result = await client.graphql({
-        query: listSavedPosts,
-        variables: { filter: { username: { eq: currUser.username } } },
-      });
-      if (result.data.listSavedPosts.items.length > 0) {
-        setSavedPosts(result.data.listSavedPosts.items[0]);
-        console.log("saved posts:", result.data.listSavedPosts.items[0].postIds);
-        // return result.data.listSavedPosts.items; // Return the data from the GraphQL response
-      } else {
-        const createdSavedPosts = await client.graphql({
-          query: createSavedPosts,
-          variables: {
-            input: { username: currUser.username, postIds: [] },
-          },
+        const result = await client.graphql({
+          query: listSavedPosts,
+          variables: { filter: { username: { eq: currUser.username } } },
         });
-        console.log("created saved posts");
-        setSavedPosts(createdSavedPosts.data.createSavedPosts[0]);
-        // return createdSavedPosts.data.listSavedPosts.items; // Return the data from the GraphQL response
+        if (result.data.listSavedPosts.items.length > 0) {
+          setSavedPosts(result.data.listSavedPosts.items[0]);
+          console.log(
+            "saved posts:",
+            result.data.listSavedPosts.items[0].postIds
+          );
+          // return result.data.listSavedPosts.items; // Return the data from the GraphQL response
+        } else {
+          const createdSavedPosts = await client.graphql({
+            query: createSavedPosts,
+            variables: {
+              input: { username: currUser.username, postIds: [] },
+            },
+          });
+          console.log("created saved posts");
+          setSavedPosts(createdSavedPosts.data.createSavedPosts[0]);
+          // return createdSavedPosts.data.listSavedPosts.items; // Return the data from the GraphQL response
+        }
+      } catch (error) {
+        console.error("Error fetching saved posts:", error);
+        return null; // Return null in case of error
       }
-    } catch (error) {
-      console.error("Error fetching saved posts:", error);
-      return null; // Return null in case of error
     }
   };
 
@@ -341,35 +383,35 @@ const PostAndComment = () => {
       //   toast.success("Post saved");
       //   setSavedPosts(createdSavedPosts.data.updateSavedPosts.postIds);
       // } else {
-        if (savedPosts.postIds.includes(posts[currentImageIndex].id)) {
-          console.log("unsaving post");
-          const input = {
-            id: savedPosts.id,
-            postIds: savedPosts.postIds.filter(
-              (id) => id !== posts[currentImageIndex].id
-            ),
-          };
-          const condition = { username: { eq: currUser.username } };
-          const updatedSavedPosts = await client.graphql({
-            query: updateSavedPosts,
-            variables: { input, condition },
-          });
-          setSavedPosts(updatedSavedPosts.data.updateSavedPosts);
-          toast.success("Post unsaved");
-        } else {
-          console.log("post not saved");
-          const input = {
-            id: savedPosts.id,
-            postIds: [...savedPosts.postIds, posts[currentImageIndex].id],
-          };
-          const condition = { username: { eq: currUser.username } };
-          const updatedSavedPosts = await client.graphql({
-            query: updateSavedPosts,
-            variables: { input, condition },
-          });
-          setSavedPosts(updatedSavedPosts.data.updateSavedPosts);
-          toast.success("Post saved");
-        }
+      if (savedPosts.postIds.includes(posts[currentImageIndex].id)) {
+        console.log("unsaving post");
+        const input = {
+          id: savedPosts.id,
+          postIds: savedPosts.postIds.filter(
+            (id) => id !== posts[currentImageIndex].id
+          ),
+        };
+        const condition = { username: { eq: currUser.username } };
+        const updatedSavedPosts = await client.graphql({
+          query: updateSavedPosts,
+          variables: { input, condition },
+        });
+        setSavedPosts(updatedSavedPosts.data.updateSavedPosts);
+        toast.success("Post unsaved");
+      } else {
+        console.log("post not saved");
+        const input = {
+          id: savedPosts.id,
+          postIds: [...savedPosts.postIds, posts[currentImageIndex].id],
+        };
+        const condition = { username: { eq: currUser.username } };
+        const updatedSavedPosts = await client.graphql({
+          query: updateSavedPosts,
+          variables: { input, condition },
+        });
+        setSavedPosts(updatedSavedPosts.data.updateSavedPosts);
+        toast.success("Post saved");
+      }
       // }
     } catch (e) {
       console.log("error:", e);
@@ -499,7 +541,7 @@ const PostAndComment = () => {
             //src="https://cdn.discordapp.com/attachments/1120152118272213053/1201614916788965536/IMG_5675.jpg?ex=65dceb19&is=65ca7619&hm=277e5088a148d22bbb7935216d52437d827a889d0d6e4e7dded8eeb7a4af1336&"
             //src="https://images.unsplash.com/photo-1707879487614-72b421e4393f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHx8"
 
-            <div>Loading...</div>
+            <div>No More Posts, Check back later!</div>
           )}
 
           <MyIcon
@@ -709,24 +751,26 @@ const PostAndComment = () => {
                   >
                     {text}
                   </Text>
-                  <Icon
-                    width="22.5px"
-                    height="25px"
-                    viewBox={{ minX: 0, minY: 0, width: 22.5, height: 25 }}
-                    position="absolute"
-                    left="210px"
-                    style={{ cursor: "pointer" }} // Add cursor: pointer style
-                    onClick={() => handleIconClick((index = { index }))} // Call the handler function on icon click
-                    paths={[
-                      {
-                        d: "m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
-                        stroke: "rgba(255,255,255,1)",
-                        fillRule: "nonzero",
-                        strokeLinejoin: "round",
-                        strokeWidth: 2,
-                      },
-                    ]}
-                  ></Icon>
+                  {currUser.username == posts[currentImageIndex].owner && (
+                    <Icon
+                      width="22.5px"
+                      height="25px"
+                      viewBox={{ minX: 0, minY: 0, width: 22.5, height: 25 }}
+                      position="absolute"
+                      left="210px"
+                      style={{ cursor: "pointer" }} // Add cursor: pointer style
+                      onClick={() => handleIconClick((index = { index }))} // Call the handler function on icon click
+                      paths={[
+                        {
+                          d: "m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
+                          stroke: "rgba(255,255,255,1)",
+                          fillRule: "nonzero",
+                          strokeLinejoin: "round",
+                          strokeWidth: 2,
+                        },
+                      ]}
+                    ></Icon>
+                  )}
                 </Card>
               );
             })}

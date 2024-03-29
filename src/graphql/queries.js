@@ -80,6 +80,7 @@ export const getPost = /* GraphQL */ `
         __typename
       }
       hiddenPeople
+      actionedUsers
       updatedAt
       __typename
     }
@@ -101,40 +102,7 @@ export const listPosts = /* GraphQL */ `
         enable_comments
         postImageKey
         hiddenPeople
-        updatedAt
-        __typename
-      }
-      nextToken
-      __typename
-    }
-  }
-`;
-export const postsByDate = /* GraphQL */ `
-  query PostsByDate(
-    $drip_points: Int!
-    $createdAt: ModelStringKeyConditionInput
-    $sortDirection: ModelSortDirection
-    $filter: ModelPostFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    postsByDate(
-      drip_points: $drip_points
-      createdAt: $createdAt
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        owner
-        description
-        drip_points
-        createdAt
-        enable_comments
-        postImageKey
-        hiddenPeople
+        actionedUsers
         updatedAt
         __typename
       }
@@ -159,6 +127,7 @@ export const getComment = /* GraphQL */ `
         enable_comments
         postImageKey
         hiddenPeople
+        actionedUsers
         updatedAt
         __typename
       }

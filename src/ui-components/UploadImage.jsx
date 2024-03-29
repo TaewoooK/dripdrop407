@@ -93,6 +93,7 @@ const UploadImage = () => {
             enable_comments: commentEnabled,
             postImageKey: "",
             hiddenPeople: hiddenSelect,
+            actionedUsers: [],
           },
         },
       });
@@ -145,15 +146,17 @@ const UploadImage = () => {
         maxWidth: "500px", // Increased maximum width
         margin: "0 auto",
         fontFamily: "Arial, sans-serif",
-        backgroundColor: "#d6d8db",
+        backgroundColor: "#222222",
         padding: "30px", // Increased padding for spacing
+        paddingTop: "30px",
         borderRadius: "10px",
         boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <h2 style={{ textAlign: "center", marginBottom: "30px", color: "#333" }}>
-        Make a Post
-      </h2>
+      <h1 style={{ textAlign: "left", marginBottom: "30px", color: "white" }}>
+          make a <span style={{ color: "#047d95" }}>post</span>
+      </h1>
+
       <input
         type="file"
         accept="image/*"
@@ -166,6 +169,7 @@ const UploadImage = () => {
           border: "1px solid #ddd",
           borderRadius: "5px",
           boxSizing: "border-box",
+          color: "white"
         }}
       />
       {image && (
@@ -194,6 +198,7 @@ const UploadImage = () => {
             border: "1px solid #ddd",
             borderRadius: "5px",
             boxSizing: "border-box",
+            resize: "none",
           }}
         ></textarea>
 
@@ -204,7 +209,7 @@ const UploadImage = () => {
             onChange={handleCheckboxChange} // Call the handler function on checkbox change
             style={{ padding: "10px 0 20px 0" }}
           ></input>
-          <span>Enable comments?</span>
+          <span style={{textAlign: "left", color: "white"}}>Enable comments?</span>
         </label>
       </div>
       <div
@@ -212,7 +217,7 @@ const UploadImage = () => {
           padding: "10px", // Increased padding for spacing
         }}
       >
-        <HidePeople
+        <HidePeople style={{position: "absolute", left:"0"}}
           selectedFriends={hiddenSelect}
           setSelectedFriends={setHiddenSelect}
         />
@@ -221,8 +226,8 @@ const UploadImage = () => {
       <button
         onClick={handleSubmit}
         style={{
-          backgroundColor: "#007bff",
-          color: "#ffffff",
+          backgroundColor: "#047d95",
+          color: "white",
           border: "none",
           padding: "15px 24px", // Increased padding for the button
           borderRadius: "5px",
@@ -233,7 +238,7 @@ const UploadImage = () => {
           fontWeight: "bold",
         }}
       >
-        Submit
+        Post
       </button>
       <div style={{ height: "20px" }}></div> {/* Added empty div for spacing */}
       <div>
