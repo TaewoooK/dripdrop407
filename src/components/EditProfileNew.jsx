@@ -1,15 +1,33 @@
 /* eslint-disable */
 import * as React from "react";
 import { useState, useEffect, useContext } from "react";
-import { getOverrideProps } from "../ui-components/utils";
-import MyIcon from "../ui-components/MyIcon";
-import { Button, Flex, Image, Text, TextField } from "@aws-amplify/ui-react";
+import {
+  Button,
+  Flex,
+  Image,
+  Text,
+  TextField,
+  CheckboxField,
+} from "@aws-amplify/ui-react";
 import { updateUserAttribute, deleteUser } from "aws-amplify/auth";
 import { generateClient } from "aws-amplify/api";
-import { UserContext } from './../UserContext';
-import { listPosts, listComments, listFriends, listFriendRequests } from "../graphql/queries";
-import { deletePost, deleteComment, deleteFriend, deleteFriendRequest } from "../graphql/mutations";
-import { remove } from "aws-amplify/storage"
+import { UserContext } from "./../UserContext";
+import {
+  listPosts,
+  listComments,
+  listFriends,
+  listFriendRequests,
+  listPrivacies,
+} from "../graphql/queries";
+import {
+  deletePost,
+  deleteComment,
+  deleteFriend,
+  deleteFriendRequest,
+  deletePrivacy,
+  updatePrivacy,
+} from "../graphql/mutations";
+import { remove } from "aws-amplify/storage";
 
 const client = generateClient();
 
@@ -20,7 +38,17 @@ export default function EditProfileNew(props) {
   const [lastName, setLastName] = useState(null);
   const [gender, setGender] = useState(null);
   const [showMakeSure, setShowMakeSure] = useState(false);
-  const { allUsers, myUser } = useContext(UserContext);
+  const { allUsers, myUser, usernameToPrivacy, setUsernameToPrivacy } =
+    useContext(UserContext);
+  const [checked, setChecked] = useState(
+    usernameToPrivacy[myUser.username]
+      ? usernameToPrivacy[myUser.username]?.Private
+      : false
+  );
+
+  useEffect(() => {
+    console.log("checked:", checked);
+  }, [checked]);
 
   async function handleSetAttribute(useStateFunc, value) {
     if (value == "") {
@@ -32,10 +60,11 @@ export default function EditProfileNew(props) {
 
   async function handleDeleteAccount() {
     try {
-      handleDeletePosts()
-      handleDeleteComments()
-      handleDeleteFriends()
-      handleDeleteFriendRequests()
+      handleDeletePosts();
+      handleDeleteComments();
+      handleDeleteFriends();
+      handleDeleteFriendRequests();
+      handleDeletePrivacy();
 
       await deleteUser();
     } catch (error) {
@@ -44,77 +73,77 @@ export default function EditProfileNew(props) {
   }
 
   async function handleDeletePosts() {
-      const postFetchVariables = {
-        filter: {
-          owner: {
-            eq: myUser.username
-          }
+    const postFetchVariables = {
+      filter: {
+        owner: {
+          eq: myUser.username,
         },
-        limit: 10
-      }
-      let userPosts = await client.graphql({
-        query: listPosts,
-        variables: postFetchVariables
-      });
-      while (userPosts.data.listPosts.items.length > 0) {
-        let userPostsArr = userPosts.data.listPosts.items
-        for (let i = 0; i < userPostsArr.length; i++) {
-          const post = userPostsArr[i]
-          const deletePostInput = {
-            input: {
-              id: post.id
-            }
-          }
-          console.log(i)
-          console.log(deletePostInput)
-          await remove({
-            key: post.postImageKey
-          })
-          const deletedPost = await client.graphql({
-            query: deletePost,
-            variables: deletePostInput
-          })
-        }
-        userPosts = await client.graphql({
-          query: listPosts,
-          variables: postFetchVariables
+      },
+      limit: 10,
+    };
+    let userPosts = await client.graphql({
+      query: listPosts,
+      variables: postFetchVariables,
+    });
+    while (userPosts.data.listPosts.items.length > 0) {
+      let userPostsArr = userPosts.data.listPosts.items;
+      for (let i = 0; i < userPostsArr.length; i++) {
+        const post = userPostsArr[i];
+        const deletePostInput = {
+          input: {
+            id: post.id,
+          },
+        };
+        console.log(i);
+        console.log(deletePostInput);
+        await remove({
+          key: post.postImageKey,
+        });
+        const deletedPost = await client.graphql({
+          query: deletePost,
+          variables: deletePostInput,
         });
       }
+      userPosts = await client.graphql({
+        query: listPosts,
+        variables: postFetchVariables,
+      });
+    }
   }
 
   async function handleDeleteComments() {
     const commentFetchVariables = {
       filter: {
         commentAuthorId: {
-          eq: myUser.username
-        }
+          eq: myUser.username,
+        },
       },
-      limit: 10
-    }
+      limit: 10,
+    };
     let userComments = await client.graphql({
       query: listComments,
-      variables: commentFetchVariables
+      variables: commentFetchVariables,
     });
-    console.log(userComments)
+    console.log(userComments);
     while (userComments.data.listComments.items.length > 0) {
-      let userCommentsArr = userComments.data.listComments.items
+      let userCommentsArr = userComments.data.listComments.items;
       for (let i = 0; i < userCommentsArr.length; i++) {
-        const comment = userCommentsArr[i]
+        const comment = userCommentsArr[i];
         const deleteCommentInput = {
           input: {
-            id: comment.id
-          }
-        }
-        console.log(i)
-        console.log(deleteCommentInput)
+            id: comment.id,
+          },
+        };
+        console.log(i);
+        console.log(deleteCommentInput);
         const deletedComment = await client.graphql({
           query: deleteComment,
-          variables: deleteCommentInput
-        })
+          variables: deleteCommentInput,
+        });
       }
       userComments = await client.graphql({
         query: listComments,
-        variables: commentFetchVariables
+        variables: commentFetchVariables,
       });
     }
   }
@@ -122,76 +151,119 @@ export default function EditProfileNew(props) {
   async function handleDeleteFriends() {
     const friendFetchVariables = {
       filter: {
-        or: [{ Username: { eq: myUser.username} }, { FriendUsername: { eq: myUser.username} }]
+        or: [
+          { Username: { eq: myUser.username } },
+          { FriendUsername: { eq: myUser.username } },
+        ],
       },
-      limit: 10
+      limit: 10,
     };
     let userFriends = await client.graphql({
       query: listFriends,
-      variables: friendFetchVariables
+      variables: friendFetchVariables,
     });
     while (userFriends.data.listFriends.items.length > 0) {
-        let userFriendsArr = userFriends.data.listFriends.items
-        for (let i = 0; i < userFriendsArr.length; i++) {
-          const friend = userFriendsArr[i]
-          const deleteFriendInput = {
-            input: {
-              id: friend.id
-            }
-          }
-          console.log(i)
-          console.log(deleteFriendInput)
-          const deletedFriend = await client.graphql({
-            query: deleteFriend,
-            variables: deleteFriendInput
-          })
-        }
-        userFriends = await client.graphql({
-          query: listFriends,
-          variables: friendFetchVariables
+      let userFriendsArr = userFriends.data.listFriends.items;
+      for (let i = 0; i < userFriendsArr.length; i++) {
+        const friend = userFriendsArr[i];
+        const deleteFriendInput = {
+          input: {
+            id: friend.id,
+          },
+        };
+        console.log(i);
+        console.log(deleteFriendInput);
+        const deletedFriend = await client.graphql({
+          query: deleteFriend,
+          variables: deleteFriendInput,
         });
+      }
+      userFriends = await client.graphql({
+        query: listFriends,
+        variables: friendFetchVariables,
+      });
     }
   }
 
   async function handleDeleteFriendRequests() {
     const friendReqFetchVariables = {
       filter: {
-        or: [{ Username: { eq: myUser.username} }, { SenderUsername: { eq: myUser.username} }]
+        or: [
+          { Username: { eq: myUser.username } },
+          { SenderUsername: { eq: myUser.username } },
+        ],
       },
-      limit: 10
+      limit: 10,
     };
     let userFriendReqs = await client.graphql({
       query: listFriendRequests,
-      variables: friendReqFetchVariables
+      variables: friendReqFetchVariables,
     });
     while (userFriendReqs.data.listFriendRequests.items.length > 0) {
-        let userFriendReqArr = userFriendReqs.data.listFriendRequests.items
-        for (let i = 0; i < userFriendReqArr.length; i++) {
-          const friendReq = userFriendReqArr[i]
-          const deleteFriendReqInput = {
-            input: {
-              id: friendReq.id
-            }
-          }
-          console.log(i)
-          console.log(deleteFriendReqInput)
-          const deletedFriend = await client.graphql({
-            query: deleteFriendRequest,
-            variables: deleteFriendReqInput
-          })
-        }
-        userFriendReqs = await client.graphql({
-          query: listFriendRequests,
-          variables: friendReqFetchVariables
+      let userFriendReqArr = userFriendReqs.data.listFriendRequests.items;
+      for (let i = 0; i < userFriendReqArr.length; i++) {
+        const friendReq = userFriendReqArr[i];
+        const deleteFriendReqInput = {
+          input: {
+            id: friendReq.id,
+          },
+        };
+        console.log(i);
+        console.log(deleteFriendReqInput);
+        const deletedFriend = await client.graphql({
+          query: deleteFriendRequest,
+          variables: deleteFriendReqInput,
         });
+      }
+      userFriendReqs = await client.graphql({
+        query: listFriendRequests,
+        variables: friendReqFetchVariables,
+      });
+    }
+  }
+
+  async function handleDeletePrivacy() {
+    const privacyFetchVariables = {
+      filter: {
+        Username: {
+          eq: myUser.username,
+        },
+      },
+      limit: 10,
+    };
+    let userPrivacy = await client.graphql({
+      query: listPrivacies,
+      variables: privacyFetchVariables,
+    });
+    console.log(userPrivacy);
+    while (userPrivacy.data.listPrivacies.items.length > 0) {
+      let userPrivacyArr = userPrivacy.data.listPrivacies.items;
+      for (let i = 0; i < userPrivacyArr.length; i++) {
+        const privacy = userPrivacyArr[i];
+        const deletePrivacyInput = {
+          input: {
+            id: privacy.id,
+          },
+        };
+        console.log(i);
+        console.log(deletePrivacyInput);
+        const deletedPrivacy = await client.graphql({
+          query: deletePrivacy,
+          variables: deletePrivacyInput,
+        });
+      }
+      userPrivacy = await client.graphql({
+        query: listPrivacies,
+        variables: privacyFetchVariables,
+      });
     }
   }
 
   async function handleClick() {
-    console.log("NEW PREFUSER: " + prefUsername);
-    console.log("NEW FIRST NAME: " + firstName);
-    console.log("NEW LAST NAME: " + lastName);
-    console.log("NEW GENDER: " + gender);
+    // console.log("NEW PREFUSER: " + prefUsername);
+    // console.log("NEW FIRST NAME: " + firstName);
+    // console.log("NEW LAST NAME: " + lastName);
+    // console.log("NEW GENDER: " + gender);
     if (prefUsername) {
       await handleUpdateUserAttribute("preferred_username", prefUsername);
     }
@@ -204,6 +276,8 @@ export default function EditProfileNew(props) {
     if (gender) {
       await handleUpdateUserAttribute("gender", gender);
     }
+
+    await handleUpdatePrivacy();
 
     onClickEvent();
   }
@@ -238,6 +312,36 @@ export default function EditProfileNew(props) {
         break;
     }
   }
+
+  const handleUpdatePrivacy = async () => {
+    const userPrivacy = usernameToPrivacy[myUser.username];
+
+    // Validation to make sure user has private record
+    if (!userPrivacy) {
+      console.log("handleUpdatePrivacy: privacy not found for current user.");
+      return;
+    }
+
+    try {
+      const privacyData = await client.graphql({
+        query: updatePrivacy,
+        variables: {
+          input: {
+            id: userPrivacy.id,
+            Private: checked,
+          },
+        },
+      });
+      usernameToPrivacy[myUser.username] = privacyData.data.updatePrivacy;
+      setUsernameToPrivacy(usernameToPrivacy);
+    } catch (error) {
+      console.log("Could not update privacy:", error);
+    }
+  };
+
+  const handlePrivacyChange = (event) => {
+    setChecked(event.currentTarget.checked);
+  };
 
   return (
     <Flex
@@ -275,20 +379,6 @@ export default function EditProfileNew(props) {
           position="relative"
           padding="0px 0px 0px 0px"
         >
-          {/* <MyIcon
-            width="24px"
-            height="24px"
-            display="block"
-            gap="unset"
-            alignItems="unset"
-            justifyContent="unset"
-            overflow="hidden"
-            shrink="0"
-            position="relative"
-            padding="0px 0px 0px 0px"
-            type="close"
-            {...getOverrideProps(overrides, "MyIcon")}
-          ></MyIcon> */}
           <Text
             fontFamily="Inter"
             fontSize="16px"
@@ -335,27 +425,6 @@ export default function EditProfileNew(props) {
             padding="0px 0px 0px 0px"
             objectFit="cover"
           ></Image>
-          {/*<Text
-            fontFamily="Inter"
-            fontSize="16px"
-            fontWeight="400"
-            color="rgba(13,26,38,1)"
-            lineHeight="22px"
-            textAlign="left"
-            display="block"
-            direction="column"
-            justifyContent="unset"
-            textDecoration="underline"
-            width="unset"
-            height="unset"
-            gap="unset"
-            alignItems="unset"
-            shrink="0"
-            position="relative"
-            padding="0px 0px 0px 0px"
-            whiteSpace="pre-wrap"
-            children="Upload New Image"
-        ></Text>*/}
         </Flex>
         <Flex
           gap="16px"
@@ -434,6 +503,13 @@ export default function EditProfileNew(props) {
             }
           ></TextField>
         </Flex>
+        <CheckboxField
+          label="Private"
+          name="private"
+          value={checked}
+          checked={checked}
+          onChange={(e) => setChecked(e.currentTarget.checked)}
+        />
 
         <div
           style={{ display: "flex", justifyContent: "center", gap: "370px" }}
