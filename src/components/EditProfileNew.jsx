@@ -32,6 +32,7 @@ export default function EditProfileNew(props) {
 
   async function handleDeleteAccount() {
     try {
+      console.log("hi")
       handleDeletePosts()
       handleDeleteComments()
       handleDeleteFriends()
