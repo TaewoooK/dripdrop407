@@ -109,6 +109,7 @@ const UploadImage = () => {
       const imageUpload = await uploadData({
         key: `${myUser.username} + ${currDate}` + "image.png",
         data: image,
+        drip_points: 0,
         options: {
           contentType: "image/png",
         },

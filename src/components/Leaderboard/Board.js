@@ -174,36 +174,37 @@ export default function Board() {
   const { allUsers } = useContext(UserContext);
   const [selectedData, setSelectedData] = useState([]); // Initialize with an empty array
   async function getTotalDripPointsForUser(username) {
-      let totalDripPoints = 0;
-  
-      const postFetchVariables = {
-          filter: {
-              owner: {
-                  eq: username
-              }
-          },
-          limit: 10 // Adjust the limit as needed
-      };
-  
-      let userPosts = await client.graphql({
-          query: listPosts,
-          variables: postFetchVariables
-      });
-  
-      while (userPosts.data.listPosts.items.length > 0) {
-          let userPostsArr = userPosts.data.listPosts.items;
-          for (let i = 0; i < userPostsArr.length; i++) {
-              const post = userPostsArr[i];
-              totalDripPoints += post.drip_points || 0; // Adding drip points of each post
-          }
-          userPosts = await client.graphql({
-              query: listPosts,
-              variables: postFetchVariables
-          });
-      }
-  
-      return totalDripPoints;
-  }
+    let totalDripPoints = 0;
+    let nextToken = null; // Initialize pagination token
+
+    do {
+        const postFetchVariables = {
+            filter: {
+                owner: {
+                    eq: username
+                }
+            },
+            limit: 10, // Adjust the limit as needed
+            nextToken: nextToken // Include the pagination token
+        };
+
+        const userPosts = await client.graphql({
+            query: listPosts,
+            variables: postFetchVariables
+        });
+
+        const posts = userPosts.data.listPosts.items;
+        for (let i = 0; i < posts.length; i++) {
+            const post = posts[i];
+            totalDripPoints += post.drip_points || 0;
+        }
+
+        // Update the pagination token for the next iteration
+        nextToken = userPosts.data.listPosts.nextToken;
+    } while (nextToken); // Continue fetching until there are no more posts
+
+    return totalDripPoints;
+}
 
   async function getAllPostsRankedByDripPoints() {
       try {
@@ -228,24 +229,30 @@ export default function Board() {
   }
   
   async function getUserDripPointsLeaderboard(allUsers) {
-      const userDripPointsList = [];
-  
-      for (const user of allUsers) {
-          const username = user.Username;
-          const totalDripPoints = await getTotalDripPointsForUser(username);
-          userDripPointsList.push({ username, totalDripPoints });
-      }
-  
-      // Sort the list by totalDripPoints in descending order
-      userDripPointsList.sort((a, b) => b.totalDripPoints - a.totalDripPoints);
-  
-      // Assign ranks to each user
-      userDripPointsList.forEach((user, index) => {
-          user.rank = index + 1; // Adding 1 to make the ranks start from 1
-      });
-  
-      return userDripPointsList;
-  }
+    const userDripPointsList = [];
+
+    for (const user of allUsers) {
+        const username = user.Username;
+        console.log(username);
+        try {
+            const totalDripPoints = await getTotalDripPointsForUser(username);
+            console.log(totalDripPoints);
+            userDripPointsList.push({ username, totalDripPoints });
+        } catch (error) {
+            console.error(`Error fetching drip points for user ${username}:`, error);
+        }
+    }
+
+    // Sort the list by totalDripPoints in descending order
+    userDripPointsList.sort((a, b) => b.totalDripPoints - a.totalDripPoints);
+
+    // Assign ranks to each user
+    userDripPointsList.forEach((user, index) => {
+        user.rank = index + 1; // Adding 1 to make the ranks start from 1
+    });
+
+    return userDripPointsList;
+}
   
   useEffect(() => {
       setSelectedData([]);
