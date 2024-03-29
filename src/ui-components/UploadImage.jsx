@@ -103,19 +103,21 @@ const UploadImage = () => {
         console.log("Logging response from createPost");
         console.log(response);
 
-        const postContext = response.data.createPost;
-        if (!postContext) {
-          console.log("Failed to create post");
-          // toast.error("Failed to create post");
-          return reject("Failed to create post");
-        }
-        const imageUpload = await uploadData({
-          key: `${myUser.username} + ${currDate}` + "image.png",
-          data: image,
-          options: {
-            contentType: "image/png",
-          },
-        }).result;
+  
+      const postContext = response.data.createPost;
+      if (!postContext) {
+        console.log("Failed to create post");
+        return;
+      }
+      const imageUpload = await uploadData({
+        key: `${myUser.username} + ${currDate}` + "image.png",
+        data: image,
+        drip_points: 0,
+        options: {
+          contentType: "image/png",
+        },
+      }).result;
+
 
         const updatePostDetails = {
           id: postContext.id,
