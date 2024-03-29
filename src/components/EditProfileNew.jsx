@@ -1,6 +1,6 @@
 /* eslint-disable */
 import * as React from "react";
-import { useState, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   Button,
   Flex,
@@ -24,7 +24,8 @@ import {
   deleteComment,
   deleteFriend,
   deleteFriendRequest,
-  deletePrivacy
+  deletePrivacy,
+  updatePrivacy,
 } from "../graphql/mutations";
 import { remove } from "aws-amplify/storage";
 
@@ -37,20 +38,17 @@ export default function EditProfileNew(props) {
   const [lastName, setLastName] = useState(null);
   const [gender, setGender] = useState(null);
   const [showMakeSure, setShowMakeSure] = useState(false);
-  const { allUsers, myUser } = useContext(UserContext);
-  // @ TODO: Fix checkbox not rendering proper value of 'checked'
-  const [checked, setChecked] = useState(() => {
-    console.log("setChecked allUsers:", allUsers);
-    console.log("setChecked myUser.username:", myUser.username);
+  const { allUsers, myUser, usernameToPrivacy, setUsernameToPrivacy } =
+    useContext(UserContext);
+  const [checked, setChecked] = useState(
+    usernameToPrivacy[myUser.username]
+      ? usernameToPrivacy[myUser.username]?.Private
+      : false
+  );
 
-    const userAttr = allUsers.find(
-      (user) => user.Username === myUser.username
-    )?.Attributes;
-
-    return userAttr?.Attributes?.private !== undefined
-      ? userAttr.Attributes.private
-      : false;
-  });
+  useEffect(() => {
+    console.log("checked:", checked);
+  }, [checked]);
 
   async function handleSetAttribute(useStateFunc, value) {
     if (value == "") {
@@ -262,10 +260,10 @@ export default function EditProfileNew(props) {
   }
 
   async function handleClick() {
-    console.log("NEW PREFUSER: " + prefUsername);
-    console.log("NEW FIRST NAME: " + firstName);
-    console.log("NEW LAST NAME: " + lastName);
-    console.log("NEW GENDER: " + gender);
+    // console.log("NEW PREFUSER: " + prefUsername);
+    // console.log("NEW FIRST NAME: " + firstName);
+    // console.log("NEW LAST NAME: " + lastName);
+    // console.log("NEW GENDER: " + gender);
     if (prefUsername) {
       await handleUpdateUserAttribute("preferred_username", prefUsername);
     }
@@ -278,6 +276,8 @@ export default function EditProfileNew(props) {
     if (gender) {
       await handleUpdateUserAttribute("gender", gender);
     }
+
+    await handleUpdatePrivacy();
 
     onClickEvent();
   }
@@ -313,24 +313,34 @@ export default function EditProfileNew(props) {
     }
   }
 
-  const handlePrivacyChange = (event) => {
-    setChecked(event.currentTarget.checked);
+  const handleUpdatePrivacy = async () => {
+    const userPrivacy = usernameToPrivacy[myUser.username];
 
-    console.log("checked:", checked);
-
-    const userAttr = allUsers.find(
-      (user) => user.Username === myUser.username
-    )?.Attributes;
-    // console.log("handleUpdatePrivacyChange userAttr", userAttr);
-
-    const privateAttr = userAttr.find((attr) => attr.Name === "private");
-    if (privateAttr) {
-      privateAttr.Value = event.currentTarget.checked;
-    } else {
-      console.log("private attribute not found for current user.");
+    // Validation to make sure user has private record
+    if (!userPrivacy) {
+      console.log("handleUpdatePrivacy: privacy not found for current user.");
+      return;
     }
 
-    console.log("handlePrivacyChange: ", allUsers);
+    try {
+      const privacyData = await client.graphql({
+        query: updatePrivacy,
+        variables: {
+          input: {
+            id: userPrivacy.id,
+            Private: checked,
+          },
+        },
+      });
+      usernameToPrivacy[myUser.username] = privacyData.data.updatePrivacy;
+      setUsernameToPrivacy(usernameToPrivacy);
+    } catch (error) {
+      console.log("Could not update privacy:", error);
+    }
+  };
+
+  const handlePrivacyChange = (event) => {
+    setChecked(event.currentTarget.checked);
   };
 
   return (
@@ -496,8 +506,9 @@ export default function EditProfileNew(props) {
         <CheckboxField
           label="Private"
           name="private"
-          value="yes"
-          onChange={handlePrivacyChange}
+          value={checked}
+          checked={checked}
+          onChange={(e) => setChecked(e.currentTarget.checked)}
         />
 
         <div

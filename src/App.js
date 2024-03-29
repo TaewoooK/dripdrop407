@@ -4,7 +4,6 @@ import { UserProvider } from "./UserContext";
 import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
 import { Amplify } from "aws-amplify";
-import { Hub } from "aws-amplify/utils";
 import {
   Button,
   Grid,
@@ -25,68 +24,7 @@ import NavBar from "./components/NavBar";
 import ProfilePage from "./ui-components/ProfilePage";
 import FriendsOnly from "./pages/FriendsOnly";
 
-import { generateClient } from "aws-amplify/api";
-import { listPrivacies } from "./graphql/queries";
-import { createPrivacy } from "./graphql/mutations";
-
 Amplify.configure(awsconfig);
-
-const client = generateClient();
-
-Hub.listen("auth", (data) => {
-  console.log(
-    "A new auth event has happened: ",
-    data.payload.data?.username + " has " + data.payload.event
-  );
-
-  switch (data.payload.event) {
-    case "signedIn":
-      setPrivacy(data.payload.data.username);
-      break;
-    default:
-      break;
-  }
-});
-
-const setPrivacy = async (username) => {
-  console.log("setPrivacy username:", username);
-  try {
-    const privacyData = await client.graphql({
-      query: listPrivacies,
-      variables: {
-        filter: {
-          Username: { eq: username },
-        },
-      },
-    });
-
-    const privacies = privacyData.data.listPrivacies.items;
-    console.log("privacies:", privacies);
-    if (privacies.length > 0) {
-      console.log("Privacy already set.");
-      return;
-    } else {
-      console.log("Privacy is not yet set.");
-    }
-  } catch (error) {
-    console.log("error querying privacy records", error);
-  }
-
-  try {
-    const newPrivacy = await client.graphql({
-      query: createPrivacy,
-      variables: {
-        input: {
-          Username: username,
-          Private: false,
-        },
-      },
-    });
-    console.log("new privacy", newPrivacy);
-  } catch (error) {
-    console.log("error inserting privacy record", error);
-  }
-};
 
 const components = {
   Header() {
