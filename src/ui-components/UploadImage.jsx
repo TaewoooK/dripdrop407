@@ -107,7 +107,7 @@ const UploadImage = () => {
       const postContext = response.data.createPost;
       if (!postContext) {
         console.log("Failed to create post");
-        return;
+        return reject("Failed to create post");
       }
       const imageUpload = await uploadData({
         key: `${myUser.username} + ${currDate}` + "image.png",
