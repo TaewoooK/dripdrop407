@@ -4,7 +4,6 @@
  * Any changes to this file will be overwritten when running amplify pull. *
  **************************************************************************/
 
-export { default as DDLeaderboard } from "./DDLeaderboard";
 export { default as CommentComponent } from "./CommentComponent";
 export { default as DripDropNavBarBasic } from "./DripDropNavBarBasic";
 export { default as EditProfile } from "./EditProfile";
@@ -18,8 +17,6 @@ export { default as FriendRequestsListCondensed } from "./FriendRequestsListCond
 export { default as FriendUpdateForm } from "./FriendUpdateForm";
 export { default as FriendsList } from "./FriendsList";
 export { default as FullFriends } from "./FullFriends";
-export { default as Leaderboard } from "./Leaderboard";
-export { default as LogoWithText } from "./LogoWithText";
 export { default as MyIcon } from "./MyIcon";
 export { default as NotificationsCreateForm } from "./NotificationsCreateForm";
 export { default as NotificationsUpdateForm } from "./NotificationsUpdateForm";
@@ -29,6 +26,8 @@ export { default as PostCreateForm } from "./PostCreateForm";
 export { default as PostReportCreateForm } from "./PostReportCreateForm";
 export { default as PostReportUpdateForm } from "./PostReportUpdateForm";
 export { default as PostUpdateForm } from "./PostUpdateForm";
+export { default as PrivacyCreateForm } from "./PrivacyCreateForm";
+export { default as PrivacyUpdateForm } from "./PrivacyUpdateForm";
 export { default as ReportPost } from "./ReportPost";
 export { default as SavedPostsCreateForm } from "./SavedPostsCreateForm";
 export { default as SavedPostsUpdateForm } from "./SavedPostsUpdateForm";
