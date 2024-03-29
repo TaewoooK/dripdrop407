@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { fetchUserAttributes, getCurrentUser } from "aws-amplify/auth";
 import { generateClient } from "aws-amplify/api";
 import { updatePost } from "../graphql/mutations";
@@ -19,6 +19,7 @@ import { getUrl } from "aws-amplify/storage";
 import EditProfileNew from "../components/EditProfileNew";
 import { listPosts, listSavedPosts } from "../graphql/queries";
 import toast, { Toaster } from "react-hot-toast";
+import { UserContext } from "../UserContext";
 
 const client = generateClient();
 
@@ -47,9 +48,9 @@ const ProfilePage = () => {
   const [showActionCenter, setShowActionCenter] = React.useState(false);
   const [hiddenSelect, setHiddenSelect] = useState([]);
   const [rerun, setReRun] = useState(false);
+  const { usernameToPrivacy, myUser } = useContext(UserContext);
 
   const toggleActionCenter = (image) => {
-    console.log(image);
     setSelectedImage(image);
     setHiddenSelect(image.hiddenPeople);
     setShowActionCenter(!showActionCenter);
@@ -75,17 +76,14 @@ const ProfilePage = () => {
   };
 
   const handleClickChild = async () => {
-    console.log("Received click event");
     closeModal();
     const userAttributes = await fetchUserAttributes();
     setUser(userAttributes);
   };
 
   const handleViewSavedPosts = async () => {
-    console.log(showingSavedPosts);
     if (showingSavedPosts) {
       setShowingSavedPosts(false);
-      console.log("View posts by:", currUser.username);
       try {
         const postData = await client.graphql({ query: listPosts, variables });
         setPosts(postData.data.listPosts.items);
@@ -93,14 +91,12 @@ const ProfilePage = () => {
         console.error("Error fetching posts: ", error);
       }
     } else {
-      console.log("View saved posts for:", currUser.username);
       try {
         const savedPosts = await client.graphql({
           query: listSavedPosts,
           variables: { filter: { username: { eq: currUser.username } } },
         });
         const savedPostIds = savedPosts.data.listSavedPosts.items[0].postIds;
-        console.log("Saved post ids:", savedPostIds);
         if (savedPostIds.length === 0) {
           // setPosts([]);
           toast.error("No saved posts found");
@@ -116,7 +112,6 @@ const ProfilePage = () => {
             variables: { filter: filter },
           });
           setShowingSavedPosts(true);
-          console.log("Saved posts data:", savedPostsData.data.listPosts.items);
           setPosts(savedPostsData.data.listPosts.items);
         }
       } catch (error) {
@@ -144,9 +139,6 @@ const ProfilePage = () => {
       try {
         const userAttributes = await fetchUserAttributes();
         const currUserAttributes = await getCurrentUser();
-        console.log(userAttributes);
-        console.log(currUserAttributes);
-        console.log(currUserAttributes.signInDetails);
         setUser(userAttributes);
         setCurrUser(currUserAttributes);
         setVariables({
@@ -280,6 +272,12 @@ const ProfilePage = () => {
           </h2>
           <h2 style={styles.info}>
             Gender: <span style={{ color: "white" }}>{user.gender}</span>
+          </h2>
+          <h2 style={styles.info}>
+            Private:{" "}
+            <span style={{ color: "white" }}>
+              {usernameToPrivacy[myUser.username]?.Private ? "True" : "False"}
+            </span>
           </h2>
         </div>
       ) : (

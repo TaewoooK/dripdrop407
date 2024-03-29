@@ -4,6 +4,7 @@
  * Any changes to this file will be overwritten when running amplify pull. *
  **************************************************************************/
 
+export { default as DDLeaderboard } from "./DDLeaderboard";
 export { default as CommentComponent } from "./CommentComponent";
 export { default as DripDropNavBarBasic } from "./DripDropNavBarBasic";
 export { default as EditProfile } from "./EditProfile";

@@ -233,6 +233,15 @@ const FriendsOnlyPage = () => {
       console.log("Green button initial");
       console.log("Image index");
       console.log(currentImageIndex);
+      const greenClickUpdateDetails = {
+        id: currPostID,
+        drip_points: posts[currentImageIndex].drip_points + 1,
+      };
+      await client.graphql({
+        query: updatePost,
+        variables: { input: greenClickUpdateDetails}
+      });
+      console.log(posts[currentImageIndex].drip_points);
 
       updatePostFunction(posts[currentImageIndex]);
       if ((currentImageIndex + 1) % images.length == 0) {
@@ -255,6 +264,17 @@ const FriendsOnlyPage = () => {
   const handleRedButtonClick = async () => {
     if (posts.length > 0) {
       setShow(false);
+
+      const redClickUpdateDetails = {
+        id: currPostID,
+        drip_points: posts[currentImageIndex].drip_points - 1,
+      };
+      await client.graphql({
+        query: updatePost,
+        variables: { input: redClickUpdateDetails}
+      });
+      console.log(posts[currentImageIndex].drip_points);
+      
       updatePostFunction(posts[currentImageIndex]);
       if ((currentImageIndex + 1) % images.length == 0) {
         //console.log("Green Calls fetch post")
@@ -782,24 +802,26 @@ const FriendsOnlyPage = () => {
                   >
                     {text}
                   </Text>
-                  <Icon
-                    width="22.5px"
-                    height="25px"
-                    viewBox={{ minX: 0, minY: 0, width: 22.5, height: 25 }}
-                    position="absolute"
-                    left="210px"
-                    style={{ cursor: "pointer" }} // Add cursor: pointer style
-                    onClick={() => handleIconClick((index = { index }))} // Call the handler function on icon click
-                    paths={[
-                      {
-                        d: "m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
-                        stroke: "rgba(255,255,255,1)",
-                        fillRule: "nonzero",
-                        strokeLinejoin: "round",
-                        strokeWidth: 2,
-                      },
-                    ]}
-                  ></Icon>
+                  {(currUser.username == posts[currentImageIndex].owner || currUser.username == comments[index].commentAuthorId) && (
+                    <Icon
+                      width="22.5px"
+                      height="25px"
+                      viewBox={{ minX: 0, minY: 0, width: 22.5, height: 25 }}
+                      position="absolute"
+                      left="210px"
+                      style={{ cursor: "pointer" }} // Add cursor: pointer style
+                      onClick={() => handleIconClick((index = { index }))} // Call the handler function on icon click
+                      paths={[
+                        {
+                          d: "m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
+                          stroke: "rgba(255,255,255,1)",
+                          fillRule: "nonzero",
+                          strokeLinejoin: "round",
+                          strokeWidth: 2,
+                        },
+                      ]}
+                    ></Icon>
+                  )}
                 </Card>
               );
             })}

@@ -1,5 +1,5 @@
-import React, { useContext, useEffect } from "react";
-import { UserProvider, UserContext } from "./UserContext";
+import React, { useEffect } from "react";
+import { UserProvider } from "./UserContext";
 
 import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
@@ -12,29 +12,18 @@ import {
   Image,
   Text,
   useTheme,
-  withAuthenticator,
-  Tabs,
 } from "@aws-amplify/ui-react";
 import { listNotifications } from "./graphql/queries";
 import { createNotifications } from "./graphql/mutations";
 import { Authenticator } from "@aws-amplify/ui-react";
 import awsconfig from "./amplifyconfiguration.json";
-import toast, { Toaster } from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 
-import { DripDropNavBarBasic } from "./ui-components";
-import Home from "./pages/Home";
-import Upload from "./pages/Upload";
-// import Friends from "./ui-components/FullFriends";
-import Friends from "./pages/Friends";
+import { Route } from "./pages/Route";
 import NavBar from "./components/NavBar";
-import Board from "./components/Leaderboard/Board";
-import ProfilePage from "./ui-components/ProfilePage";
-import FriendsOnly from "./pages/FriendsOnly";
-import NotificationCenter from "./pages/NotificationCenter";
+import { onUpdateNotifications } from "./graphql/subscriptions";
 
 import { getOverrideProps, useAuth } from "./ui-components/utils";
-
-import { onUpdateNotifications } from "./graphql/subscriptions";
 
 Amplify.configure(awsconfig);
 
@@ -226,71 +215,6 @@ const UserNotificationSubscriber = ({ user, signOut, notifications, setNotificat
 export default function App() {
   const [notifications, setNotifications] = React.useState([]);
 
-  let component;
-  switch (window.location.pathname) {
-    case "/":
-      component = (
-        <Tabs
-          spacing="equal"
-          justifyContent="center"
-          defaultValue={"Global Feed"}
-          indicatorPosition="bottom"
-          margin="10px"
-          items={[
-            {
-              label: "Global Feed",
-              value: "Global Feed",
-              content: <Home />,
-            },
-            {
-              label: "Friends Feed",
-              value: "Friends Feed",
-              content: <FriendsOnly />,
-            },
-          ]}
-        />
-      );
-      break;
-    case "/home":
-      component = (
-        <Tabs
-          spacing="equal"
-          justifyContent="center"
-          defaultValue={"Global Feed"}
-          indicatorPosition="bottom"
-          margin="10px"
-          items={[
-            {
-              label: "Global Feed",
-              value: "Global Feed",
-              content: <Home />,
-            },
-            {
-              label: "Friends Feed",
-              value: "Friends Feed",
-              content: <FriendsOnly />,
-            },
-          ]}
-        />
-      );
-      break;
-    case "/upload":
-      component = <Upload />;
-      break;
-    case "/Friends":
-      component = <Friends />;
-      break;
-    case "/profile":
-      component = <ProfilePage />;
-      break;
-    case "/activity":
-      component = <NotificationCenter subsciberNotifications={notifications} />;
-      break;
-    case "/leaderboard":
-      component = <Board/>;
-      break;
-  }
-
   return (
     <Authenticator
       variation="modal"
@@ -301,7 +225,7 @@ export default function App() {
         <UserProvider>
           <View className="App">
             <div 
-            style={{ backgroundColor: 'rgb(24, 24, 24)'}}>
+            style={{ backgroundColor: "rgb(24, 24, 24)"}}>
               <UserNotificationSubscriber user={user} signOut={signOut} notifications={notifications} setNotifications={setNotifications}/>
               <Toaster position="top-right" reverseOrder={false} />
               <Grid
@@ -313,7 +237,7 @@ export default function App() {
                 <NavBar columnStart="1" columnEnd="2" />
 
                 <div columnStart="2" columnEnd="-1">
-                  {component}
+                  <Route/>
                 </div>
               </Grid>
             </div>

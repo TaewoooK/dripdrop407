@@ -4,7 +4,7 @@ import { generateClient } from "aws-amplify/api";
 import { updatePost } from "../graphql/mutations";
 //import "./ProfilePage.css";
 //import HidePeople from "./HidePeople";
-
+import { motion, useAnimate } from "framer-motion";
 import {
   Collection,
   Card,
@@ -13,16 +13,30 @@ import {
   View,
   Divider,
   Button,
+  Flex,
+  TextField,
+  Icon,
+  Text,
 } from "@aws-amplify/ui-react";
+import { MyIcon } from "../ui-components";
 import { getUrl } from "aws-amplify/storage";
 import EditProfileNew from "../components/EditProfileNew";
-import { listPosts, listSavedPosts } from "../graphql/queries";
+import {
+  listPosts,
+  listSavedPosts,
+  getPost,
+  commentsByPostId,
+} from "../graphql/queries";
 import toast, { Toaster } from "react-hot-toast";
 
 const client = generateClient();
 
 export default function UserProfileModal(props) {
   const { user } = props;
+
+  const [showComment, setShow] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [commentsText, setCommentsText] = useState([]);
 
   const [rerun, setReRun] = useState(false);
 
@@ -46,7 +60,7 @@ export default function UserProfileModal(props) {
   console.log("USER2: ");
   console.log(attributeMap);
 
-  /*(useEffect(() => {
+  /*useEffect(() => {
     const fetchUserData = async () => {
       try {
         const userAttributes = await fetchUserAttributes();
@@ -67,13 +81,38 @@ export default function UserProfileModal(props) {
     fetchUserData();
   }, []);*/
 
-  /*
-
+  const handleCommentsExpansionClick = async (currPostID) => {
+    const currPostFields = await client.graphql({
+      query: getPost,
+      variables: { id: currPostID },
+    });
+    console.log(currPostFields);
+    let enableCommentsValue =
+      currPostFields.data.getPost.enable_comments && !showComment;
+    setShow(enableCommentsValue);
+    if (enableCommentsValue) {
+      const getComments = await client.graphql({
+        query: commentsByPostId,
+        variables: { postId: currPostID },
+      });
+      const commentsList = getComments.data.commentsByPostId.items;
+      //console.log("COMMENTS HERE" + commentsList);
+      const commentsTextArray = commentsList.map((comment) => comment.text);
+      setComments(commentsList);
+      setCommentsText(commentsTextArray);
+      console.log(commentsList);
+      //console.log(commentsText);
+      //console.log(commentsTextArray);
+    }
+  };
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const postData = await client.graphql({ query: listPosts, variables });
+        const postData = await client.graphql({
+          query: listPosts,
+          variables: { filter: { owner: { eq: attributeMap.username } } },
+        });
         setPosts(postData.data.listPosts.items);
       } catch (error) {
         console.error("Error fetching posts: ", error);
@@ -85,9 +124,6 @@ export default function UserProfileModal(props) {
     }
     setReRun(false);
   }, [user, rerun]);
-  */
-
-  /*
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -114,8 +150,6 @@ export default function UserProfileModal(props) {
     }
     setReRun(false);
   }, [posts, rerun]);
-
-  */
 
   return (
     <div
@@ -159,25 +193,38 @@ export default function UserProfileModal(props) {
             direction="row"
             wrap="wrap"
             isPaginated
-            itemsPerPage={3}
+            itemsPerPage={1}
           >
             {(item, index) => (
-              <Button grow="1" key={index}>
+              <View grow="1" key={index}>
                 <Card
                   key={index}
                   borderRadius="medium"
                   maxWidth="20rem"
                   variation="outlined"
+                  position="relative" // Set the position of the Card to relative
+                  //display="flex" // Use flexbox layout for the Card container
                 >
+                  <MyIcon
+                    position="absolute" // Position the icon absolutely within the Card
+                    //top="0" // Align the icon to the top of the Card
+                    //right="0" // Align the icon to the right of the Card
+                    left="320"
+                    className="chat-icon"
+                    type="chat"
+                    onClick={() => handleCommentsExpansionClick(item.id)}
+                  ></MyIcon>
+                  <Image src={item.imageUrl} alt="Post made from user" />
                   <View padding="xs">
                     <Divider padding="xs" />
                     <Heading padding="medium">{item.title}</Heading>
                     <h3 variation="primary" isFullWidth>
                       {item.description}
+                      {console.log(item)}
                     </h3>
                   </View>
                 </Card>
-              </Button>
+              </View>
             )}
           </Collection>
         </div>
@@ -199,7 +246,8 @@ const styles = {
   heading: {
     fontSize: "24px",
     fontWeight: "bold",
-    marginBottom: "20px",
+    marginBottom: "0px",
+    marginTop: "0px"
   },
   info: {
     fontSize: "18px",
