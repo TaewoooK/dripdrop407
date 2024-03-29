@@ -9,7 +9,7 @@ import Upload from "./Upload";
 import Friends from "./Friends";
 import ProfilePage from "../ui-components/ProfilePage";
 import FriendsOnly from "./FriendsOnly";
-import NotificationCenter from "../components/NotificationCenter";
+import NotificationCenter from "../pages/NotificationCenter";
 import Board from "../components/Leaderboard/Board";
 
 const Route = (notifsFromApp) => {

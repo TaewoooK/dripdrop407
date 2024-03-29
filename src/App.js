@@ -19,7 +19,7 @@ import { Authenticator } from "@aws-amplify/ui-react";
 import awsconfig from "./amplifyconfiguration.json";
 import { toast, Toaster } from "react-hot-toast";
 
-import { Route } from "./pages/Route";
+import Route from "./pages/Route";
 import NavBar from "./components/NavBar";
 import { onUpdateNotifications } from "./graphql/subscriptions";
 
@@ -72,7 +72,12 @@ const components = {
 
 const client = generateClient();
 
-const UserNotificationSubscriber = ({ user, signOut, notifications, setNotifications}) => {
+const UserNotificationSubscriber = ({
+  user,
+  signOut,
+  notifications,
+  setNotifications,
+}) => {
   useEffect(() => {
     const generateNotifs = async (currUser) => {
       try {
@@ -96,7 +101,9 @@ const UserNotificationSubscriber = ({ user, signOut, notifications, setNotificat
             "notification list already exists:",
             result.data.listNotifications.items
           );
-          setNotifications(result.data.listNotifications.items[0].notificationsList);
+          setNotifications(
+            result.data.listNotifications.items[0].notificationsList
+          );
         }
       } catch (error) {
         console.error("Error fetching notification list:", error);
@@ -109,7 +116,6 @@ const UserNotificationSubscriber = ({ user, signOut, notifications, setNotificat
       generateNotifs(user);
 
       console.log("from app.js:", user.username);
-      
 
       notifSubscription = client
         .graphql({
@@ -122,7 +128,10 @@ const UserNotificationSubscriber = ({ user, signOut, notifications, setNotificat
             const notifList =
               notificationData.data.onUpdateNotifications.notificationsList;
             console.log("notifList:", notifList);
-            if (notifList.length !== 0 && notifList.length > notifications.length) {
+            if (
+              notifList.length !== 0 &&
+              notifList.length > notifications.length
+            ) {
               const newNotif = notifList[0];
               console.log("newNotif:", newNotif);
               // console.log(
@@ -224,9 +233,13 @@ export default function App() {
       {({ signOut, user }) => (
         <UserProvider>
           <View className="App">
-            <div 
-            style={{ backgroundColor: "rgb(24, 24, 24)"}}>
-              <UserNotificationSubscriber user={user} signOut={signOut} notifications={notifications} setNotifications={setNotifications}/>
+            <div style={{ backgroundColor: "rgb(24, 24, 24)" }}>
+              <UserNotificationSubscriber
+                user={user}
+                signOut={signOut}
+                notifications={notifications}
+                setNotifications={setNotifications}
+              />
               <Toaster position="top-right" reverseOrder={false} />
               <Grid
                 columnGap="0.5rem"
@@ -237,7 +250,7 @@ export default function App() {
                 <NavBar columnStart="1" columnEnd="2" />
 
                 <div columnStart="2" columnEnd="-1">
-                  <Route notifications={notifications}/>
+                  <Route notifications={notifications} />
                 </div>
               </Grid>
             </div>
