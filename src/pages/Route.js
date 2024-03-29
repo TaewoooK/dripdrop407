@@ -52,7 +52,7 @@ const Route = () => {
               label: "Global Feed",
               value: "1",
               content: <Home />,
-              isDisabled: { getDisabledHomePrivate },
+              isDisabled: getDisabledHomePrivate(),
             },
             {
               label: "Friends Feed",
