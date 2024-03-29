@@ -142,7 +142,7 @@ const UserNotificationSubscriber = ({
               switch (newNotif[0]) {
                 case "Comment":
                   toast(
-                    `${newNotif[1]} commented ${newNotif[3]} on your post!`,
+                    `${newNotif[1]} commented on your post: ${newNotif[3]}`,
                     {
                       icon: "🔔",
                     }
@@ -161,7 +161,7 @@ const UserNotificationSubscriber = ({
                       <p style={{ marginRight: "10px" }}>
                         {newNotif[1]} sent you a friend request!
                       </p>
-                      <div
+                      {/* <div
                         style={{
                           display: "flex",
                           flexDirection: "column",
@@ -193,7 +193,7 @@ const UserNotificationSubscriber = ({
                         >
                           Deny
                         </Button>
-                      </div>
+                      </div> */}
                     </div>,
                     {
                       icon: "👋",
