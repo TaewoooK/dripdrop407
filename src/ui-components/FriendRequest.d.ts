@@ -26,6 +26,8 @@ export declare type FriendRequestOverridesProps = {
     Button49975929?: PrimitiveOverrideProps<ButtonProps>;
 } & EscapeHatchProps;
 export declare type FriendRequestProps = React.PropsWithChildren<Partial<ViewProps> & {
+    friendRequest?: any;
+} & {
     overrides?: FriendRequestOverridesProps | undefined | null;
 }>;
 export default function FriendRequest(props: FriendRequestProps): React.ReactElement;

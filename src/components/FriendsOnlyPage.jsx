@@ -753,24 +753,26 @@ const FriendsOnlyPage = () => {
                   >
                     {text}
                   </Text>
-                  <Icon
-                    width="22.5px"
-                    height="25px"
-                    viewBox={{ minX: 0, minY: 0, width: 22.5, height: 25 }}
-                    position="absolute"
-                    left="210px"
-                    style={{ cursor: "pointer" }} // Add cursor: pointer style
-                    onClick={() => handleIconClick((index = { index }))} // Call the handler function on icon click
-                    paths={[
-                      {
-                        d: "m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
-                        stroke: "rgba(255,255,255,1)",
-                        fillRule: "nonzero",
-                        strokeLinejoin: "round",
-                        strokeWidth: 2,
-                      },
-                    ]}
-                  ></Icon>
+                  {(currUser.username == posts[currentImageIndex].owner || currUser.username == comments[index].commentAuthorId) && (
+                    <Icon
+                      width="22.5px"
+                      height="25px"
+                      viewBox={{ minX: 0, minY: 0, width: 22.5, height: 25 }}
+                      position="absolute"
+                      left="210px"
+                      style={{ cursor: "pointer" }} // Add cursor: pointer style
+                      onClick={() => handleIconClick((index = { index }))} // Call the handler function on icon click
+                      paths={[
+                        {
+                          d: "m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
+                          stroke: "rgba(255,255,255,1)",
+                          fillRule: "nonzero",
+                          strokeLinejoin: "round",
+                          strokeWidth: 2,
+                        },
+                      ]}
+                    ></Icon>
+                  )}
                 </Card>
               );
             })}

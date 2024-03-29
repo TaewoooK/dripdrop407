@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { UserProvider, UserContext } from "./UserContext";
+import React from "react";
+import { UserProvider } from "./UserContext";
 
 import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
@@ -11,23 +11,12 @@ import {
   Image,
   Text,
   useTheme,
-  withAuthenticator,
-  Tabs,
 } from "@aws-amplify/ui-react";
 import { Authenticator } from "@aws-amplify/ui-react";
 import awsconfig from "./amplifyconfiguration.json";
 
-import { DripDropNavBarBasic } from "./ui-components";
-import Home from "./pages/Home";
-import Upload from "./pages/Upload";
-// import Friends from "./ui-components/FullFriends";
-import Friends from "./pages/Friends";
+import Route from "./pages/Route";
 import NavBar from "./components/NavBar";
-import Board from "./components/Leaderboard/Board";
-import ProfilePage from "./ui-components/ProfilePage";
-import FriendsOnly from "./pages/FriendsOnly";
-
-import { getOverrideProps, useAuth } from "./ui-components/utils";
 
 Amplify.configure(awsconfig);
 
@@ -75,67 +64,6 @@ const components = {
 };
 
 export default function App() {
-  let component;
-  switch (window.location.pathname) {
-    case "/":
-      component = (
-        <Tabs
-          spacing="equal"
-          justifyContent="center"
-          defaultValue={"Global Feed"}
-          indicatorPosition="bottom"
-          margin="10px"
-          items={[
-            {
-              label: "Global Feed",
-              value: "Global Feed",
-              content: <Home />,
-            },
-            {
-              label: "Friends Feed",
-              value: "Friends Feed",
-              content: <FriendsOnly />,
-            },
-          ]}
-        />
-      );
-      break;
-    case "/home":
-      component = (
-        <Tabs
-          spacing="equal"
-          justifyContent="center"
-          defaultValue={"Global Feed"}
-          indicatorPosition="bottom"
-          margin="10px"
-          items={[
-            {
-              label: "Global Feed",
-              value: "Global Feed",
-              content: <Home />,
-            },
-            {
-              label: "Friends Feed",
-              value: "Friends Feed",
-              content: <FriendsOnly />,
-            },
-          ]}
-        />
-      );
-      break;
-    case "/upload":
-      component = <Upload />;
-      break;
-    case "/Friends":
-      component = <Friends />;
-      break;
-    case "/profile":
-      component = <ProfilePage />;
-      break;
-    case "/leaderboard":
-      component = <Board/>;
-      break;
-  }
 
   return (
     <Authenticator
@@ -146,8 +74,7 @@ export default function App() {
       {({ signOut, user }) => (
         <UserProvider>
           <View className="App">
-            <div 
-            style={{ backgroundColor: 'rgb(24, 24, 24)'}}>
+            <div style={{ backgroundColor: "rgb(24, 24, 24)" }}>
               <Grid
                 columnGap="0.5rem"
                 rowGap="0.5rem"
@@ -157,7 +84,7 @@ export default function App() {
                 <NavBar columnStart="1" columnEnd="2" />
 
                 <div columnStart="2" columnEnd="-1">
-                  {component}
+                  <Route/>
                 </div>
               </Grid>
             </div>
