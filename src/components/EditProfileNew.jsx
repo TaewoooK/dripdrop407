@@ -17,12 +17,14 @@ import {
   listComments,
   listFriends,
   listFriendRequests,
+  listPrivacies,
 } from "../graphql/queries";
 import {
   deletePost,
   deleteComment,
   deleteFriend,
   deleteFriendRequest,
+  deletePrivacy
 } from "../graphql/mutations";
 import { remove } from "aws-amplify/storage";
 
@@ -64,6 +66,7 @@ export default function EditProfileNew(props) {
       handleDeleteComments();
       handleDeleteFriends();
       handleDeleteFriendRequests();
+      handleDeletePrivacy();
 
       await deleteUser();
     } catch (error) {
@@ -217,6 +220,43 @@ export default function EditProfileNew(props) {
       userFriendReqs = await client.graphql({
         query: listFriendRequests,
         variables: friendReqFetchVariables,
+      });
+    }
+  }
+
+  async function handleDeletePrivacy() {
+    const privacyFetchVariables = {
+      filter: {
+        Username: {
+          eq: myUser.username,
+        },
+      },
+      limit: 10,
+    };
+    let userPrivacy = await client.graphql({
+      query: listPrivacies,
+      variables: privacyFetchVariables,
+    });
+    console.log(userPrivacy);
+    while (userPrivacy.data.listPrivacies.items.length > 0) {
+      let userPrivacyArr = userPrivacy.data.listPrivacies.items;
+      for (let i = 0; i < userPrivacyArr.length; i++) {
+        const privacy = userPrivacyArr[i];
+        const deletePrivacyInput = {
+          input: {
+            id: privacy.id,
+          },
+        };
+        console.log(i);
+        console.log(deletePrivacyInput);
+        const deletedPrivacy = await client.graphql({
+          query: deletePrivacy,
+          variables: deletePrivacyInput,
+        });
+      }
+      userPrivacy = await client.graphql({
+        query: listPrivacies,
+        variables: privacyFetchVariables,
       });
     }
   }
