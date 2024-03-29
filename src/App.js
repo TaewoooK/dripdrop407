@@ -1,9 +1,10 @@
-import React, { useContext } from "react";
-import { UserProvider, UserContext } from "./UserContext";
+import React from "react";
+import { UserProvider } from "./UserContext";
 
 import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
 import { Amplify } from "aws-amplify";
+import { Hub } from "aws-amplify/utils";
 import {
   Button,
   Grid,
@@ -11,13 +12,11 @@ import {
   Image,
   Text,
   useTheme,
-  withAuthenticator,
   Tabs,
 } from "@aws-amplify/ui-react";
 import { Authenticator } from "@aws-amplify/ui-react";
 import awsconfig from "./amplifyconfiguration.json";
 
-import { DripDropNavBarBasic } from "./ui-components";
 import Home from "./pages/Home";
 import Upload from "./pages/Upload";
 // import Friends from "./ui-components/FullFriends";
@@ -26,9 +25,68 @@ import NavBar from "./components/NavBar";
 import ProfilePage from "./ui-components/ProfilePage";
 import FriendsOnly from "./pages/FriendsOnly";
 
-import { getOverrideProps, useAuth } from "./ui-components/utils";
+import { generateClient } from "aws-amplify/api";
+import { listPrivacies } from "./graphql/queries";
+import { createPrivacy } from "./graphql/mutations";
 
 Amplify.configure(awsconfig);
+
+const client = generateClient();
+
+Hub.listen("auth", (data) => {
+  console.log(
+    "A new auth event has happened: ",
+    data.payload.data?.username + " has " + data.payload.event
+  );
+
+  switch (data.payload.event) {
+    case "signedIn":
+      setPrivacy(data.payload.data.username);
+      break;
+    default:
+      break;
+  }
+});
+
+const setPrivacy = async (username) => {
+  console.log("setPrivacy username:", username);
+  try {
+    const privacyData = await client.graphql({
+      query: listPrivacies,
+      variables: {
+        filter: {
+          Username: { eq: username },
+        },
+      },
+    });
+
+    const privacies = privacyData.data.listPrivacies.items;
+    console.log("privacies:", privacies);
+    if (privacies.length > 0) {
+      console.log("Privacy already set.");
+      return;
+    } else {
+      console.log("Privacy is not yet set.");
+    }
+  } catch (error) {
+    console.log("error querying privacy records", error);
+  }
+
+  try {
+    const newPrivacy = await client.graphql({
+      query: createPrivacy,
+      variables: {
+        input: {
+          Username: username,
+          Private: false,
+        },
+      },
+    });
+    console.log("new privacy", newPrivacy);
+  } catch (error) {
+    console.log("error inserting privacy record", error);
+  }
+};
 
 const components = {
   Header() {
@@ -142,8 +200,7 @@ export default function App() {
       {({ signOut, user }) => (
         <UserProvider>
           <View className="App">
-            <div 
-            style={{ backgroundColor: 'rgb(24, 24, 24)'}}>
+            <div style={{ backgroundColor: "rgb(24, 24, 24)" }}>
               <Grid
                 columnGap="0.5rem"
                 rowGap="0.5rem"

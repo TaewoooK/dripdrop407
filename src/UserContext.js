@@ -2,12 +2,74 @@ import React, { createContext, useState, useEffect } from "react";
 import AWS from "aws-sdk";
 
 import { Amplify } from "aws-amplify";
+import { Hub } from "aws-amplify/utils";
 import awsconfig from "./amplifyconfiguration.json";
 import { getCurrentUser } from "aws-amplify/auth";
 
 import { Loader } from "@aws-amplify/ui-react";
 
+import { generateClient } from "aws-amplify/api";
+import { listPrivacies } from "./graphql/queries";
+import { createPrivacy } from "./graphql/mutations";
+
 Amplify.configure(awsconfig);
+
+const client = generateClient();
+
+Hub.listen("auth", (data) => {
+  console.log(
+    "A new auth event has happened: ",
+    data.payload.data?.username + " has " + data.payload.event
+  );
+
+  switch (data.payload.event) {
+    case "signedIn":
+      setPrivacy(data.payload.data.username);
+      break;
+    default:
+      break;
+  }
+});
+
+const setPrivacy = async (username) => {
+  console.log("setPrivacy username:", username);
+  try {
+    const privacyData = await client.graphql({
+      query: listPrivacies,
+      variables: {
+        filter: {
+          Username: { eq: username },
+        },
+      },
+    });
+
+    const privacies = privacyData.data.listPrivacies.items;
+    console.log("privacies:", privacies);
+    if (privacies.length > 0) {
+      console.log("Privacy already set.");
+      return;
+    } else {
+      console.log("Privacy is not yet set.");
+    }
+  } catch (error) {
+    console.log("error querying privacy records", error);
+  }
+
+  try {
+    const newPrivacy = await client.graphql({
+      query: createPrivacy,
+      variables: {
+        input: {
+          Username: username,
+          Private: false,
+        },
+      },
+    });
+    console.log("new privacy", newPrivacy);
+  } catch (error) {
+    console.log("error inserting privacy record", error);
+  }
+};
 
 export const UserContext = createContext();
 
@@ -22,6 +84,38 @@ export const UserProvider = ({ children }) => {
     fetchAllUsers();
     fetchMyUser();
   }, []);
+
+  async function addPrivacies(users) {
+    let privacies;
+
+    // Fetch all privacy records
+    try {
+      const privacyData = await client.graphql({
+        query: listPrivacies,
+      });
+
+      privacies = privacyData.data.listPrivacies.items;
+    } catch (error) {
+      console.log(error);
+    }
+
+    // Append private attribute to each user via corresponding private record
+    users.forEach((user) => {
+      const privateValue = privacies.find(
+        (privacy) => privacy.Username === user.Username
+      )?.Private;
+
+      if (privateValue === undefined)
+        return;
+
+      const privateAttr = {
+        Name: "private",
+        Value: privateValue,
+      };
+
+      user.Attributes = [privateAttr, ...user.Attributes];
+    });
+  }
 
   async function fetchAllUsers() {
     try {
@@ -58,7 +152,10 @@ export const UserProvider = ({ children }) => {
         .listUsers(params)
         .promise();
 
-      console.log("Users:", data.Users);
+      // Add custom private attribute
+      addPrivacies(data.Users);
+
+      console.log("Adjusted users:", data.Users);
       setAllUsers(data.Users);
     } catch (error) {
       console.error("Error fetching users:", error);
