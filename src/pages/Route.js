@@ -8,6 +8,7 @@ import Upload from "./Upload";
 import Friends from "./Friends";
 import ProfilePage from "../ui-components/ProfilePage";
 import FriendsOnly from "./FriendsOnly";
+import Board from "../components/Leaderboard/Board";
 
 const Route = () => {
   const { myUser, usernameToPrivacy } = useContext(UserContext);
@@ -34,6 +35,9 @@ const Route = () => {
       return <Friends />;
     case "/profile":
       return <ProfilePage />;
+    case "/leaderboard":
+      return <Board />;
+      break;
     case "/":
     case "/home":
       return (
