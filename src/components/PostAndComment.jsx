@@ -21,12 +21,14 @@ import {
   deleteComment,
   updateSavedPosts,
   updatePost,
-} from "../graphql/mutations";
+  updateNotifications,
+ } from "../graphql/mutations";
 import {
   listPosts,
   getPost,
   commentsByPostId,
   listSavedPosts,
+  listNotifications,
 } from "../graphql/queries";
 import { getUrl } from "aws-amplify/storage";
 import PostActionCenter from "./PostActionCenter";
@@ -170,7 +172,10 @@ const PostAndComment = () => {
 
   useEffect(() => {
     setVariablesNFilter();
-    getSavedPosts();
+    if (currUser) {
+      getSavedPosts();
+      // generateNotifs();
+    }
   }, [currUser]);
 
   // When nextToken changes, fetch more posts
@@ -302,6 +307,14 @@ const PostAndComment = () => {
 
   const onClickHandler = async () => {
     const currPost = posts[currentImageIndex];
+    console.log(
+      "currPostID:",
+      currPost.id,
+      "currPostOwner:",
+      currPost.owner,
+      "currUserId:",
+      currUser.username
+    );
     await client.graphql({
       query: createComment,
       variables: {
@@ -312,10 +325,39 @@ const PostAndComment = () => {
         },
       },
     });
+
+    // notifify post owner
+    const notif = ["Comment", currUser.username, currPost.id, comment];
+    console.log("send notif to:", currPost.owner);
+    console.log("notif:", notif);
+
+    const notifToPostOwner = await client.graphql({
+      query: listNotifications,
+      variables: { filter: { username: { eq: currPost.owner } } },
+    });
+    if (notifToPostOwner.data.listNotifications.items != null) {
+      console.log("notifToPostOwner:", notifToPostOwner);
+      const notifList = notifToPostOwner.data.listNotifications.items[0];
+      const input = {
+        id: notifList.id,
+        notificationsList: [notif, ...notifList.notificationsList],
+      };
+      const condition = { username: { eq: currPost.owner } };
+      await client.graphql({
+        query: updateNotifications,
+        variables: { input, condition },
+      });
+      console.log("notif sent to post owner");
+    } else {
+      console.log("no notif list for post owner");
+    }
+
+    console.log("no error");
     const getComments = await client.graphql({
       query: commentsByPostId,
       variables: { postId: currPost.id },
     });
+    console.log("no error 2");
     const commentsList = getComments.data.commentsByPostId.items;
     const commentsTextArray = commentsList.map((comment) => comment.text);
     setComments(commentsList);
@@ -401,6 +443,30 @@ const PostAndComment = () => {
     }
   };
 
+  // const generateNotifs = async () => {
+  //   try {
+  //     console.log("fetching notif list for user");
+  //     const result = await client.graphql({
+  //       query: listNotifications,
+  //       variables: { filter: { username: { eq: currUser.username } } },
+  //     });
+  //     if (result.data.listNotifications.items === null) {
+  //       console.log("creating notification list ");
+  //       await client.graphql({
+  //         query: createNotifications,
+  //         variables: {
+  //           input: { username: currUser.username, notificationsList: [] },
+  //         },
+  //       });
+  //       console.log("created notification list");
+  //     } else {
+  //       console.log("notification list already exists");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching notification list:", error);
+  //   }
+  // };
+
   const toggleSavePost = async () => {
     setShowActionCenter(false);
     try {
@@ -460,7 +526,7 @@ const PostAndComment = () => {
 
   return (
     <Flex direction="row" justifyContent="center" gap="0.5rem">
-      <Toaster position="top-right" reverseOrder={false} />
+      {/* <Toaster position="top-right" reverseOrder={false} /> */}
       {showActionCenter && (
         <div className="overlay" onClick={toggleActionCenter}>
           <div className="overlay-content" onClick={(e) => e.stopPropagation()}>

@@ -8,6 +8,7 @@ import { Message, Image } from "@aws-amplify/ui-react";
 import { Loader } from "@aws-amplify/ui-react";
 import HidePeople from "./HidePeople";
 import { UserContext } from "../UserContext";
+import toast, { Toaster } from "react-hot-toast";
 
 const client = generateClient();
 
@@ -69,17 +70,18 @@ const UploadImage = () => {
     console.log("comments checked/unchecked");
   };
 
-  const handleSubmit = async () => {
-    console.log("hiddenSelect:" + hiddenSelect);
+  const handleSubmit = () => {
+    return new Promise(async (resolve, reject) => {
+      console.log("hiddenSelect:" + hiddenSelect);
 
-    try {
-      setSucceeded(2);
-      // Handle post submission logic here
-      console.log("Image:", image);
-      console.log("Description:", description);
-      let commentEnabled = isChecked;
+      try {
+        setSucceeded(2);
+        // Handle post submission logic here
+        console.log("Image:", image);
+        console.log("Description:", description);
+        let commentEnabled = isChecked;
 
-      const currDate = new Date().toISOString();
+        const currDate = new Date().toISOString();
 
       const response = await client.graphql({
         query: createPost,
@@ -98,13 +100,14 @@ const UploadImage = () => {
         },
       });
 
-      console.log("Logging response from createPost");
-      console.log(response);
+        console.log("Logging response from createPost");
+        console.log(response);
 
+  
       const postContext = response.data.createPost;
       if (!postContext) {
         console.log("Failed to create post");
-        return;
+        return reject("Failed to create post");
       }
       const imageUpload = await uploadData({
         key: `${myUser.username} + ${currDate}` + "image.png",
@@ -115,28 +118,32 @@ const UploadImage = () => {
         },
       }).result;
 
-      const updatePostDetails = {
-        id: postContext.id,
-        postImageKey: imageUpload?.key,
-        enable_comments: commentEnabled,
-      };
 
-      const updatePostResponse = await client.graphql({
-        query: updatePost,
-        variables: { input: updatePostDetails },
-      });
+        const updatePostDetails = {
+          id: postContext.id,
+          postImageKey: imageUpload?.key,
+          enable_comments: commentEnabled,
+        };
 
-      const updatedPost = updatePostResponse.data.updatePost;
-      // console.log("Logging response from updatePost")
-      // console.log(updatedPost)
-      if (!updatedPost.postImageKey) return;
-      const signedURL = await getUrl({ key: updatedPost.postImageKey });
-      console.log(signedURL);
+        const updatePostResponse = await client.graphql({
+          query: updatePost,
+          variables: { input: updatePostDetails },
+        });
 
-      setSucceeded(1);
-    } catch (error) {
-      setSucceeded(3);
-    }
+        const updatedPost = updatePostResponse.data.updatePost;
+        // console.log("Logging response from updatePost")
+        // console.log(updatedPost)
+        if (!updatedPost.postImageKey) return;
+        const signedURL = await getUrl({ key: updatedPost.postImageKey });
+        console.log(signedURL);
+
+        setSucceeded(1);
+        resolve("Post created successfully");
+      } catch (error) {
+        setSucceeded(3);
+        reject("Failed to create post");
+      }
+    });
   };
 
   console.log("In Upload Image: " + hiddenSelect);
@@ -225,7 +232,14 @@ const UploadImage = () => {
       </div>
       {/* Added empty div for spacing */}
       <button
-        onClick={handleSubmit}
+        // onClick={handleSubmit}
+        onClick={() => {
+          toast.promise(handleSubmit(), {
+            pending: "Uploading...",
+            success: "Post created successfully",
+            error: "Failed to create post",
+          });
+        }}
         style={{
           backgroundColor: "#047d95",
           color: "white",
@@ -242,33 +256,35 @@ const UploadImage = () => {
         Post
       </button>
       <div style={{ height: "20px" }}></div> {/* Added empty div for spacing */}
-      <div>
-        {succeeded == 2 && <Loader size="large" />}
-        {succeeded == 1 && (
-          <Message
-            colorTheme="success"
-            heading="YES!"
-            isDismissible={true}
-            onDismiss={() => {
-              setSucceeded(false);
-            }}
-          >
-            Your new fit is uploaded!
-          </Message>
+      {/* <div>
+        {succeeded === 2 && <Loader size="large" />}
+        {succeeded === 1 && (
+          // <Message
+          //   colorTheme="success"
+          //   heading="YES!"
+          //   isDismissible={true}
+          //   onDismiss={() => {
+          //     setSucceeded(false);
+          //   }}
+          // >
+          //   Your new fit is uploaded!
+          // </Message>
+          toast.success("Your new fit is uploaded!")
         )}
-        {succeeded == 3 && (
-          <Message
-            colorTheme="error"
-            heading="Upload Failed"
-            isDismissible={true}
-            onDismiss={() => {
-              setSucceeded(false);
-            }}
-          >
-            Upload has failed. Please check each item and try again.
-          </Message>
+        {succeeded === 3 && (
+          // <Message
+          //   colorTheme="error"
+          //   heading="Upload Failed"
+          //   isDismissible={true}
+          //   onDismiss={() => {
+          //     setSucceeded(false);
+          //   }}
+          // >
+          //   Upload has failed. Please check each item and try again.
+          // </Message>
+          toast.error("Upload has failed. Please check each item and try again.")
         )}
-      </div>
+      </div> */}
     </div>
   );
 };
