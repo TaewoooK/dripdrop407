@@ -60,6 +60,7 @@ const Route = () => {
               content: <FriendsOnly />,
             },
           ]}
+          isLazy
         />
       );
   }
