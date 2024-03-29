@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { UserContext } from "../UserContext";
 import React from "react";
 
@@ -14,12 +14,6 @@ import Board from "../components/Leaderboard/Board";
 
 const Route = (notifsFromApp) => {
   const { myUser, usernameToPrivacy } = useContext(UserContext);
-  const [notifications, setNotifications] = React.useState([notifsFromApp]);
-
-  useEffect(() => {
-    setNotifications(notifsFromApp);
-  }, [notifsFromApp]);
-
   // useEffect(() => {
   //   console.log("getDefaultTabPrivate:", getDefaultTabPrivate());
   // });
@@ -43,7 +37,7 @@ const Route = (notifsFromApp) => {
     case "/profile":
       return <ProfilePage />;
     case "/activity":
-      return <NotificationCenter subsciberNotifications={notifications} />;
+      return <NotificationCenter subsciberNotifications={notifsFromApp} />;
     case "/leaderboard":
       return <Board />;
     case "/":
