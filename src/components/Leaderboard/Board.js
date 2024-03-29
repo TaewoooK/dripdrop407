@@ -125,7 +125,7 @@ export default function Board() {
                       </View>
                   </div>
               </View>
-              <Text className="header-text">
+              <Text className="board-header-text">
                   <span style={{ color: "#047d95" }}>Leader</span>
                   <span>board</span>
               </Text>
