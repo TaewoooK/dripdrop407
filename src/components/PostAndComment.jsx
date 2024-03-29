@@ -201,7 +201,7 @@ const PostAndComment = () => {
       variables: {
         input: {
           id: currPost.id,
-          actionedUsers: [currPost.actionedUsers, currUser.username],
+          actionedUsers: [...currPost.actionedUsers, currUser.username],
         },
       },
     });
@@ -221,7 +221,7 @@ const PostAndComment = () => {
       };
       await client.graphql({
         query: updatePost,
-        variables: { input: greenClickUpdateDetails}
+        variables: { input: greenClickUpdateDetails },
       });
       console.log(posts[currentImageIndex].drip_points);
 
@@ -255,7 +255,7 @@ const PostAndComment = () => {
       };
       await client.graphql({
         query: updatePost,
-        variables: { input: redClickUpdateDetails}
+        variables: { input: redClickUpdateDetails },
       });
       console.log(posts[currentImageIndex].drip_points);
 
@@ -323,9 +323,7 @@ const PostAndComment = () => {
     setComment("");
   };
 
-
-
-    // Handler function to toggle the comment deletion state
+  // Handler function to toggle the comment deletion state
   const handleIconClick = async ({ index }) => {
     //   setIsCommentDeleted(!isCommentDeleted);
     //   console.log("comment deleted:", index);
@@ -455,8 +453,6 @@ const PostAndComment = () => {
   };
 
   // const [isCommentDeleted, setIsCommentDeleted] = useState(false);
-
-
 
   return (
     <Flex direction="row" justifyContent="center" gap="0.5rem">
@@ -765,7 +761,8 @@ const PostAndComment = () => {
                   >
                     {text}
                   </Text>
-                  {(currUser.username == posts[currentImageIndex].owner || currUser.username == comments[index].commentAuthorId) && (
+                  {(currUser.username == posts[currentImageIndex].owner ||
+                    currUser.username == comments[index].commentAuthorId) && (
                     <Icon
                       width="22.5px"
                       height="25px"

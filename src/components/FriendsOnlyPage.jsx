@@ -75,7 +75,7 @@ const FriendsOnlyPage = () => {
       variables: {
         input: {
           id: currPost.id,
-          actionedUsers: [currPost.actionedUsers, currUser.username],
+          actionedUsers: [...currPost.actionedUsers, currUser.username],
         },
       },
     });
@@ -237,7 +237,7 @@ const FriendsOnlyPage = () => {
       };
       await client.graphql({
         query: updatePost,
-        variables: { input: greenClickUpdateDetails}
+        variables: { input: greenClickUpdateDetails },
       });
       console.log(posts[currentImageIndex].drip_points);
 
@@ -269,10 +269,10 @@ const FriendsOnlyPage = () => {
       };
       await client.graphql({
         query: updatePost,
-        variables: { input: redClickUpdateDetails}
+        variables: { input: redClickUpdateDetails },
       });
       console.log(posts[currentImageIndex].drip_points);
-      
+
       updatePostFunction(posts[currentImageIndex]);
       if ((currentImageIndex + 1) % images.length == 0) {
         //console.log("Green Calls fetch post")
@@ -773,7 +773,8 @@ const FriendsOnlyPage = () => {
                   >
                     {text}
                   </Text>
-                  {(currUser.username == posts[currentImageIndex].owner || currUser.username == comments[index].commentAuthorId) && (
+                  {(currUser.username == posts[currentImageIndex].owner ||
+                    currUser.username == comments[index].commentAuthorId) && (
                     <Icon
                       width="22.5px"
                       height="25px"
