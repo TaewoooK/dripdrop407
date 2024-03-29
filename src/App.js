@@ -142,7 +142,7 @@ const UserNotificationSubscriber = ({
               switch (newNotif[0]) {
                 case "Comment":
                   toast(
-                    `${newNotif[1]} commented on your post: ${newNotif[3]}`,
+                    `${newNotif[1]} commented "${newNotif[3]}" on your post!`,
                     {
                       icon: "🔔",
                     }
