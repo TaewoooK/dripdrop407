@@ -21,6 +21,7 @@ import {
   deleteComment,
   updateSavedPosts,
   updatePost,
+  updateNotifications
 } from "../graphql/mutations";
 import {
   listPosts,
@@ -28,6 +29,7 @@ import {
   commentsByPostId,
   listSavedPosts,
   listFriends,
+  listNotifications
 } from "../graphql/queries";
 import { getUrl } from "aws-amplify/storage";
 import PostActionCenter from "./PostActionCenter";
@@ -305,6 +307,33 @@ const FriendsOnlyPage = () => {
         },
       },
     });
+
+    // notifify post owner
+    const notif = ["Comment", currUser.username, currPost.id, comment];
+    console.log("send notif to:", currPost.owner);
+    console.log("notif:", notif);
+
+    const notifToPostOwner = await client.graphql({
+      query: listNotifications,
+      variables: { filter: { username: { eq: currPost.owner } } },
+    });
+    if (notifToPostOwner.data.listNotifications.items != null) {
+      console.log("notifToPostOwner:", notifToPostOwner);
+      const notifList = notifToPostOwner.data.listNotifications.items[0];
+      const input = {
+        id: notifList.id,
+        notificationsList: [notif, ...notifList.notificationsList],
+      };
+      const condition = { username: { eq: currPost.owner } };
+      await client.graphql({
+        query: updateNotifications,
+        variables: { input, condition },
+      });
+      console.log("notif sent to post owner");
+    } else {
+      console.log("no notif list for post owner");
+    }
+
     const getComments = await client.graphql({
       query: commentsByPostId,
       variables: { postId: currPost.id },
