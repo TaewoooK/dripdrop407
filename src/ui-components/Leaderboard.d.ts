@@ -17,15 +17,20 @@ export declare type Variant = {
     overrides: EscapeHatchProps;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
-export declare type FriendRequestOverridesProps = {
-    FriendRequest?: PrimitiveOverrideProps<ViewProps>;
-    "Profile Card"?: PrimitiveOverrideProps<ViewProps>;
-    "Profile Picture"?: PrimitiveOverrideProps<IconProps>;
-    Username?: PrimitiveOverrideProps<TextProps>;
-    Button49974147?: PrimitiveOverrideProps<ButtonProps>;
-    Button49975929?: PrimitiveOverrideProps<ButtonProps>;
+export declare type LeaderboardOverridesProps = {
+    Leaderboard?: PrimitiveOverrideProps<ViewProps>;
+    "Frame 467"?: PrimitiveOverrideProps<ViewProps>;
+    Rank?: PrimitiveOverrideProps<TextProps>;
+    User?: PrimitiveOverrideProps<TextProps>;
+    Points?: PrimitiveOverrideProps<TextProps>;
+    "Line 2"?: PrimitiveOverrideProps<IconProps>;
+    "Frame 469"?: PrimitiveOverrideProps<ViewProps>;
+    "Frame 470"?: PrimitiveOverrideProps<ViewProps>;
+    Leaderboard5080772?: PrimitiveOverrideProps<TextProps>;
+    Button50801348?: PrimitiveOverrideProps<ButtonProps>;
+    Button50801352?: PrimitiveOverrideProps<ButtonProps>;
 } & EscapeHatchProps;
-export declare type FriendRequestProps = React.PropsWithChildren<Partial<ViewProps> & {
-    overrides?: FriendRequestOverridesProps | undefined | null;
+export declare type LeaderboardProps = React.PropsWithChildren<Partial<ViewProps> & {
+    overrides?: LeaderboardOverridesProps | undefined | null;
 }>;
-export default function FriendRequest(props: FriendRequestProps): React.ReactElement;
+export default function Leaderboard(props: LeaderboardProps): React.ReactElement;

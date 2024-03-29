@@ -27,6 +27,7 @@ import Upload from "./pages/Upload";
 // import Friends from "./ui-components/FullFriends";
 import Friends from "./pages/Friends";
 import NavBar from "./components/NavBar";
+import Board from "./components/Leaderboard/Board";
 import ProfilePage from "./ui-components/ProfilePage";
 import FriendsOnly from "./pages/FriendsOnly";
 import NotificationCenter from "./pages/NotificationCenter";
@@ -284,6 +285,9 @@ export default function App() {
       break;
     case "/activity":
       component = <NotificationCenter subsciberNotifications={notifications} />;
+      break;
+    case "/leaderboard":
+      component = <Board/>;
       break;
   }
 

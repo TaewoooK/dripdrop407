@@ -339,6 +339,31 @@ const PostAndComment = () => {
     setComment("");
   };
 
+
+
+    // Handler function to toggle the comment deletion state
+  const handleIconClick = async ({ index }) => {
+    //   setIsCommentDeleted(!isCommentDeleted);
+    //   console.log("comment deleted:", index);
+    console.log("comment deleted id:", comments[index].id);
+    const currPost = posts[currentImageIndex];
+    await client.graphql({
+      query: deleteComment,
+      variables: {
+        input: { id: comments[index].id },
+      },
+    });
+    const getComments = await client.graphql({
+      query: commentsByPostId,
+      variables: { postId: currPost.id },
+    });
+    const commentsList = getComments.data.commentsByPostId.items;
+    const commentsTextArray = commentsList.map((comment) => comment.text);
+    setComments(commentsList);
+    setCommentsText(commentsTextArray);
+    toast.success("Comment deleted successfully");
+  };
+
   const onChangeHandler = (e) => {
     setComment(e.target.value);
   };
@@ -471,28 +496,7 @@ const PostAndComment = () => {
 
   // const [isCommentDeleted, setIsCommentDeleted] = useState(false);
 
-  // Handler function to toggle the comment deletion state
-  const handleIconClick = async ({ index }) => {
-    //   setIsCommentDeleted(!isCommentDeleted);
-    //   console.log("comment deleted:", index);
-    console.log("comment deleted id:", comments[index].id);
-    const currPost = posts[currentImageIndex];
-    await client.graphql({
-      query: deleteComment,
-      variables: {
-        input: { id: comments[index].id },
-      },
-    });
-    const getComments = await client.graphql({
-      query: commentsByPostId,
-      variables: { postId: currPost.id },
-    });
-    const commentsList = getComments.data.commentsByPostId.items;
-    const commentsTextArray = commentsList.map((comment) => comment.text);
-    setComments(commentsList);
-    setCommentsText(commentsTextArray);
-    toast.success("Comment deleted successfully");
-  };
+
 
   return (
     <Flex direction="row" justifyContent="center" gap="0.5rem">
@@ -801,7 +805,7 @@ const PostAndComment = () => {
                   >
                     {text}
                   </Text>
-                  {currUser.username == posts[currentImageIndex].owner && (
+                  {(currUser.username == posts[currentImageIndex].owner || currUser.username == comments[index].commentAuthorId) && (
                     <Icon
                       width="22.5px"
                       height="25px"

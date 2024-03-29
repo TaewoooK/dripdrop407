@@ -1,3 +1,9 @@
+type Privacy @model @auth(rules: [{ allow: public }]) {
+  id: ID!
+  Username: String!
+  Private: Boolean!
+}
+
 type FriendRequest @model @auth(rules: [{ allow: public }]) {
   id: ID!
   Username: ID!
