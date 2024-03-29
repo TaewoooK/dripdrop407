@@ -63,6 +63,7 @@ const Route = (notifications) => {
               isDisabled: getDisabledHomePrivate(),
             },
           ]}
+          isLazy
         />
       );
   }
