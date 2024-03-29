@@ -153,6 +153,9 @@ const PostAndComment = () => {
           console.log(fetchedImages);
           setImage(fetchedImages[0].imageUrl);
           setCurrentImageIndex(0);
+        } else {
+          setImage(null);
+          return <div>No More Posts, Check back later!</div>;
         }
         //console.log("End of fetchPost logging")
       } catch (error) {
@@ -207,49 +210,53 @@ const PostAndComment = () => {
 
   const [scope, animate] = useAnimate();
   const handleGreenButtonClick = async () => {
-    setShow(false);
-    console.log("Green button initial");
-    console.log("Image index");
-    console.log(currentImageIndex);
+    if (posts.length > 0) {
+      setShow(false);
+      console.log("Green button initial");
+      console.log("Image index");
+      console.log(currentImageIndex);
 
-    console.log("THE CURRENT POST: ", posts[currentImageIndex]);
-    updatePostFunction(posts[currentImageIndex]);
+      console.log("THE CURRENT POST: ", posts[currentImageIndex]);
+      updatePostFunction(posts[currentImageIndex]);
 
-    if ((currentImageIndex + 1) % images.length == 0) {
-      //console.log("Green Calls fetch post")
-      await fetchPost();
-    } else {
-      setCurrentImageIndex(
-        (currentImageIndex) => (currentImageIndex + 1) % images.length
-      );
-      let tempImgIndex = (currentImageIndex + 1) % images.length;
-      setImage(images[tempImgIndex].imageUrl);
+      if ((currentImageIndex + 1) % images.length == 0) {
+        //console.log("Green Calls fetch post")
+        await fetchPost();
+      } else {
+        setCurrentImageIndex(
+          (currentImageIndex) => (currentImageIndex + 1) % images.length
+        );
+        let tempImgIndex = (currentImageIndex + 1) % images.length;
+        setImage(images[tempImgIndex].imageUrl);
+      }
+      // await fetchPost();
+      await animate(scope.current, { x: "80vw" });
+      await animate(scope.current, { x: 0 });
+      // Perform any other actions or state updates as needed
     }
-    // await fetchPost();
-    await animate(scope.current, { x: "80vw" });
-    await animate(scope.current, { x: 0 });
-    // Perform any other actions or state updates as needed
   };
 
   const handleRedButtonClick = async () => {
-    setShow(false);
+    if (posts.length > 0) {
+      setShow(false);
 
-    updatePostFunction(posts[currentImageIndex]);
+      updatePostFunction(posts[currentImageIndex]);
 
-    if ((currentImageIndex + 1) % images.length == 0) {
-      //console.log("Green Calls fetch post")
-      await fetchPost();
-    } else {
-      setCurrentImageIndex(
-        (currentImageIndex) => (currentImageIndex + 1) % images.length
-      );
-      let tempImgIndex = (currentImageIndex + 1) % images.length;
-      setImage(images[tempImgIndex].imageUrl);
+      if ((currentImageIndex + 1) % images.length == 0) {
+        //console.log("Green Calls fetch post")
+        await fetchPost();
+      } else {
+        setCurrentImageIndex(
+          (currentImageIndex) => (currentImageIndex + 1) % images.length
+        );
+        let tempImgIndex = (currentImageIndex + 1) % images.length;
+        setImage(images[tempImgIndex].imageUrl);
+      }
+      await animate(scope.current, { x: "-80vw" });
+      await animate(scope.current, { x: 0 });
+      // console.log('curr idx:',currentImageIndex, 'postID:', currPostID)
+      // Perform any other actions or state updates as needed
     }
-    await animate(scope.current, { x: "-80vw" });
-    await animate(scope.current, { x: 0 });
-    // console.log('curr idx:',currentImageIndex, 'postID:', currPostID)
-    // Perform any other actions or state updates as needed
   };
 
   const handleCommentsExpansionClick = async () => {
@@ -295,6 +302,31 @@ const PostAndComment = () => {
     setComments(commentsList);
     setCommentsText(commentsTextArray);
     setComment("");
+  };
+
+
+
+    // Handler function to toggle the comment deletion state
+  const handleIconClick = async ({ index }) => {
+    //   setIsCommentDeleted(!isCommentDeleted);
+    //   console.log("comment deleted:", index);
+    console.log("comment deleted id:", comments[index].id);
+    const currPost = posts[currentImageIndex];
+    await client.graphql({
+      query: deleteComment,
+      variables: {
+        input: { id: comments[index].id },
+      },
+    });
+    const getComments = await client.graphql({
+      query: commentsByPostId,
+      variables: { postId: currPost.id },
+    });
+    const commentsList = getComments.data.commentsByPostId.items;
+    const commentsTextArray = commentsList.map((comment) => comment.text);
+    setComments(commentsList);
+    setCommentsText(commentsTextArray);
+    toast.success("Comment deleted successfully");
   };
 
   const onChangeHandler = (e) => {
@@ -405,28 +437,7 @@ const PostAndComment = () => {
 
   // const [isCommentDeleted, setIsCommentDeleted] = useState(false);
 
-  // Handler function to toggle the comment deletion state
-  const handleIconClick = async ({ index }) => {
-    //   setIsCommentDeleted(!isCommentDeleted);
-    //   console.log("comment deleted:", index);
-    console.log("comment deleted id:", comments[index].id);
-    const currPost = posts[currentImageIndex];
-    await client.graphql({
-      query: deleteComment,
-      variables: {
-        input: { id: comments[index].id },
-      },
-    });
-    const getComments = await client.graphql({
-      query: commentsByPostId,
-      variables: { postId: currPost.id },
-    });
-    const commentsList = getComments.data.commentsByPostId.items;
-    const commentsTextArray = commentsList.map((comment) => comment.text);
-    setComments(commentsList);
-    setCommentsText(commentsTextArray);
-    toast.success("Comment deleted successfully");
-  };
+
 
   return (
     <Flex direction="row" justifyContent="center" gap="0.5rem">
@@ -735,7 +746,7 @@ const PostAndComment = () => {
                   >
                     {text}
                   </Text>
-                  {currUser.username == posts[currentImageIndex].owner && (
+                  {(currUser.username == posts[currentImageIndex].owner || currUser.username == comments[index].commentAuthorId) && (
                     <Icon
                       width="22.5px"
                       height="25px"
