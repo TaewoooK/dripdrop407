@@ -1,5 +1,6 @@
 import { useContext, useEffect } from "react";
 import { UserContext } from "../UserContext";
+import React from "react";
 
 import { Tabs } from "@aws-amplify/ui-react";
 
