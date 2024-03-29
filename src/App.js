@@ -205,6 +205,7 @@ const UserNotificationSubscriber = ({
                   break;
               }
             }
+            console.log("notifList:", notifList);
             setNotifications(notifList);
           },
         });

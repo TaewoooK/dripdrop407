@@ -22,9 +22,9 @@ import { toast } from "react-hot-toast";
 Amplify.configure(awsconfig);
 const client = generateClient();
 
-const NotificationCenter = ({ subsciberNotifications, signOut }) => {
+const NotificationCenter = ({ notifications, signOut }) => {
   const [currUser, setCurrUser] = useState(null);
-  const [notifications, setNotifications] = useState(subsciberNotifications);
+  // const [notifications, setNotifications] = useState(subsciberNotifications);
 
   const fetchUserData = async () => {
     try {
@@ -36,13 +36,14 @@ const NotificationCenter = ({ subsciberNotifications, signOut }) => {
   };
 
   useEffect(() => {
+    console.log("notifications:", notifications);
     fetchUserData();
   }, []);
 
-  useEffect(() => {
-    setNotifications(subsciberNotifications);
-    console.log("Notifications updated:", subsciberNotifications);
-  }, [subsciberNotifications]);
+  // useEffect(() => {
+  //   setNotifications(subsciberNotifications);
+  //   console.log("Notifications updated:", subsciberNotifications);
+  // }, [subsciberNotifications]);
 
   const handleClearNotifications = () => {
     return new Promise(async (resolve, reject) => {

@@ -12,8 +12,9 @@ import FriendsOnly from "./FriendsOnly";
 import NotificationCenter from "../pages/NotificationCenter";
 import Board from "../components/Leaderboard/Board";
 
-const Route = (notifsFromApp) => {
+const Route = (notifications) => {
   const { myUser, usernameToPrivacy } = useContext(UserContext);
+  console.log("notifications", notifications);
   // useEffect(() => {
   //   console.log("getDefaultTabPrivate:", getDefaultTabPrivate());
   // });
@@ -37,7 +38,7 @@ const Route = (notifsFromApp) => {
     case "/profile":
       return <ProfilePage />;
     case "/activity":
-      return <NotificationCenter subsciberNotifications={notifsFromApp} />;
+      return <NotificationCenter notifications={notifications.notifications} />;
     case "/leaderboard":
       return <Board />;
     case "/":
