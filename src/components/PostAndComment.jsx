@@ -215,6 +215,15 @@ const PostAndComment = () => {
       console.log("Green button initial");
       console.log("Image index");
       console.log(currentImageIndex);
+      const greenClickUpdateDetails = {
+        id: currPostID,
+        drip_points: posts[currentImageIndex].drip_points + 1,
+      };
+      await client.graphql({
+        query: updatePost,
+        variables: { input: greenClickUpdateDetails}
+      });
+      console.log(posts[currentImageIndex].drip_points);
 
       console.log("THE CURRENT POST: ", posts[currentImageIndex]);
       updatePostFunction(posts[currentImageIndex]);
@@ -239,6 +248,16 @@ const PostAndComment = () => {
   const handleRedButtonClick = async () => {
     if (posts.length > 0) {
       setShow(false);
+
+      const redClickUpdateDetails = {
+        id: currPostID,
+        drip_points: posts[currentImageIndex].drip_points - 1,
+      };
+      await client.graphql({
+        query: updatePost,
+        variables: { input: redClickUpdateDetails}
+      });
+      console.log(posts[currentImageIndex].drip_points);
 
       updatePostFunction(posts[currentImageIndex]);
 
