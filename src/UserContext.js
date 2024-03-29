@@ -107,6 +107,7 @@ export const UserProvider = ({ children }) => {
     });
 
     setUsernameToPrivacy(tempUsernameToPrivacy);
+    console.log("usernameToPrivacy:", tempUsernameToPrivacy);
   };
 
   // async function addPrivacies(users) {

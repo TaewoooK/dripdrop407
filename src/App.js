@@ -11,18 +11,12 @@ import {
   Image,
   Text,
   useTheme,
-  Tabs,
 } from "@aws-amplify/ui-react";
 import { Authenticator } from "@aws-amplify/ui-react";
 import awsconfig from "./amplifyconfiguration.json";
 
-import Home from "./pages/Home";
-import Upload from "./pages/Upload";
-// import Friends from "./ui-components/FullFriends";
-import Friends from "./pages/Friends";
+import Route from "./pages/Route";
 import NavBar from "./components/NavBar";
-import ProfilePage from "./ui-components/ProfilePage";
-import FriendsOnly from "./pages/FriendsOnly";
 
 Amplify.configure(awsconfig);
 
@@ -70,64 +64,6 @@ const components = {
 };
 
 export default function App() {
-  let component;
-  switch (window.location.pathname) {
-    case "/":
-      component = (
-        <Tabs
-          spacing="equal"
-          justifyContent="center"
-          defaultValue={"Global Feed"}
-          indicatorPosition="bottom"
-          margin="10px"
-          items={[
-            {
-              label: "Global Feed",
-              value: "Global Feed",
-              content: <Home />,
-            },
-            {
-              label: "Friends Feed",
-              value: "Friends Feed",
-              content: <FriendsOnly />,
-            },
-          ]}
-        />
-      );
-      break;
-    case "/home":
-      component = (
-        <Tabs
-          spacing="equal"
-          justifyContent="center"
-          defaultValue={"Global Feed"}
-          indicatorPosition="bottom"
-          margin="10px"
-          items={[
-            {
-              label: "Global Feed",
-              value: "Global Feed",
-              content: <Home />,
-            },
-            {
-              label: "Friends Feed",
-              value: "Friends Feed",
-              content: <FriendsOnly />,
-            },
-          ]}
-        />
-      );
-      break;
-    case "/upload":
-      component = <Upload />;
-      break;
-    case "/Friends":
-      component = <Friends />;
-      break;
-    case "/profile":
-      component = <ProfilePage />;
-      break;
-  }
 
   return (
     <Authenticator
@@ -148,7 +84,7 @@ export default function App() {
                 <NavBar columnStart="1" columnEnd="2" />
 
                 <div columnStart="2" columnEnd="-1">
-                  {component}
+                  <Route/>
                 </div>
               </Grid>
             </div>
