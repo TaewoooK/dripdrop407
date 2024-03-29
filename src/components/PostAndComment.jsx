@@ -20,6 +20,7 @@ import {
   createSavedPosts,
   deleteComment,
   updateSavedPosts,
+  updatePost,
  } from "../graphql/mutations";
 import {
   listPosts,
@@ -179,6 +180,14 @@ const PostAndComment = () => {
     console.log("Green button initial");
     console.log("Image index");
     console.log(currentImageIndex);
+    const greenClickUpdateDetails = {
+      id: currPostID,
+      drip_points: posts[currentImageIndex].drip_points + 1,
+    };
+    await client.graphql({
+      query: updatePost,
+      variables: { input: greenClickUpdateDetails}
+    });
     if ((currentImageIndex + 1) % images.length == 0) {
       //console.log("Green Calls fetch post")
       await fetchPost();
@@ -198,6 +207,14 @@ const PostAndComment = () => {
 
   const handleRedButtonClick = async () => {
     setShow(false);
+    const redClickUpdateDetails = {
+      id: currPostID,
+      drip_points: posts[currentImageIndex].drip_points - 1,
+    };
+    await client.graphql({
+      query: updatePost,
+      variables: { input: redClickUpdateDetails}
+    });
     if ((currentImageIndex + 1) % images.length == 0) {
       //console.log("Green Calls fetch post")
       await fetchPost();
