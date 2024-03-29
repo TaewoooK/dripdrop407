@@ -21,7 +21,9 @@ const modalContainerStyles = {
   backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent black background
   display: "flex",
   justifyContent: "center",
-  alignItems: "center",
+  alignItems: "flex-start",
+  boxSizing: "border-box", // Ensure padding is included in the width and height
+  overflow: "auto", // Enable scrolling if the content overflows the viewport
   zIndex: 9999, // higher z-index to ensure it's above other content
 };
 
