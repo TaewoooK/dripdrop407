@@ -237,7 +237,7 @@ export default function App() {
                 <NavBar columnStart="1" columnEnd="2" />
 
                 <div columnStart="2" columnEnd="-1">
-                  <Route/>
+                  <Route notifications={notifications}/>
                 </div>
               </Grid>
             </div>

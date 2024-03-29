@@ -12,9 +12,13 @@ import FriendsOnly from "./FriendsOnly";
 import NotificationCenter from "../components/NotificationCenter";
 import Board from "../components/Leaderboard/Board";
 
-const Route = () => {
+const Route = (notifsFromApp) => {
   const { myUser, usernameToPrivacy } = useContext(UserContext);
-  const [notifications, setNotifications] = React.useState([]);
+  const [notifications, setNotifications] = React.useState([notifsFromApp]);
+
+  useEffect(() => {
+    setNotifications(notifsFromApp);
+  }, [notifsFromApp]);
 
   // useEffect(() => {
   //   console.log("getDefaultTabPrivate:", getDefaultTabPrivate());
