@@ -244,16 +244,17 @@ export default function App() {
               <Toaster position="top-right" reverseOrder={false} />
               <Grid
                 columnGap="0.5rem"
+                height="100vh"
                 rowGap="0.5rem"
                 templateColumns="1fr 8fr"
                 alignContent="center"
               >
-                <NavBar columnStart="1" columnEnd="2" />
-
-                <div columnStart="2" columnEnd="-1">
+                <NavBar columnStart="1" columnEnd="2" /> {/* NavBar spans only 1 column */}
+                <div style={{ gridColumn: "2 / span 1" }}> {/* Content div spans only 1 column */}
                   <Route notifications={notifications} />
                 </div>
               </Grid>
+
             </div>
           </View>
         </UserProvider>
