@@ -98,6 +98,49 @@ export default function Board() {
   useEffect(() => {
       setSelectedData([]);
   }, [allUsers]);
+
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const modalContainerStyles = {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent black background
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 9999, // higher z-index to ensure it's above other content
+  };
+  
+  const modalStyles = {
+    backgroundColor: "rgba(34, 34, 34, 1)",
+    padding: "20px",
+    borderRadius: "8px",
+    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+  };
+
+  const PostModal = ({ onClose }) => {
+    return (
+      <div style={modalContainerStyles}>
+        <div style={modalStyles}>
+          <h1>PUT CONTENT HERE</h1>
+          <button onClick={onClose}>Close</button>
+        </div>
+      </div>
+    );
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+
   
   return (
       <View className="leaderboard-container">
@@ -108,7 +151,7 @@ export default function Board() {
                   <Text className="point-text" children="Points" />
                   <hr className="separator" />
                   <div className="columns-container" style={{ cursor: "pointer", overflow: "auto" }} 
-                        onClick={() => console.log("clicked")}>
+                        onClick={openModal}>
                       {/* First, add a div to contain the columns */}
                       <View className="rank-column">
                           {selectedData.map((entry, index) => (
@@ -125,6 +168,9 @@ export default function Board() {
                               <h2 key={index} style={{ color: "white" }}>{entry.totalDripPoints}</h2>
                           ))}
                       </View>
+                  </div>
+                  <div>
+                    {isModalOpen && <PostModal onClose={closeModal} />}
                   </div>
               </View>
               <Text className="board-header-text">
