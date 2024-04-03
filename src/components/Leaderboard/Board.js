@@ -12,6 +12,7 @@ const client = generateClient();
 export default function Board() {
   const { allUsers } = useContext(UserContext);
   const [selectedData, setSelectedData] = useState([]); // Initialize with an empty array
+  const [toggleUser, setUser] = useState(false);
   async function getTotalDripPointsForUser(username) {
     let totalDripPoints = 0;
     let nextToken = null; // Initialize pagination token
@@ -56,7 +57,7 @@ export default function Board() {
   
           // Convert the posts data into the desired format
           const convertedData = posts.map((post, index) => ({
-              username: post.owner,
+              username: post.description,
               totalDripPoints: post.drip_points,
               rank: index + 1 // Adding 1 to make the ranks start from 1
           }));
@@ -103,10 +104,11 @@ export default function Board() {
           <View className="board">
               <View className="board2">
                   <Text className="rank-text" children="Rank" />
-                  <Text className="user-text" children="User" />
+                  <Text className="user-text" children={toggleUser ? "User" : "Post"} />
                   <Text className="point-text" children="Points" />
                   <hr className="separator" />
-                  <div className="columns-container" style={{ overflow: "auto" }}>
+                  <div className="columns-container" style={{ cursor: "pointer", overflow: "auto" }} 
+                        onClick={() => console.log("clicked")}>
                       {/* First, add a div to contain the columns */}
                       <View className="rank-column">
                           {selectedData.map((entry, index) => (
@@ -135,6 +137,7 @@ export default function Board() {
                   onClick={async () => {
                       const data = await getAllPostsRankedByDripPoints();
                       setSelectedData(data);
+                      setUser(false);
                   }}
               >
                   By Single Post
@@ -145,6 +148,7 @@ export default function Board() {
                   onClick={async () => {
                       const data = await getUserDripPointsLeaderboard(allUsers);
                       setSelectedData(data);
+                      setUser(true);
                   }}
               >
                   By User total
