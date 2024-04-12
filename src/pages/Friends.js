@@ -31,6 +31,9 @@ import {
   onCreateFriend,
   onDeleteFriend,
 } from "./../graphql/subscriptions";
+import {
+  deleteUser
+} from "aws-amplify/auth";
 
 // UI imports
 import "./Friends.css";
@@ -383,7 +386,7 @@ const Friends = () => {
   // # GETTER METHODS
   const getTypeUser = (username) => {
     if (filteredFriends.find((friend) => friend.FriendUsername === username))
-      return "friend";
+      return "friend ";
     else if (
       filteredRequests.find((request) => request.SenderUsername === username)
     )
