@@ -333,7 +333,7 @@ const Friends = () => {
 
   /* Button Handlers */
   const handleClickSend = (recepientUsername) => {
-    toast.promise(createFriendRequestByName(recepientUsername), {
+    toast.promise(createFriendRequestByName(recepientUsername + " "), {
       loading: "Sending Friend Request...",
       success: <b>Sent friend request to {recepientUsername}!</b>,
       error: (error) => {
@@ -386,7 +386,7 @@ const Friends = () => {
   // # GETTER METHODS
   const getTypeUser = (username) => {
     if (filteredFriends.find((friend) => friend.FriendUsername === username))
-      return "friend ";
+      return "friend";
     else if (
       filteredRequests.find((request) => request.SenderUsername === username)
     )
