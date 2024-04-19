@@ -10,7 +10,7 @@ import { UserContext } from "./../UserContext";
 
 import { Button, Icon, Text, View } from "@aws-amplify/ui-react";
 
-import UserProfileModal from "./UserProfileModal";
+import ProfileModal from "./ProfileModal";
 
 const modalContainerStyles = {
   position: "fixed",
@@ -44,23 +44,23 @@ export default function ChipComponent({
   handleClickDeny,
   handleClickRemove,
 }) {
-  const [openUserProfileModal, setOpenUserProfileModal] = useState(false);
+  const [openProfileModal, setOpenProfileModal] = useState(false);
   const { allUsers } = useContext(UserContext);
   const user = allUsers.find((user) => user.Username === username);
 
-  const handleOpenUserProfileModal = () => {
-    setOpenUserProfileModal(true);
+  const handleOpenProfileModal = () => {
+    setOpenProfileModal(true);
   };
 
-  const handleCloseUserProfileModal = () => {
-    setOpenUserProfileModal(false);
+  const handleCloseProfileModal = () => {
+    setOpenProfileModal(false);
   };
 
   const Modal = ({ onClose }) => {
     return (
       <div style={modalContainerStyles}>
         <div style={modalStyles}>
-          <UserProfileModal user={user} />
+          <ProfileModal user={user} />
           <button onClick={onClose}>Close</button>
         </div>
       </div>
@@ -176,9 +176,7 @@ export default function ChipComponent({
       padding="0px 0px 0px 0px"
     >
       <div backgroundColor="rgba(0,0,0,0.5)">
-        {openUserProfileModal && (
-          <Modal onClose={handleCloseUserProfileModal} />
-        )}
+        {openProfileModal && <Modal onClose={handleCloseProfileModal} />}
       </div>
       <View
         width="383px"
@@ -245,7 +243,7 @@ export default function ChipComponent({
         whiteSpace="pre-wrap"
         children={username}
         onClick={() => {
-          handleOpenUserProfileModal();
+          if (type !== "none") handleOpenProfileModal();
         }}
       ></Text>
       {buttons()}

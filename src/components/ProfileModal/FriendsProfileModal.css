@@ -1,0 +1,31 @@
+.FriendsList {
+    width: 550px;
+    height: 100%;
+    gap: 1rem;
+    display: inline-block;
+    background-color: rgba(34, 34, 34, 1);
+}
+
+.FriendsList .amplify-heading {
+    color: white;
+}
+
+.FriendsList .amplify-input {
+    width: 450px;
+    text-align: left;
+    color: white;
+}
+
+.FriendsList .amplify-input:focus {
+    border-color: white;
+}
+
+.FriendsList p {
+    color: white;
+}
+
+.friends_list_content_container {
+    height: 100%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}

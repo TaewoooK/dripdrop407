@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { fetchUserAttributes, getCurrentUser } from "aws-amplify/auth";
 import { generateClient } from "aws-amplify/api";
-import { updatePost } from "../graphql/mutations";
+import { updatePost } from "../../graphql/mutations";
 //import "./ProfilePage.css";
 //import HidePeople from "./HidePeople";
 import { motion, useAnimate } from "framer-motion";
@@ -18,22 +18,20 @@ import {
   Icon,
   Text,
 } from "@aws-amplify/ui-react";
-import { MyIcon } from "../ui-components";
+import { MyIcon } from "../../ui-components";
 import { getUrl } from "aws-amplify/storage";
-import EditProfileNew from "../components/EditProfileNew";
+import EditProfileNew from "../EditProfileNew";
 import {
   listPosts,
   listSavedPosts,
   getPost,
   commentsByPostId,
-} from "../graphql/queries";
+} from "../../graphql/queries";
 import toast, { Toaster } from "react-hot-toast";
 
 const client = generateClient();
 
-export default function UserProfileModal(props) {
-  const { user } = props;
-
+export default function UserProfileModal({ user }) {
   const [showComment, setShow] = useState(false);
   const [comments, setComments] = useState([]);
   const [commentsText, setCommentsText] = useState([]);
