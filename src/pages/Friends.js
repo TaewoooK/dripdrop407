@@ -18,12 +18,17 @@ import awsconfig from "../amplifyconfiguration.json";
 
 // GraphQL imports
 import { generateClient } from "aws-amplify/api";
-import { listFriendRequests, listFriends } from "./../graphql/queries";
+import {
+  listFriendRequests,
+  listFriends,
+  listNotifications,
+} from "./../graphql/queries";
 import {
   createFriendRequest,
   deleteFriendRequest,
   createFriend,
   deleteFriend,
+  updateNotifications,
 } from "./../graphql/mutations";
 import {
   onCreateFriendRequest,
@@ -139,6 +144,39 @@ const Friends = () => {
     );
   }
 
+  async function sendFriendRequestNotif(requestedUsername) {
+    // Insert friend request for requested user
+    try {
+      // notify requested user
+      const notif = ["FR", myUser.username];
+      console.log("send notif to:", requestedUsername);
+      console.log("notif:", notif);
+
+      const notifToRequestedUser = await client.graphql({
+        query: listNotifications,
+        variables: { filter: { username: { eq: requestedUsername } } },
+      });
+      if (notifToRequestedUser.data.listNotifications.items != null) {
+        console.log("notifToPostOwner:", notifToRequestedUser);
+        const notifList = notifToRequestedUser.data.listNotifications.items[0];
+        const input = {
+          id: notifList.id,
+          notificationsList: [notif, ...notifList.notificationsList],
+        };
+        const condition = { username: { eq: requestedUsername } };
+        await client.graphql({
+          query: updateNotifications,
+          variables: { input, condition },
+        });
+        console.log("notif sent to post owner");
+      } else {
+        console.log("no notif list for post owner");
+      }
+    } catch (error) {
+      console.log("Error sending friend request: ", error);
+    }
+  }
+
   // Sending Friend Request to recepientUsername
   async function createFriendRequestByName(recepientUsername) {
     // Insert friend request for requested user
@@ -151,6 +189,8 @@ const Friends = () => {
         },
       },
     });
+
+    sendFriendRequestNotif(recepientUsername);
   }
 
   // Rescind Friend Request from senderUsername
@@ -414,7 +454,7 @@ const Friends = () => {
 
   return (
     <View className="Friends">
-      <Toaster position="top-right" reverseOrder={false} />
+      {/* <Toaster position="top-right" reverseOrder={false} /> */}
       <Flex
         className="friends_content_container"
         direction="column"

@@ -106,7 +106,7 @@
     white-space: pre-wrap;
 }
 
-.header-text {
+.board-header-text {
     font-family: Inter, sans-serif; /* Use appropriate font stack or import the font */
     font-size: 48px;
     font-weight: 700;
