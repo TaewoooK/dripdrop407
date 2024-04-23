@@ -74,10 +74,10 @@ export default function Board() {
 
     for (const user of allUsers) {
         const username = user.Username;
-        console.log(username);
+        //console.log(username);
         try {
             const totalDripPoints = await getTotalDripPointsForUser(username);
-            console.log(totalDripPoints);
+            //console.log(totalDripPoints);
             userDripPointsList.push({ username, totalDripPoints });
         } catch (error) {
             console.error(`Error fetching drip points for user ${username}:`, error);
@@ -94,10 +94,14 @@ export default function Board() {
 
     return userDripPointsList;
 }
-  
+
   useEffect(() => {
-      setSelectedData([]);
-  }, [allUsers]);
+    const fetchData = async () => {
+        const data = await getAllPostsRankedByDripPoints();
+        setSelectedData(data);
+    };
+    fetchData();
+}, []); // empty dependency array ensures the effect runs only once on mount
 
   
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -152,7 +156,6 @@ export default function Board() {
                   <hr className="separator" />
                   <div className="columns-container" style={{ cursor: "pointer", overflow: "auto" }} 
                         onClick={openModal}>
-                      {/* First, add a div to contain the columns */}
                       <View className="rank-column">
                           {selectedData.map((entry, index) => (
                               <h2 key={index} style={{ color: "white" }}>{entry.rank}</h2>
