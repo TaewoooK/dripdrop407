@@ -3,25 +3,25 @@
     height: 100%;
     gap: 1rem;
     display: inline-block;
-    background-color: rgba(34, 34, 34, 1);
+    background-color: white;
 }
 
 .FriendsList .amplify-heading {
-    color: white;
+    color: black;
 }
 
 .FriendsList .amplify-input {
     width: 450px;
     text-align: left;
-    color: white;
+    color: black;
 }
 
 .FriendsList .amplify-input:focus {
-    border-color: white;
+    border-color: black;
 }
 
 .FriendsList p {
-    color: white;
+    color: black;
 }
 
 .friends_list_content_container {

@@ -193,7 +193,7 @@ export default function ChipComponent({
         boxShadow="0px 4px 4px rgba(0, 0, 0, 0.25)"
         borderRadius="50px"
         padding="0px 0px 0px 0px"
-        backgroundColor="rgba(217,217,217,0.1)"
+        backgroundColor="#383838"
       ></View>
       <Icon
         width="11.81%"

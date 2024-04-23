@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 // AWS Amplify imports
 import { Amplify } from "aws-amplify";
 import awsconfig from "../../amplifyconfiguration.json";
-import { Heading, Flex, View, SearchField } from "@aws-amplify/ui-react";
+import { Heading, Flex, Card, View, SearchField } from "@aws-amplify/ui-react";
 
 // GraphQL imports
 import { generateClient } from "aws-amplify/api";
@@ -72,48 +72,50 @@ const FriendsProfileModal = ({ user }) => {
 
   return (
     <View className="FriendsList">
-      <Flex
-        className="friends_list_content_container"
-        direction="column"
-        alignItems="center"
-        wrap="nowrap"
-        gap="1rem"
-      >
-        <Heading level={3}> Friends </Heading>
+      <Card backgroundColor="#d6d8db" borderRadius="25px" variation="outline">
+        <Flex
+          className="friends_list_content_container"
+          direction="column"
+          alignItems="center"
+          wrap="nowrap"
+          gap="1rem"
+        >
+          <Heading level={3}> Friends </Heading>
 
-        <SearchField
-          className="FriendSearch"
-          label="Friend Search"
-          placeholder="Search username of friends..."
-          size="small"
-          hasSearchButton={false}
-          onChange={onFriendSearchChange}
-          onClear={onFriendSearchClear}
-          value={friendSearch}
-        />
+          <SearchField
+            className="FriendSearch"
+            label="Friend Search"
+            placeholder="Search username of friends..."
+            size="small"
+            hasSearchButton={false}
+            onChange={onFriendSearchChange}
+            onClear={onFriendSearchClear}
+            value={friendSearch}
+          />
 
-        {isEmptyFriends() ? (
-          <p>No Friends Found</p>
-        ) : (
-          <>
-            <Flex
-              className="requests_container"
-              direction="column"
-              alignItems="center"
-              wrap="nowrap"
-              gap="1rem"
-            >
-              {filteredFriends.map((friend, index) => (
-                <ChipComponent
-                  key={index}
-                  username={friend.FriendUsername}
-                  type={"none"}
-                />
-              ))}
-            </Flex>
-          </>
-        )}
-      </Flex>
+          {isEmptyFriends() ? (
+            <p>No Friends Found</p>
+          ) : (
+            <>
+              <Flex
+                className="requests_container"
+                direction="column"
+                alignItems="center"
+                wrap="nowrap"
+                gap="1rem"
+              >
+                {filteredFriends.map((friend, index) => (
+                  <ChipComponent
+                    key={index}
+                    username={friend.FriendUsername}
+                    type={"none"}
+                  />
+                ))}
+              </Flex>
+            </>
+          )}
+        </Flex>
+      </Card>
     </View>
   );
 };
