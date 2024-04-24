@@ -96,7 +96,7 @@ const UserNotificationSubscriber = ({
           });
           console.log("created notification list");
           setNotifications([]);
-          return [];
+          return 0;
         } else {
           console.log(
             "notification list already exists:",
@@ -105,7 +105,7 @@ const UserNotificationSubscriber = ({
           setNotifications(
             result.data.listNotifications.items[0].notificationsList
           );
-          return result.data.listNotifications.items[0].notificationsList;
+          return result.data.listNotifications.items[0].notificationsList.length;
         }
       } catch (error) {
         console.error("Error fetching notification list:", error);
@@ -115,9 +115,9 @@ const UserNotificationSubscriber = ({
     let notifSubscription;
 
     if (user) {
-      var internal_notif = generateNotifs(user);
+      var internal_notif_length = generateNotifs(user);
 
-      console.log("from app.js:", user.username);
+      // console.log("from app.js:", user.username);
 
       notifSubscription = client
         .graphql({
@@ -126,17 +126,17 @@ const UserNotificationSubscriber = ({
         })
         .subscribe({
           next: (notificationData) => {
-            console.log("notificationData:", notificationData);
+            // console.log("notificationData:", notificationData);
             const notifList =
               notificationData.data.onUpdateNotifications.notificationsList;
             // console.log("notifList:", notifList);
             // console.log("notifications:", notifications, notifications.length);
             if (
               notifList.length !== 0 &&
-              notifList.length > internal_notif.length
+              notifList.length > internal_notif_length
             ) {
               const newNotif = notifList[0];
-              console.log("newNotif:", newNotif);
+              // console.log("newNotif:", newNotif);
               // console.log(
               //   "newNotif[0]:",
               //   newNotif[0] === "FR"
@@ -208,9 +208,9 @@ const UserNotificationSubscriber = ({
                   break;
               }
             }
-            console.log("notifList:", notifList);
+            // console.log("notifList:", notifList);
             setNotifications(notifList);
-            internal_notif = notifList;
+            internal_notif_length = notifList.length;
           },
         });
       console.log("subscribed to notifications for:", user.username);
