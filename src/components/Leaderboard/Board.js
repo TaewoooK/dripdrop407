@@ -1,15 +1,18 @@
+import { UserContext } from "../../UserContext";
+
 import * as React from "react";
 import { useEffect, useState, useContext } from "react";
 import { generateClient } from "aws-amplify/api";
-import { UserContext } from "../../UserContext";
+import { View, Text, Button, SelectField } from "@aws-amplify/ui-react";
 import "./board.css";
+
 import {
   listPosts,
-  listComments,
-  listFriends,
-  listFriendRequests,
 } from "../../graphql/queries";
-import { View, Text, Button, SelectField } from "@aws-amplify/ui-react";
+import {
+    onCreatePost,
+    onDeletePost
+} from "../../graphql/subscriptions"
 
 const client = generateClient();
 
@@ -34,20 +37,39 @@ export default function Board() {
   const [boardState, setBoardState] = useState("");
 
   useEffect(() => {
-    async function fetchData() {
-      switch (boardState) {
-        case "byPost":
-          setSelectedData(await getAllPostsRankedByDripPoints());
-          break;
-        case "byUser":
-          setSelectedData(await getUserDripPointsLeaderboard(allUsers));
-          break;
-        default:
-      }
-    }
+    const subscriptions = [
+      { subscriptionQuery: onCreatePost, action: fetchData },
+      { subscriptionQuery: onDeletePost, action: fetchData },
+    ];
 
+    const subscriptionRefs = subscriptions.map(
+      ({ subscriptionQuery, action }) => {
+        return client
+          .graphql({ query: subscriptionQuery })
+          .subscribe({ next: action });
+      }
+    );
+
+    return () => {
+      subscriptionRefs.forEach((subscription) => subscription.unsubscribe());
+    };
+  }, [])
+
+  useEffect(() => {
     fetchData();
   }, [time, boardState]);
+
+  async function fetchData() {
+    switch (boardState) {
+      case "byPost":
+        setSelectedData(await getAllPostsRankedByDripPoints());
+        break;
+      case "byUser":
+        setSelectedData(await getUserDripPointsLeaderboard(allUsers));
+        break;
+      default:
+    }
+  }
 
   function getPostFetchVariables(username = "") {
     switch (boardState) {
