@@ -689,7 +689,7 @@ export default function PostAndComment({ isFriendsOnly }) {
                   fillRule: "nonzero",
                 },
               ]}
-              display="block"
+              display="none"
               gap="unset"
               alignItems="unset"
               justifyContent="unset"
