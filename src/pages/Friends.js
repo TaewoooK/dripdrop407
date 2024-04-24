@@ -31,9 +31,6 @@ import {
   onCreateFriend,
   onDeleteFriend,
 } from "./../graphql/subscriptions";
-import {
-  deleteUser
-} from "aws-amplify/auth";
 
 // UI imports
 import "./Friends.css";
@@ -333,7 +330,7 @@ const Friends = () => {
 
   /* Button Handlers */
   const handleClickSend = (recepientUsername) => {
-    toast.promise(createFriendRequestByName(recepientUsername + " "), {
+    toast.promise(createFriendRequestByName(recepientUsername), {
       loading: "Sending Friend Request...",
       success: <b>Sent friend request to {recepientUsername}!</b>,
       error: (error) => {
