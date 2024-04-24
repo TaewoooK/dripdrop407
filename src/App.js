@@ -96,6 +96,7 @@ const UserNotificationSubscriber = ({
           });
           console.log("created notification list");
           setNotifications([]);
+          return [];
         } else {
           console.log(
             "notification list already exists:",
@@ -104,6 +105,7 @@ const UserNotificationSubscriber = ({
           setNotifications(
             result.data.listNotifications.items[0].notificationsList
           );
+          return result.data.listNotifications.items[0].notificationsList;
         }
       } catch (error) {
         console.error("Error fetching notification list:", error);
@@ -113,7 +115,7 @@ const UserNotificationSubscriber = ({
     let notifSubscription;
 
     if (user) {
-      generateNotifs(user);
+      var internal_notif = generateNotifs(user);
 
       console.log("from app.js:", user.username);
 
@@ -127,10 +129,11 @@ const UserNotificationSubscriber = ({
             console.log("notificationData:", notificationData);
             const notifList =
               notificationData.data.onUpdateNotifications.notificationsList;
-            console.log("notifList:", notifList);
+            // console.log("notifList:", notifList);
+            // console.log("notifications:", notifications, notifications.length);
             if (
               notifList.length !== 0 &&
-              notifList.length > notifications.length
+              notifList.length > internal_notif.length
             ) {
               const newNotif = notifList[0];
               console.log("newNotif:", newNotif);
@@ -207,6 +210,7 @@ const UserNotificationSubscriber = ({
             }
             console.log("notifList:", notifList);
             setNotifications(notifList);
+            internal_notif = notifList;
           },
         });
       console.log("subscribed to notifications for:", user.username);
@@ -224,6 +228,10 @@ const UserNotificationSubscriber = ({
 
 export default function App() {
   const [notifications, setNotifications] = React.useState([]);
+
+  useEffect(() => {
+    console.log("notifications:", notifications);
+  }, [notifications]);
 
   return (
     <Authenticator
@@ -249,12 +257,14 @@ export default function App() {
                 templateColumns="1fr 8fr"
                 alignContent="center"
               >
-                <NavBar columnStart="1" columnEnd="2" /> {/* NavBar spans only 1 column */}
-                <div style={{ gridColumn: "2 / span 1" }}> {/* Content div spans only 1 column */}
+                <NavBar columnStart="1" columnEnd="2" />{" "}
+                {/* NavBar spans only 1 column */}
+                <div style={{ gridColumn: "2 / span 1" }}>
+                  {" "}
+                  {/* Content div spans only 1 column */}
                   <Route notifications={notifications} />
                 </div>
               </Grid>
-
             </div>
           </View>
         </UserProvider>
