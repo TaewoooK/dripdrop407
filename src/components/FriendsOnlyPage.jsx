@@ -21,6 +21,7 @@ import {
   deleteComment,
   updateSavedPosts,
   updatePost,
+  updateNotifications
 } from "../graphql/mutations";
 import {
   listPosts,
@@ -28,6 +29,7 @@ import {
   commentsByPostId,
   listSavedPosts,
   listFriends,
+  listNotifications
 } from "../graphql/queries";
 import { getUrl } from "aws-amplify/storage";
 import PostActionCenter from "./PostActionCenter";
@@ -177,6 +179,9 @@ const FriendsOnlyPage = () => {
           console.log(fetchedImages);
           setImage(fetchedImages[0].imageUrl);
           setCurrentImageIndex(0);
+        } else {
+          setImage(null);
+          return <div>No More Posts, Check back later!</div>;
         }
 
         //console.log("End of fetchPost logging")
@@ -223,45 +228,69 @@ const FriendsOnlyPage = () => {
 
   const [scope, animate] = useAnimate();
   const handleGreenButtonClick = async () => {
-    setShow(false);
-    console.log("Green button initial");
-    console.log("Image index");
-    console.log(currentImageIndex);
+    if (posts.length > 0) {
+      setShow(false);
+      console.log("Green button initial");
+      console.log("Image index");
+      console.log(currentImageIndex);
+      const greenClickUpdateDetails = {
+        id: currPostID,
+        drip_points: posts[currentImageIndex].drip_points + 1,
+      };
+      await client.graphql({
+        query: updatePost,
+        variables: { input: greenClickUpdateDetails}
+      });
+      console.log(posts[currentImageIndex].drip_points);
 
-    updatePostFunction(posts[currentImageIndex]);
-    if ((currentImageIndex + 1) % images.length == 0) {
-      //console.log("Green Calls fetch post")
-      await fetchPost();
-    } else {
-      setCurrentImageIndex(
-        (currentImageIndex) => (currentImageIndex + 1) % images.length
-      );
-      let tempImgIndex = (currentImageIndex + 1) % images.length;
-      setImage(images[tempImgIndex].imageUrl);
+      updatePostFunction(posts[currentImageIndex]);
+      if ((currentImageIndex + 1) % images.length == 0) {
+        //console.log("Green Calls fetch post")
+        await fetchPost();
+      } else {
+        setCurrentImageIndex(
+          (currentImageIndex) => (currentImageIndex + 1) % images.length
+        );
+        let tempImgIndex = (currentImageIndex + 1) % images.length;
+        setImage(images[tempImgIndex].imageUrl);
+      }
+      // await fetchPost();
+      await animate(scope.current, { x: "80vw" });
+      await animate(scope.current, { x: 0 });
+      // Perform any other actions or state updates as needed
     }
-    // await fetchPost();
-    await animate(scope.current, { x: "80vw" });
-    await animate(scope.current, { x: 0 });
-    // Perform any other actions or state updates as needed
   };
 
   const handleRedButtonClick = async () => {
-    setShow(false);
-    updatePostFunction(posts[currentImageIndex]);
-    if ((currentImageIndex + 1) % images.length == 0) {
-      //console.log("Green Calls fetch post")
-      await fetchPost();
-    } else {
-      setCurrentImageIndex(
-        (currentImageIndex) => (currentImageIndex + 1) % images.length
-      );
-      let tempImgIndex = (currentImageIndex + 1) % images.length;
-      setImage(images[tempImgIndex].imageUrl);
+    if (posts.length > 0) {
+      setShow(false);
+
+      const redClickUpdateDetails = {
+        id: currPostID,
+        drip_points: posts[currentImageIndex].drip_points - 1,
+      };
+      await client.graphql({
+        query: updatePost,
+        variables: { input: redClickUpdateDetails}
+      });
+      console.log(posts[currentImageIndex].drip_points);
+      
+      updatePostFunction(posts[currentImageIndex]);
+      if ((currentImageIndex + 1) % images.length == 0) {
+        //console.log("Green Calls fetch post")
+        await fetchPost();
+      } else {
+        setCurrentImageIndex(
+          (currentImageIndex) => (currentImageIndex + 1) % images.length
+        );
+        let tempImgIndex = (currentImageIndex + 1) % images.length;
+        setImage(images[tempImgIndex].imageUrl);
+      }
+      await animate(scope.current, { x: "-80vw" });
+      await animate(scope.current, { x: 0 });
+      // console.log('curr idx:',currentImageIndex, 'postID:', currPostID)
+      // Perform any other actions or state updates as needed
     }
-    await animate(scope.current, { x: "-80vw" });
-    await animate(scope.current, { x: 0 });
-    // console.log('curr idx:',currentImageIndex, 'postID:', currPostID)
-    // Perform any other actions or state updates as needed
   };
 
   const handleCommentsExpansionClick = async () => {
@@ -298,6 +327,33 @@ const FriendsOnlyPage = () => {
         },
       },
     });
+
+    // notifify post owner
+    const notif = ["Comment", currUser.username, currPost.id, comment];
+    console.log("send notif to:", currPost.owner);
+    console.log("notif:", notif);
+
+    const notifToPostOwner = await client.graphql({
+      query: listNotifications,
+      variables: { filter: { username: { eq: currPost.owner } } },
+    });
+    if (notifToPostOwner.data.listNotifications.items != null) {
+      console.log("notifToPostOwner:", notifToPostOwner);
+      const notifList = notifToPostOwner.data.listNotifications.items[0];
+      const input = {
+        id: notifList.id,
+        notificationsList: [notif, ...notifList.notificationsList],
+      };
+      const condition = { username: { eq: currPost.owner } };
+      await client.graphql({
+        query: updateNotifications,
+        variables: { input, condition },
+      });
+      console.log("notif sent to post owner");
+    } else {
+      console.log("no notif list for post owner");
+    }
+
     const getComments = await client.graphql({
       query: commentsByPostId,
       variables: { postId: currPost.id },
@@ -441,7 +497,7 @@ const FriendsOnlyPage = () => {
 
   return (
     <Flex direction="row" justifyContent="center" gap="0.5rem">
-      <Toaster position="top-right" reverseOrder={false} />
+      {/* <Toaster position="top-right" reverseOrder={false} /> */}
       {showActionCenter && (
         <div className="overlay" onClick={toggleActionCenter}>
           <div className="overlay-content" onClick={(e) => e.stopPropagation()}>

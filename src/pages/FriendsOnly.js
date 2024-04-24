@@ -3,7 +3,7 @@ import "@aws-amplify/ui-react/styles.css";
 import { Amplify } from "aws-amplify";
 import { Button, View, withAuthenticator } from "@aws-amplify/ui-react";
 import awsconfig from "../amplifyconfiguration.json";
-import FriendsOnlyPage from "../components/FriendsOnlyPage";
+import PostAndComment from "../components/PostAndComment";
 
 Amplify.configure(awsconfig);
 
@@ -11,7 +11,7 @@ const FriendsOnly = () => {
   return (
     <View className="FriendsOnly">
       <div>
-        <FriendsOnlyPage />
+        <PostAndComment isFriendsOnly={true} />
       </div>
     </View>
   );

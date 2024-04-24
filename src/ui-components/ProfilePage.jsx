@@ -239,7 +239,7 @@ const ProfilePage = () => {
         <p>Loading...</p>
       ) : user ? (
         <div style={styles.profile}>
-          <Toaster position="top-right" reverseOrder={false} />
+          {/* <Toaster position="top-right" reverseOrder={false} /> */}
 
           <h1 style={styles.heading}>
             Welcome <span style={{ color: "white" }}>{currUser.username}!</span>

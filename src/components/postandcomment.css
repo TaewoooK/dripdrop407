@@ -1,211 +1,213 @@
 .big-post-container {
-    width: 450px;
-    height: 570px;
-    display: block;
-    gap: 0;
-    align-items: unset;
-    justify-content: unset;
-    position: relative;
-    padding: 0;
-    border-radius: 40px;
-  }
-  
-  .post-container {
-      width: 450px;
-      height: 570px;
-      display: block;
-      gap: unset;
-      align-items: unset;
-      justify-content: left;
-      overflow: hidden;
-      position: absolute;
-      top: 0%;
-      bottom: 10.09%;
-      left: 0%;
-      right: 20.93%;
-      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-      border-radius: 40px;
-      padding: 0;
-      background-color: rgba(34, 34, 34, 1);
-  }
-  
-  .thumb-container1 {
-      width: 39px;
-      height: 39px;
-      display: block;
-      gap: unset;
-      align-items: unset;
-      justify-content: unset;
-      overflow: hidden;
-      position: absolute;
-      top: 495px;
-      left: 46.5px;
-      padding: 0;
-  }
-  
-  .thumb-container2 {
-      width: 39px;
-      height: 39px;
-      display: block;
-      gap: unset;
-      align-items: unset;
-      justify-content: unset;
-      overflow: hidden;
-      position: absolute;
-      top: 495px;
-      left: 363px;
-      padding: 0;
-  }
-  
-  .post-img {
-      width: 276px;
-      height: 383px;
-      display: block;
-      gap: unset;
-      align-items: unset;
-      justify-content: unset;
-      position: absolute;
-      top: 64px;
-      left: 90px;
-      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-      border-radius: 25px;
-      padding: 0;
-  }
-  
-  .more-icon {
-      width: 27px;
-      height: 27px;
-      position: absolute;
-      top: 30px;
-      left: 25px;
-      display: block;
-      gap: unset;
-      align-items: unset;
-      justify-content: unset;
-      overflow: hidden;
-      padding: 0;
-      cursor: pointer;
-  }
-  
-  .chat-icon {
-      width: 27px;
-      height: 27px;
-      position: absolute;
-      top: 14px;
-      left: 390px;
-      display: block;
-      gap: unset;
-      align-items: unset;
-      justify-content: unset;
-      overflow: hidden;
-      cursor: pointer;
-      padding: 0;
-  }
-  
-  .green-button {
-      width: 56px;
-      height: 56px;
-      position: absolute;
-      border-radius: 51px;
-      top: 487px;
-      left: 354px;
-      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-      background-color: rgba(0, 255, 26, 0.34);
-  }
-  
-  .red-button {
-      width: 56px;
-      height: 56px;
-      position: absolute;
-      border-radius: 51px;
-      top: 487px;
-      left: 39px;
-      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-      background-color: rgba(255, 0, 0, 0.37);
-  }
-  
-  .username-text {
-      font-family: 'Inter';
-      font-size: 20px;
-      font-weight: 400;
-      color: rgba(230, 230, 230, 1);
-      line-height: 30px;
-      text-align: left;
-      display: block;
-      flex-direction: column;
-      justify-content: unset;
-      width: unset;
-      height: unset;
-      gap: unset;
-      align-items: unset;
-      flex-shrink: 0;
-      position: relative;
-      padding: 0px;
-      white-space: pre-wrap;
-  }
+  width: 450px;
+  height: 570px;
+  display: block;
+  gap: 0;
+  align-items: unset;
+  justify-content: unset;
+  position: relative;
+  padding: 0;
+  border-radius: 40px;
+}
+
+.post-container {
+  width: 450px;
+  height: 570px;
+  display: block;
+  gap: unset;
+  align-items: unset;
+  justify-content: left;
+  overflow: hidden;
+  position: absolute;
+  top: 0%;
+  bottom: 10.09%;
+  left: 0%;
+  right: 20.93%;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 40px;
+  padding: 0;
+  background-color: rgba(34, 34, 34, 1);
+}
+
+.thumb-container1 {
+  width: 39px;
+  height: 39px;
+  display: block;
+  gap: unset;
+  align-items: unset;
+  justify-content: unset;
+  overflow: hidden;
+  position: absolute;
+  top: 495px;
+  left: 46.5px;
+  padding: 0;
+  filter: invert(100%);
+}
+
+.thumb-container2 {
+  width: 39px;
+  height: 39px;
+  display: block;
+  gap: unset;
+  align-items: unset;
+  justify-content: unset;
+  overflow: hidden;
+  position: absolute;
+  top: 495px;
+  left: 363px;
+  padding: 0;
+  filter: invert(100%);
+}
+
+.post-img {
+  width: 276px;
+  height: 383px;
+  display: block;
+  gap: unset;
+  align-items: unset;
+  justify-content: unset;
+  position: absolute;
+  top: 64px;
+  left: 90px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 25px;
+  padding: 0;
+}
+
+.more-icon {
+  width: 27px;
+  height: 27px;
+  position: absolute;
+  top: 30px;
+  left: 25px;
+  display: block;
+  gap: unset;
+  align-items: unset;
+  justify-content: unset;
+  overflow: hidden;
+  padding: 0;
+  cursor: pointer;
+}
+
+.chat-icon {
+  width: 27px;
+  height: 27px;
+  position: absolute;
+  top: 14px;
+  left: 390px;
+  display: block;
+  gap: unset;
+  align-items: unset;
+  justify-content: unset;
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+}
+
+.green-button {
+  width: 56px;
+  height: 56px;
+  position: absolute;
+  border-radius: 51px;
+  top: 487px;
+  left: 354px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  background-color: rgba(0, 255, 26, 0.34);
+}
+
+.red-button {
+  width: 56px;
+  height: 56px;
+  position: absolute;
+  border-radius: 51px;
+  top: 487px;
+  left: 39px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  background-color: rgba(255, 0, 0, 0.37);
+}
+
+.username-text {
+  font-family: "Inter";
+  font-size: 20px;
+  font-weight: 400;
+  color: rgba(230, 230, 230, 1);
+  line-height: 30px;
+  text-align: left;
+  display: block;
+  flex-direction: column;
+  justify-content: unset;
+  width: unset;
+  height: unset;
+  gap: unset;
+  align-items: unset;
+  flex-shrink: 0;
+  position: relative;
+  padding: 0px;
+  white-space: pre-wrap;
+}
 
 .comment-container {
-    width: 277.5px;
-    height: 468px;
-    display: block;
-    gap: 0;
-    top: 50px;
-    align-items: unset;
-    justify-content: unset;
-    overflow: hidden;
-    position: relative;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 20px;
-    padding: 0;
-    background-color: rgba(34, 34, 34, 1);
+  width: 277.5px;
+  height: 468px;
+  display: block;
+  gap: 0;
+  top: 30px;
+  align-items: unset;
+  justify-content: unset;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 20px;
+  padding: 0;
+  background-color: rgba(34, 34, 34, 1);
 }
 
 .header-text {
-    font-family: "Inter";
-    font-size: 24px; /* 32px scaled down by 25% */
-    font-weight: 700;
-    color: rgba(255, 255, 255, 1);
-    line-height: 24px;
-    text-align: left;
-    display: block;
-    direction: column;
-    justify-content: unset;
-    width: unset;
-    height: unset;
-    gap: unset;
-    align-items: unset;
-    position: absolute;
-    top: 27px; /* 36px scaled down by 25% */
-    left: 45px; /* 60px scaled down by 25% */
-    padding: 0;
-    white-space: pre-wrap;
+  font-family: "Inter";
+  font-size: 24px; /* 32px scaled down by 25% */
+  font-weight: 700;
+  color: rgba(255, 255, 255, 1);
+  line-height: 24px;
+  text-align: left;
+  display: block;
+  direction: column;
+  justify-content: unset;
+  width: unset;
+  height: unset;
+  gap: unset;
+  align-items: unset;
+  position: absolute;
+  top: 27px; /* 36px scaled down by 25% */
+  left: 45px; /* 60px scaled down by 25% */
+  padding: 0;
+  white-space: pre-wrap;
 }
 
 .text-field-container {
-    gap: 12.75px; /* 17px * 0.75 */
-    direction: row;
-    width: unset;
-    height: unset;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: 406.5px; /* 542px * 0.75 */
-    left: 0px; /* 45px * 0.75 */
-    padding: 0;
-    display: flex;
-    transform: scale(0.75);
+  gap: 12.75px; /* 17px * 0.75 */
+  direction: row;
+  width: unset;
+  height: unset;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 406.5px; /* 542px * 0.75 */
+  left: 0px; /* 45px * 0.75 */
+  padding: 0;
+  display: flex;
+  transform: scale(0.75);
 }
 
 .icon-container {
-    width: 30px; /* 40px * 0.75 */
-    height: 30px; /* 40px * 0.75 */
-    display: block;
-    gap: unset;
-    align-items: unset;
-    justify-content: unset;
-    overflow: hidden;
-    position: absolute;
-    top: 21px; /* 28px * 0.75 */
-    left: 219px; /* 292px * 0.75 */
-    padding: 0;
+  width: 30px; /* 40px * 0.75 */
+  height: 30px; /* 40px * 0.75 */
+  display: block;
+  gap: unset;
+  align-items: unset;
+  justify-content: unset;
+  overflow: hidden;
+  position: absolute;
+  top: 21px; /* 28px * 0.75 */
+  left: 219px; /* 292px * 0.75 */
+  padding: 0;
 }

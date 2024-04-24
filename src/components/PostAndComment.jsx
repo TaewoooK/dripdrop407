@@ -21,28 +21,30 @@ import {
   deleteComment,
   updateSavedPosts,
   updatePost,
-} from "../graphql/mutations";
+  updateNotifications,
+ } from "../graphql/mutations";
 import {
   listPosts,
   getPost,
   commentsByPostId,
   listSavedPosts,
+  listFriends,
+  listNotifications,
 } from "../graphql/queries";
 import { getUrl } from "aws-amplify/storage";
 import PostActionCenter from "./PostActionCenter";
 import ReportPost from "./ReportPost";
 import toast, { Toaster } from "react-hot-toast";
 import { useContext } from "react";
-import { UserContext } from "./../UserContext";
+import { UserContext } from "../UserContext";
 
 const client = generateClient();
 
-const PostAndComment = () => {
+export default function PostAndComment({ isFriendsOnly }) {
   const [comment, setComment] = React.useState("");
   const [comments, setComments] = React.useState([]);
   const [commentsText, setCommentsText] = React.useState([]);
   const [showComment, setShow] = React.useState(false);
-
   const [nextToken, setNextToken] = React.useState(null);
   const [posts, setPosts] = React.useState([]);
   const [images, setImages] = React.useState([]);
@@ -53,6 +55,27 @@ const PostAndComment = () => {
   const [currUser, setCurrUser] = useState(null);
   const [gotVN, setGotVN] = useState(false);
   const [savedPosts, setSavedPosts] = useState([]);
+
+  const [listOfFriends, setListOfFriends] = useState([]);
+
+  // Find Friends using updated filter
+  const fetchFriends = async () => {
+    if (currUser != null) {
+      try {
+        const friendsData = await client.graphql({
+          query: listFriends,
+          variables: { filter: { Username: { eq: currUser.username } } },
+        });
+        setListOfFriends(friendsData.data.listFriends.items);
+        let temp = friendsData.data.listFriends.items;
+        setListOfFriends(temp.map((friend) => friend.FriendUsername));
+      } catch (error) {
+        console.error("Error fetching friends: ", error);
+      }
+    }
+  };
+
+  let filter = {};
 
   const date = new Date();
   let oneWeekFromToday = new Date(date.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -66,40 +89,75 @@ const PostAndComment = () => {
     }
   };
 
-  const setVariablesNFilter = () => {
+  const setVariablesNFilter = (nextToken) => {
     if (currUser != null) {
-      console.log(currUser);
-      if (!nextToken) {
-        // This means either the page just loaded or the user has scrolled to the end of the list
-        setVariablesN({
-          filter: {
+      filter = {
+        and: [
+          {
             not: {
               hiddenPeople: { contains: currUser.username },
             },
+          },
+          {
             not: {
               actionedUsers: { contains: currUser.username },
             },
-            createdAt: { between: [oneWeekFromToday.toJSON(), date.toJSON()] },
           },
+        ],
+        createdAt: { between: [oneWeekFromToday.toJSON(), date.toJSON()] },
+      };
+
+      if (isFriendsOnly) {
+        let filterMembers = listOfFriends.map((id) =>
+          JSON.parse(`{"owner": {"eq": "${id}"}}`)
+        );
+        filter = {
+          or: filterMembers,
+          and: [
+            {
+              not: {
+                hiddenPeople: { contains: currUser.username },
+              },
+            },
+            {
+              not: {
+                actionedUsers: { contains: currUser.username },
+              },
+            },
+          ],
+
+          createdAt: { between: [oneWeekFromToday.toJSON(), date.toJSON()] },
+        };
+      }
+
+      if (!nextToken) {
+        // This means either the page just loaded or the user has scrolled to the end of the list
+        setVariablesN({
+          filter: filter,
           limit: 10,
         });
       } else {
         setVariablesN({
-          filter: {
-            not: {
-              hiddenPeople: { contains: currUser.username },
-            },
-            not: {
-              actionedUsers: { contains: currUser.username },
-            },
-            createdAt: { between: [oneWeekFromToday.toJSON(), date.toJSON()] },
-          },
+          filter: filter,
           limit: 10,
           nextToken: nextToken,
         });
       }
       setGotVN(true);
     }
+  };
+
+  const updatePostFunction = async (currPost) => {
+    const postData = await client.graphql({
+      query: updatePost,
+      variables: {
+        input: {
+          id: currPost.id,
+          actionedUsers: [...currPost.actionedUsers, currUser.username],
+        },
+      },
+    });
+    console.log(postData);
   };
 
   const fetchPost = async () => {
@@ -113,6 +171,8 @@ const PostAndComment = () => {
           variables: variablesN,
         });
         //console.log("graphql response"
+        console.log("filter: ");
+        console.log(filter);
 
         let postData = [];
         let nextTokenTemp = null;
@@ -121,19 +181,7 @@ const PostAndComment = () => {
           nextTokenTemp = postDataGraphQLResponse.data.listPosts.nextToken;
           setPosts(postDataGraphQLResponse.data.listPosts.items);
           setNextToken(postDataGraphQLResponse.data.listPosts.nextToken);
-          setVariablesN({
-            filter: {
-              not: {
-                hiddenPeople: { contains: currUser.username },
-              },
-              not: {
-                actionedUsers: { contains: currUser.username },
-              },
-            },
-            limit: 10,
-            nextToken: nextTokenTemp,
-            createdAt: { between: [oneWeekFromToday.toJSON(), date.toJSON()] },
-          });
+          setVariablesNFilter(nextTokenTemp);
         } else {
           setNextToken(null);
         }
@@ -153,7 +201,11 @@ const PostAndComment = () => {
           console.log(fetchedImages);
           setImage(fetchedImages[0].imageUrl);
           setCurrentImageIndex(0);
+        } else {
+          setImage(null);
+          return <div>No More Posts, Check back later!</div>;
         }
+
         //console.log("End of fetchPost logging")
       } catch (error) {
         console.error("Error fetching posts: ", error);
@@ -166,9 +218,16 @@ const PostAndComment = () => {
   }, []);
 
   useEffect(() => {
-    setVariablesNFilter();
-    getSavedPosts();
+    if (currUser) {
+      getSavedPosts();
+    fetchFriends();
+      // generateNotifs();
+    }
   }, [currUser]);
+
+  useEffect(() => {
+    setVariablesNFilter();
+  }, [listOfFriends]);
 
   // When nextToken changes, fetch more posts
   useEffect(() => {
@@ -192,64 +251,71 @@ const PostAndComment = () => {
     }
   }, [posts, currentImageIndex]);
 
-  const updatePostFunction = async (currPost) => {
-    const postData = await client.graphql({
-      query: updatePost,
-      variables: {
-        input: {
-          id: currPost.id,
-          actionedUsers: [currPost.actionedUsers, currUser.username],
-        },
-      },
-    });
-    console.log(postData);
-  };
-
   const [scope, animate] = useAnimate();
   const handleGreenButtonClick = async () => {
-    setShow(false);
-    console.log("Green button initial");
-    console.log("Image index");
-    console.log(currentImageIndex);
+    if (posts.length > 0) {
+      setShow(false);
+      console.log("Green button initial");
+      console.log("Image index");
+      console.log(currentImageIndex);
+      const greenClickUpdateDetails = {
+        id: currPostID,
+        drip_points: posts[currentImageIndex].drip_points + 1,
+      };
+      await client.graphql({
+        query: updatePost,
+        variables: { input: greenClickUpdateDetails },
+      });
+      console.log(posts[currentImageIndex].drip_points);
 
-    console.log("THE CURRENT POST: ", posts[currentImageIndex]);
-    updatePostFunction(posts[currentImageIndex]);
-
-    if ((currentImageIndex + 1) % images.length == 0) {
-      //console.log("Green Calls fetch post")
-      await fetchPost();
-    } else {
-      setCurrentImageIndex(
-        (currentImageIndex) => (currentImageIndex + 1) % images.length
-      );
-      let tempImgIndex = (currentImageIndex + 1) % images.length;
-      setImage(images[tempImgIndex].imageUrl);
+      updatePostFunction(posts[currentImageIndex]);
+      if ((currentImageIndex + 1) % images.length == 0) {
+        // console.log("Green Calls fetch post")
+        await fetchPost();
+      } else {
+        setCurrentImageIndex(
+          (currentImageIndex) => (currentImageIndex + 1) % images.length
+        );
+        let tempImgIndex = (currentImageIndex + 1) % images.length;
+        setImage(images[tempImgIndex].imageUrl);
+      }
+      // await fetchPost();
+      await animate(scope.current, { x: "80vw" });
+      await animate(scope.current, { x: 0 });
+      // Perform any other actions or state updates as needed
     }
-    // await fetchPost();
-    await animate(scope.current, { x: "80vw" });
-    await animate(scope.current, { x: 0 });
-    // Perform any other actions or state updates as needed
   };
 
   const handleRedButtonClick = async () => {
-    setShow(false);
+    if (posts.length > 0) {
+      setShow(false);
 
-    updatePostFunction(posts[currentImageIndex]);
+      const redClickUpdateDetails = {
+        id: currPostID,
+        drip_points: posts[currentImageIndex].drip_points - 1,
+      };
+      await client.graphql({
+        query: updatePost,
+        variables: { input: redClickUpdateDetails },
+      });
+      console.log(posts[currentImageIndex].drip_points);
 
-    if ((currentImageIndex + 1) % images.length == 0) {
-      //console.log("Green Calls fetch post")
-      await fetchPost();
-    } else {
-      setCurrentImageIndex(
-        (currentImageIndex) => (currentImageIndex + 1) % images.length
-      );
-      let tempImgIndex = (currentImageIndex + 1) % images.length;
-      setImage(images[tempImgIndex].imageUrl);
+      updatePostFunction(posts[currentImageIndex]);
+      if ((currentImageIndex + 1) % images.length == 0) {
+        //console.log("Green Calls fetch post")
+        await fetchPost();
+      } else {
+        setCurrentImageIndex(
+          (currentImageIndex) => (currentImageIndex + 1) % images.length
+        );
+        let tempImgIndex = (currentImageIndex + 1) % images.length;
+        setImage(images[tempImgIndex].imageUrl);
+      }
+      await animate(scope.current, { x: "-80vw" });
+      await animate(scope.current, { x: 0 });
+      // console.log('curr idx:',currentImageIndex, 'postID:', currPostID)
+      // Perform any other actions or state updates as needed
     }
-    await animate(scope.current, { x: "-80vw" });
-    await animate(scope.current, { x: 0 });
-    // console.log('curr idx:',currentImageIndex, 'postID:', currPostID)
-    // Perform any other actions or state updates as needed
   };
 
   const handleCommentsExpansionClick = async () => {
@@ -276,50 +342,62 @@ const PostAndComment = () => {
 
   const onClickHandler = async () => {
     const currPost = posts[currentImageIndex];
+    console.log(
+      "currPostID:",
+      currPost.id,
+      "currPostOwner:",
+      currPost.owner,
+      "currUserId:",
+      currUser.username
+    );
     await client.graphql({
       query: createComment,
       variables: {
         input: {
           postId: currPost.id,
           text: comment,
-          commentAuthorId: currUser.username,
+          commentAuthorId: currUser.userId,
         },
       },
     });
+
+    // notifify post owner
+    const notif = ["Comment", currUser.username, currPost.id, comment];
+    console.log("send notif to:", currPost.owner);
+    console.log("notif:", notif);
+
+    const notifToPostOwner = await client.graphql({
+      query: listNotifications,
+      variables: { filter: { username: { eq: currPost.owner } } },
+    });
+    if (notifToPostOwner.data.listNotifications.items != null) {
+      console.log("notifToPostOwner:", notifToPostOwner);
+      const notifList = notifToPostOwner.data.listNotifications.items[0];
+      const input = {
+        id: notifList.id,
+        notificationsList: [notif, ...notifList.notificationsList],
+      };
+      const condition = { username: { eq: currPost.owner } };
+      await client.graphql({
+        query: updateNotifications,
+        variables: { input, condition },
+      });
+      console.log("notif sent to post owner");
+    } else {
+      console.log("no notif list for post owner");
+    }
+
+    console.log("no error");
     const getComments = await client.graphql({
       query: commentsByPostId,
       variables: { postId: currPost.id },
     });
+    console.log("no error 2");
     const commentsList = getComments.data.commentsByPostId.items;
     const commentsTextArray = commentsList.map((comment) => comment.text);
     setComments(commentsList);
     setCommentsText(commentsTextArray);
     setComment("");
-  };
-
-
-
-    // Handler function to toggle the comment deletion state
-  const handleIconClick = async ({ index }) => {
-    //   setIsCommentDeleted(!isCommentDeleted);
-    //   console.log("comment deleted:", index);
-    console.log("comment deleted id:", comments[index].id);
-    const currPost = posts[currentImageIndex];
-    await client.graphql({
-      query: deleteComment,
-      variables: {
-        input: { id: comments[index].id },
-      },
-    });
-    const getComments = await client.graphql({
-      query: commentsByPostId,
-      variables: { postId: currPost.id },
-    });
-    const commentsList = getComments.data.commentsByPostId.items;
-    const commentsTextArray = commentsList.map((comment) => comment.text);
-    setComments(commentsList);
-    setCommentsText(commentsTextArray);
-    toast.success("Comment deleted successfully");
   };
 
   const onChangeHandler = (e) => {
@@ -375,6 +453,30 @@ const PostAndComment = () => {
     }
   };
 
+  // const generateNotifs = async () => {
+  //   try {
+  //     console.log("fetching notif list for user");
+  //     const result = await client.graphql({
+  //       query: listNotifications,
+  //       variables: { filter: { username: { eq: currUser.username } } },
+  //     });
+  //     if (result.data.listNotifications.items === null) {
+  //       console.log("creating notification list ");
+  //       await client.graphql({
+  //         query: createNotifications,
+  //         variables: {
+  //           input: { username: currUser.username, notificationsList: [] },
+  //         },
+  //       });
+  //       console.log("created notification list");
+  //     } else {
+  //       console.log("notification list already exists");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching notification list:", error);
+  //   }
+  // };
+
   const toggleSavePost = async () => {
     setShowActionCenter(false);
     try {
@@ -427,21 +529,41 @@ const PostAndComment = () => {
       toast.error("error saving/unsaving post");
     }
   };
-
   // const [isCommentDeleted, setIsCommentDeleted] = useState(false);
 
-
+  // Handler function to toggle the comment deletion state
+  const handleIconClick = async ({ index }) => {
+    //   setIsCommentDeleted(!isCommentDeleted);
+    //   console.log("comment deleted:", index);
+    console.log("comment deleted id:", comments[index].id);
+    const currPost = posts[currentImageIndex];
+    await client.graphql({
+      query: deleteComment,
+      variables: {
+        input: { id: comments[index].id },
+      },
+    });
+    const getComments = await client.graphql({
+      query: commentsByPostId,
+      variables: { postId: currPost.id },
+    });
+    const commentsList = getComments.data.commentsByPostId.items;
+    const commentsTextArray = commentsList.map((comment) => comment.text);
+    setComments(commentsList);
+    setCommentsText(commentsTextArray);
+    toast.success("Comment deleted successfully");
+  };
 
   return (
     <Flex direction="row" justifyContent="center" gap="0.5rem">
-      <Toaster position="top-right" reverseOrder={false} />
+      {/* <Toaster position="top-right" reverseOrder={false} /> */}
       {showActionCenter && (
         <div className="overlay" onClick={toggleActionCenter}>
           <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
             <PostActionCenter
               toggleReportPost={toggleReportPost}
               toggleSavePost={toggleSavePost}
-              saved={savedPosts.postIds.includes(posts[currentImageIndex].id)}
+              saved={savedPosts.includes(posts[currentImageIndex].id)}
             />
           </div>
         </div>
@@ -739,7 +861,8 @@ const PostAndComment = () => {
                   >
                     {text}
                   </Text>
-                  {(currUser.username == posts[currentImageIndex].owner || currUser.username == comments[index].commentAuthorId) && (
+                  {(currUser.username == posts[currentImageIndex].owner ||
+                    currUser.username == comments[index].commentAuthorId) && (
                     <Icon
                       width="22.5px"
                       height="25px"
@@ -767,6 +890,4 @@ const PostAndComment = () => {
       )}
     </Flex>
   );
-};
-
-export default PostAndComment;
+}
