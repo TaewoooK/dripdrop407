@@ -1,3 +1,9 @@
+type DoublePointsTime @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  date: String
+  startTime: String
+}
+
 type Privacy @model @auth(rules: [{allow: public}]) {
   id: ID!
   Username: String!
@@ -61,5 +67,18 @@ type Notifications @model @auth(rules: [{allow: public}]) {
   id: ID!
   username: ID!
   notificationsList: [[String]]
+}
+
+type Battle @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  Player1: String!
+  Player2: String!
+  Player1Status: String!
+  Player2Status: String!
+  Player1Score: Int!
+  Player2Score: Int!
+  Player1ImageKey: String!
+  Player2ImageKey: String!
+  createdAt: String!
 }
  

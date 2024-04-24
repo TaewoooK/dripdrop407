@@ -66,6 +66,8 @@ const Route = (notifications) => {
           isLazy
         />
       );
+    case "/battle-request":
+      return <BattleRequest />;
   }
 };
 

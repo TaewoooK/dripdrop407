@@ -83,41 +83,39 @@ const UploadImage = () => {
 
         const currDate = new Date().toISOString();
 
-      const response = await client.graphql({
-        query: createPost,
-        variables: {
-          input: {
-            owner: myUser.username,
-            description: description,
-            comments: String,
-            drip_points: 0,
-            createdAt: currDate,
-            enable_comments: commentEnabled,
-            postImageKey: "",
-            hiddenPeople: hiddenSelect,
-            actionedUsers: [],
+        const response = await client.graphql({
+          query: createPost,
+          variables: {
+            input: {
+              owner: myUser.username,
+              description: description,
+              comments: String,
+              drip_points: 0,
+              createdAt: currDate,
+              enable_comments: commentEnabled,
+              postImageKey: "",
+              hiddenPeople: hiddenSelect,
+              actionedUsers: [],
+            },
           },
-        },
-      });
+        });
 
         console.log("Logging response from createPost");
         console.log(response);
 
-  
-      const postContext = response.data.createPost;
-      if (!postContext) {
-        console.log("Failed to create post");
-        return reject("Failed to create post");
-      }
-      const imageUpload = await uploadData({
-        key: `${myUser.username} + ${currDate}` + "image.png",
-        data: image,
-        drip_points: 0,
-        options: {
-          contentType: "image/png",
-        },
-      }).result;
-
+        const postContext = response.data.createPost;
+        if (!postContext) {
+          console.log("Failed to create post");
+          return reject("Failed to create post");
+        }
+        const imageUpload = await uploadData({
+          key: `${myUser.username} + ${currDate}` + "image.png",
+          data: image,
+          drip_points: 0,
+          options: {
+            contentType: "image/png",
+          },
+        }).result;
 
         const updatePostDetails = {
           id: postContext.id,
@@ -162,9 +160,8 @@ const UploadImage = () => {
       }}
     >
       <h1 style={{ textAlign: "left", marginBottom: "30px", color: "white" }}>
-          make a <span style={{ color: "#047d95" }}>post</span>
+        make a <span style={{ color: "#047d95" }}>post</span>
       </h1>
-
       <input
         type="file"
         accept="image/*"
@@ -177,7 +174,7 @@ const UploadImage = () => {
           border: "1px solid #ddd",
           borderRadius: "5px",
           boxSizing: "border-box",
-          color: "white"
+          color: "white",
         }}
       />
       {image && (
@@ -217,7 +214,9 @@ const UploadImage = () => {
             onChange={handleCheckboxChange} // Call the handler function on checkbox change
             style={{ padding: "10px 0 20px 0" }}
           ></input>
-          <span style={{textAlign: "left", color: "white"}}>Enable comments?</span>
+          <span style={{ textAlign: "left", color: "white" }}>
+            Enable comments?
+          </span>
         </label>
       </div>
       <div
@@ -225,7 +224,8 @@ const UploadImage = () => {
           padding: "10px", // Increased padding for spacing
         }}
       >
-        <HidePeople style={{position: "absolute", left:"0"}}
+        <HidePeople
+          style={{ position: "absolute", left: "0" }}
           selectedFriends={hiddenSelect}
           setSelectedFriends={setHiddenSelect}
         />
