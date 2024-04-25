@@ -1,0 +1,30 @@
+.NotificationCenter {
+    width: 550px;
+    height: 100%;
+    gap: 1rem;
+    display: inline-block;
+    background-color: rgba(34, 34, 34, 1);
+}
+
+.NotificationCenter .amplify-heading {
+    color: white;
+}
+
+/* Styling for User Search Field */
+.NotificationCenter .amplify-input {
+    color: white;
+}
+
+.NotificationCenter .amplify-input:focus {
+    border-color: white;
+}
+
+.NotificationCenter p {
+    color: white;
+}
+
+.notifications_content_container {
+    height: 100%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}

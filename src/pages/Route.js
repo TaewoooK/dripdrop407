@@ -1,5 +1,6 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { UserContext } from "../UserContext";
+import React from "react";
 
 import { Tabs } from "@aws-amplify/ui-react";
 
@@ -8,11 +9,12 @@ import Upload from "./Upload";
 import Friends from "./Friends";
 import ProfilePage from "../ui-components/ProfilePage";
 import FriendsOnly from "./FriendsOnly";
+import NotificationCenter from "../pages/NotificationCenter";
 import Board from "../components/Leaderboard/Board";
 
-const Route = () => {
+const Route = (notifications) => {
   const { myUser, usernameToPrivacy } = useContext(UserContext);
-
+  console.log("notifications", notifications);
   // useEffect(() => {
   //   console.log("getDefaultTabPrivate:", getDefaultTabPrivate());
   // });
@@ -35,9 +37,10 @@ const Route = () => {
       return <Friends />;
     case "/profile":
       return <ProfilePage />;
+    case "/activity":
+      return <NotificationCenter notifications={notifications.notifications} />;
     case "/leaderboard":
       return <Board />;
-      break;
     case "/":
     case "/home":
       return (
@@ -49,17 +52,18 @@ const Route = () => {
           margin="10px"
           items={[
             {
+              label: "Friends Feed",
+              value: "2",
+              content: <FriendsOnly />,
+            },
+            {
               label: "Global Feed",
               value: "1",
               content: <Home />,
               isDisabled: getDisabledHomePrivate(),
             },
-            {
-              label: "Friends Feed",
-              value: "2",
-              content: <FriendsOnly />,
-            },
           ]}
+          isLazy
         />
       );
   }

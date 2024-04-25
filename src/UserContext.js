@@ -110,10 +110,11 @@ export const UserProvider = ({ children }) => {
     console.log("usernameToPrivacy:", tempUsernameToPrivacy);
   };
 
-
   async function fetchAllUsers() {
     try {
       const currentEnv = process.env.REACT_APP_ENVIRONMENT_NAME;
+
+      console.log("UserContext currentEnv:", currentEnv);
 
       let userPoolId;
 
@@ -182,7 +183,7 @@ export const UserProvider = ({ children }) => {
         myUser,
         setMyUser,
         usernameToPrivacy,
-        setUsernameToPrivacy
+        setUsernameToPrivacy,
       }}
     >
       {children}
