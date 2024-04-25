@@ -660,7 +660,7 @@ export default function PostAndComment({ isFriendsOnly }) {
           <MyIcon
             className="more-icon"
             type="more_vert"
-            onClick={toggleActionCenter}
+            onClick={posts.length > 0? toggleActionCenter : null}
           />
 
           <Flex
