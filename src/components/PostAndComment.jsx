@@ -22,6 +22,7 @@ import {
   updateSavedPosts,
   updatePost,
   updateNotifications,
+  deletePost,
 } from "../graphql/mutations";
 import {
   listPosts,
@@ -437,7 +438,10 @@ export default function PostAndComment({ isFriendsOnly }) {
             "saved posts:",
             result.data.listSavedPosts.items[0].postIds
           );
-          console.log("fetched saved posts includes", result.data.listSavedPosts.items[0].postIds.includes(0));
+          console.log(
+            "fetched saved posts includes",
+            result.data.listSavedPosts.items[0].postIds.includes(0)
+          );
           // return result.data.listSavedPosts.items; // Return the data from the GraphQL response
         } else {
           const createdSavedPosts = await client.graphql({
@@ -558,6 +562,26 @@ export default function PostAndComment({ isFriendsOnly }) {
     toast.success("Comment deleted successfully");
   };
 
+  const deleteCurrPost = async () => {
+    setShowActionCenter(false);
+    const currPost = posts[currentImageIndex];
+    await client
+      .graphql({
+        query: deletePost,
+        variables: {
+          input: { id: currPost.id },
+        },
+      })
+      .then(() => {
+        toast.success("Post deleted successfully");
+      })
+      .catch((e) => {
+        console.log("error:", e);
+        toast.error("error deleting post");
+      });
+    fetchPost();
+  };
+
   return (
     <Flex direction="row" justifyContent="center" gap="0.5rem">
       {/* <Toaster position="top-right" reverseOrder={false} /> */}
@@ -568,6 +592,7 @@ export default function PostAndComment({ isFriendsOnly }) {
               toggleReportPost={toggleReportPost}
               toggleSavePost={toggleSavePost}
               saved={savedPostsList.includes(posts[currentImageIndex].id)}
+              deleteCurrPost={deleteCurrPost}
             />
           </div>
         </div>
@@ -661,7 +686,7 @@ export default function PostAndComment({ isFriendsOnly }) {
           <MyIcon
             className="more-icon"
             type="more_vert"
-            onClick={posts.length > 0? toggleActionCenter : null}
+            onClick={posts.length > 0 ? toggleActionCenter : null}
           />
 
           <Flex
