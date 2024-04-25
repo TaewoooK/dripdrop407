@@ -22,7 +22,7 @@ import {
   updateSavedPosts,
   updatePost,
   updateNotifications,
- } from "../graphql/mutations";
+} from "../graphql/mutations";
 import {
   listPosts,
   getPost,
@@ -37,6 +37,7 @@ import ReportPost from "./ReportPost";
 import toast, { Toaster } from "react-hot-toast";
 import { useContext } from "react";
 import { UserContext } from "../UserContext";
+import { isDevGlobal } from "../App";
 
 const client = generateClient();
 
@@ -57,6 +58,8 @@ export default function PostAndComment({ isFriendsOnly }) {
   const [savedPosts, setSavedPosts] = useState([]);
 
   const [listOfFriends, setListOfFriends] = useState([]);
+
+  // console.log("isdevglobal", isDevGlobal);
 
   // Find Friends using updated filter
   const fetchFriends = async () => {
@@ -220,7 +223,7 @@ export default function PostAndComment({ isFriendsOnly }) {
   useEffect(() => {
     if (currUser) {
       getSavedPosts();
-    fetchFriends();
+      fetchFriends();
       // generateNotifs();
     }
   }, [currUser]);
@@ -861,8 +864,9 @@ export default function PostAndComment({ isFriendsOnly }) {
                   >
                     {text}
                   </Text>
-                  {(currUser.username == posts[currentImageIndex].owner ||
-                    currUser.username == comments[index].commentAuthorId) && (
+                  {(currUser.username === posts[currentImageIndex].owner ||
+                    currUser.username === comments[index].commentAuthorId ||
+                    isDevGlobal) && (
                     <Icon
                       width="22.5px"
                       height="25px"

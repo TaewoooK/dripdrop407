@@ -3,7 +3,8 @@ import { UserProvider } from "./UserContext";
 
 import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
-import { Amplify, graphqlOperation, Auth } from "aws-amplify";
+import { Amplify, graphqlOperation } from "aws-amplify";
+import { fetchAuthSession } from "aws-amplify/auth";
 import { generateClient } from "aws-amplify/api";
 import {
   Button,
@@ -75,7 +76,7 @@ const client = generateClient();
 const UserNotificationSubscriber = ({
   user,
   signOut,
-  notifications,
+  setIsDev,
   setNotifications,
 }) => {
   useEffect(() => {
@@ -105,10 +106,22 @@ const UserNotificationSubscriber = ({
           setNotifications(
             result.data.listNotifications.items[0].notificationsList
           );
-          return result.data.listNotifications.items[0].notificationsList.length;
+          return result.data.listNotifications.items[0].notificationsList
+            .length;
         }
       } catch (error) {
         console.error("Error fetching notification list:", error);
+      }
+    };
+
+    const getIsDev = async () => {
+      try {
+        const { tokens } = await fetchAuthSession();
+        const groups = tokens?.idToken.payload["cognito:groups"];
+        console.log("groups:", groups);
+        setIsDev(groups.includes("dev"));
+      } catch (error) {
+        console.error("Error fetching current authenticated user:", error);
       }
     };
 
@@ -116,8 +129,7 @@ const UserNotificationSubscriber = ({
 
     if (user) {
       var internal_notif_length = generateNotifs(user);
-
-      // console.log("from app.js:", user.username);
+      getIsDev();
 
       notifSubscription = client
         .graphql({
@@ -226,12 +238,18 @@ const UserNotificationSubscriber = ({
   return null;
 };
 
+export var isDevGlobal = false;
+
 export default function App() {
   const [notifications, setNotifications] = React.useState([]);
+  const [isDev, setIsDev] = React.useState(false);
 
   useEffect(() => {
-    console.log("notifications:", notifications);
-  }, [notifications]);
+    console.log("isDev app:", isDev);
+    if (isDev) {
+      isDevGlobal = true;
+    }
+  }, [isDev]);
 
   return (
     <Authenticator
@@ -246,7 +264,7 @@ export default function App() {
               <UserNotificationSubscriber
                 user={user}
                 signOut={signOut}
-                notifications={notifications}
+                setIsDev={setIsDev}
                 setNotifications={setNotifications}
               />
               <Toaster position="top-right" reverseOrder={false} />
