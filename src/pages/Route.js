@@ -11,7 +11,8 @@ import ProfilePage from "../ui-components/ProfilePage";
 import FriendsOnly from "./FriendsOnly";
 import NotificationCenter from "../pages/NotificationCenter";
 import Board from "../components/Leaderboard/Board";
-import BattleRequest from "../components/BattleRequest";
+import BattleRequest from "../components/Battle/BattleRequest";
+import BattleBoard from "../components/Battle/Battleboard";
 
 const Route = (notifications) => {
   const { myUser, usernameToPrivacy } = useContext(UserContext);
@@ -69,6 +70,8 @@ const Route = (notifications) => {
       );
     case "/battle-request":
       return <BattleRequest />;
+    case "/battleboard":
+      return <BattleBoard />;
   }
 };
 

@@ -4,7 +4,7 @@ import { Amplify } from "aws-amplify";
 import { Button, View, withAuthenticator } from "@aws-amplify/ui-react";
 import awsconfig from "../amplifyconfiguration.json";
 import UploadImage from "../ui-components/UploadImage.jsx";
-import BattleRequest from "../components/BattleRequest";
+import BattleRequest from "../components/Battle/BattleRequest.jsx";
 
 Amplify.configure(awsconfig);
 

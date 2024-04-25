@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
 import { generateClient } from "aws-amplify/api";
 import { uploadData, getUrl } from "aws-amplify/storage";
-import { createBattle, updateBattle } from "../graphql/mutations";
+import { createBattle, updateBattle } from "../../graphql/mutations";
 import { fetchUserAttributes } from "aws-amplify/auth";
-import awsExports from "../aws-exports";
+import awsExports from "../../aws-exports";
 import { Message, Image } from "@aws-amplify/ui-react";
 import { Loader } from "@aws-amplify/ui-react";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../../UserContext";
 import toast, { Toaster } from "react-hot-toast";
-import AddUser from "../ui-components/AddUser";
+import AddUser from "../../ui-components/AddUser";
 
 const client = generateClient();
 
