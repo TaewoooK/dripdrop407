@@ -11,6 +11,7 @@ import HidePeople from "./HidePeople";
 import { UserContext } from "../UserContext";
 import toast, { Toaster } from "react-hot-toast";
 import { render } from "@testing-library/react";
+import { isDevGlobal } from "../App";
 
 const client = generateClient();
 
@@ -100,6 +101,13 @@ const UploadImage = () => {
     console.log("comments checked/unchecked");
   };
 
+  const [devOverride, setDevOverride] = useState(false);
+
+  const handleDevOverride = () => {
+    setDevOverride(!devOverride);
+    console.log("Dev Override:", !devOverride);
+  };
+
   const handleSubmit = () => {
     return new Promise(async (resolve, reject) => {
       console.log("hiddenSelect:" + hiddenSelect);
@@ -110,7 +118,7 @@ const UploadImage = () => {
         console.log("Description:", description);
         let commentEnabled = isChecked;
 
-        if (uploadedToday) {
+        if (uploadedToday && !devOverride) {
           console.log("You have already posted today");
           reject("You have already posted today");
           return;
@@ -266,6 +274,20 @@ const UploadImage = () => {
           selectedFriends={hiddenSelect}
           setSelectedFriends={setHiddenSelect}
         />
+
+        {isDevGlobal && (
+          <label>
+            <input
+              type="checkbox"
+              checked={devOverride} // Bind the checkbox state to the isChecked variable
+              onChange={handleDevOverride} // Call the handler function on checkbox change
+              style={{ padding: "10px 0 20px 0" }}
+            ></input>
+            <span style={{ textAlign: "left", color: "white" }}>
+              Ignore 1 post per day rule?
+            </span>
+          </label>
+        )}
       </div>
       {/* Added empty div for spacing */}
       <button
