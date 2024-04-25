@@ -5,12 +5,14 @@ import { UserContext } from '../../UserContext';
 import "./board.css";
 import { listPosts, listComments, listFriends, listFriendRequests } from "../../graphql/queries";
 import { View, Text, Button } from "@aws-amplify/ui-react";
+import BoardProfile from "./LeaderProfile";
 
 const client = generateClient();
 
 
 export default function Board() {
   const { allUsers } = useContext(UserContext);
+  const [user, setSelectedUser] = useState(); 
   const [selectedData, setSelectedData] = useState([]); // Initialize with an empty array
   const [toggleUser, setUser] = useState(false);
   async function getTotalDripPointsForUser(username) {
@@ -57,7 +59,8 @@ export default function Board() {
   
           // Convert the posts data into the desired format
           const convertedData = posts.map((post, index) => ({
-              username: post.description,
+              toShow: post.description,
+              username: post.owner,
               totalDripPoints: post.drip_points,
               rank: index + 1 // Adding 1 to make the ranks start from 1
           }));
@@ -71,29 +74,33 @@ export default function Board() {
   
   async function getUserDripPointsLeaderboard(allUsers) {
     const userDripPointsList = [];
-
+  
     for (const user of allUsers) {
-        const username = user.Username;
-        //console.log(username);
-        try {
-            const totalDripPoints = await getTotalDripPointsForUser(username);
-            //console.log(totalDripPoints);
-            userDripPointsList.push({ username, totalDripPoints });
-        } catch (error) {
-            console.error(`Error fetching drip points for user ${username}:`, error);
-        }
+      const username = user.Username;
+      try {
+        const totalDripPoints = await getTotalDripPointsForUser(username);
+        userDripPointsList.push({
+          toShow: user.Username, // Adjust as needed
+          username: user.Username,
+          totalDripPoints: totalDripPoints,
+          rank: 0, // Rank will be assigned later
+        });
+      } catch (error) {
+        console.error(`Error fetching drip points for user ${username}:`, error);
+      }
     }
-
+  
     // Sort the list by totalDripPoints in descending order
     userDripPointsList.sort((a, b) => b.totalDripPoints - a.totalDripPoints);
-
+  
     // Assign ranks to each user
     userDripPointsList.forEach((user, index) => {
-        user.rank = index + 1; // Adding 1 to make the ranks start from 1
+      user.rank = index + 1; // Adding 1 to make the ranks start from 1
     });
-
+  
     return userDripPointsList;
-}
+  }
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -105,6 +112,19 @@ export default function Board() {
 
   
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+//   const PostModal = ({ onClose }) => {
+//     return (
+//       <div style={modalContainerStyles}>
+//         <div style={modalStyles}>
+//           <h1>PUT CONTENT HERE</h1>
+//           <button onClick={onClose}>Close</button>
+//         </div>
+//       </div>
+//     );
+//   };
+
+  //const user = allUsers.find((user) => user.Username === username); 
   const modalContainerStyles = {
     position: "fixed",
     top: 0,
@@ -114,7 +134,9 @@ export default function Board() {
     backgroundColor: "rgba(0, 0, 0, 0.5)", // semi-transparent black background
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
+    boxSizing: "border-box", // Ensure padding is included in the width and height
+    overflow: "auto", // Enable scrolling if the content overflows the viewport
     zIndex: 9999, // higher z-index to ensure it's above other content
   };
   
@@ -129,16 +151,19 @@ export default function Board() {
     return (
       <div style={modalContainerStyles}>
         <div style={modalStyles}>
-          <h1>PUT CONTENT HERE</h1>
+          <BoardProfile user={user} />
           <button onClick={onClose}>Close</button>
         </div>
       </div>
     );
   };
 
-  const openModal = () => {
-    setIsModalOpen(true);
+  const openModal = (username) => {
+    const user = allUsers.find((user) => user.Username === username); // Find the user by username
+    setSelectedUser(allUsers.find((user) => user.Username === username)); // Set the user
+    setIsModalOpen(true); // Open the modal
   };
+  
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -155,20 +180,20 @@ export default function Board() {
                   <Text className="point-text" children="Points" />
                   <hr className="separator" />
                   <div className="columns-container" style={{ cursor: "pointer", overflow: "auto" }} 
-                        onClick={openModal}>
+                        >
                       <View className="rank-column">
                           {selectedData.map((entry, index) => (
-                              <h2 key={index} style={{ color: "white" }}>{entry.rank}</h2>
+                              <h2 key={index} onClick={() => openModal(entry.username)} style={{ color: "white" }}>{entry.rank}</h2>
                           ))}
                       </View>
                       <View className="user-column">
                           {selectedData.map((entry, index) => (
-                              <h2 key={index} style={{ color: "white" }}>{entry.username}</h2>
+                              <h2 key={index} onClick={() => openModal(entry.username)} style={{ color: "white" }}>{entry.toShow}</h2>
                           ))}
                       </View>
                       <View className="points-column">
                           {selectedData.map((entry, index) => (
-                              <h2 key={index} style={{ color: "white" }}>{entry.totalDripPoints}</h2>
+                              <h2 key={index} onClick={() => openModal(entry.username)} style={{ color: "white" }}>{entry.totalDripPoints}</h2>
                           ))}
                       </View>
                   </div>
