@@ -216,6 +216,14 @@ const UserNotificationSubscriber = ({
                   );
 
                   break;
+                case "PD":
+                  toast(
+                    `Your post was removed by an admin for violating community guidelines!`,
+                    {
+                      icon: "❌",
+                    }
+                  );
+                  break;
                 default:
                   break;
               }

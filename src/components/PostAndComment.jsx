@@ -562,9 +562,43 @@ export default function PostAndComment({ isFriendsOnly }) {
     toast.success("Comment deleted successfully");
   };
 
+  async function sendDeletionNotif(requestedUsername, currPostID) {
+    // Insert friend request for requested user
+    try {
+      // notify requested user
+      const notif = ["PD", currPostID];
+      console.log("send notif to:", requestedUsername);
+      console.log("notif:", notif);
+
+      const notifToRequestedUser = await client.graphql({
+        query: listNotifications,
+        variables: { filter: { username: { eq: requestedUsername } } },
+      });
+      if (notifToRequestedUser.data.listNotifications.items != null) {
+        console.log("notifToPostOwner:", notifToRequestedUser);
+        const notifList = notifToRequestedUser.data.listNotifications.items[0];
+        const input = {
+          id: notifList.id,
+          notificationsList: [notif, ...notifList.notificationsList],
+        };
+        const condition = { username: { eq: requestedUsername } };
+        await client.graphql({
+          query: updateNotifications,
+          variables: { input, condition },
+        });
+        console.log("notif sent to post owner");
+      } else {
+        console.log("no notif list for post owner");
+      }
+    } catch (error) {
+      console.log("Error sending notification: ", error);
+    }
+  }
+
   const deleteCurrPost = async () => {
     setShowActionCenter(false);
     const currPost = posts[currentImageIndex];
+    
     await client
       .graphql({
         query: deletePost,
@@ -580,6 +614,7 @@ export default function PostAndComment({ isFriendsOnly }) {
         toast.error("error deleting post");
       });
     fetchPost();
+    sendDeletionNotif(currPost.owner, currPost.id);
   };
 
   return (
