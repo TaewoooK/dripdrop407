@@ -29,3 +29,39 @@
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
+
+@media screen and (max-width: 431px) {
+    .Friends {
+        width: 400px;
+        height: 100%;
+        gap: 1rem;
+        display: inline-block;
+        background-color: rgba(34, 34, 34, 1);
+    }
+
+    .Friends .amplify-heading {
+        color: white;
+        font-size: 24px;
+    }
+    
+    .Friends .amplify-input {
+        width: 360px;
+        text-align: left;
+        color: white;
+    }
+    
+    .Friends .amplify-input:focus {
+        border-color: white;
+    }
+    
+    .Friends p {
+        color: white;
+    }
+    
+    .friends_content_container {
+        height: 100%;
+        width: 100%;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+}
