@@ -31,6 +31,7 @@ const endOfDay = new Date(
 
 export default function Board() {
   const { allUsers } = useContext(UserContext);
+  const [user, setSelectedUser] = useState(); 
   const [selectedData, setSelectedData] = useState([]); // Initialize with an empty array
 
   const [time, setTime] = useState("alltime");
@@ -173,7 +174,7 @@ export default function Board() {
 
   async function getUserDripPointsLeaderboard(allUsers) {
     const userDripPointsList = [];
-
+  
     for (const user of allUsers) {
       const username = user.Username;
       try {
@@ -186,15 +187,16 @@ export default function Board() {
         );
       }
     }
-
+  
     // Sort the list by totalDripPoints in descending order
     userDripPointsList.sort((a, b) => b.totalDripPoints - a.totalDripPoints);
-
+  
     // Assign ranks to each user
     userDripPointsList.forEach((user, index) => {
       user.rank = index + 1; // Adding 1 to make the ranks start from 1
+      user.rank = index + 1; // Adding 1 to make the ranks start from 1
     });
-
+  
     return userDripPointsList;
   }
 

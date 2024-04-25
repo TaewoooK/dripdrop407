@@ -211,3 +211,111 @@
   left: 219px; /* 292px * 0.75 */
   padding: 0;
 }
+
+.profile-picture {
+  display: none;
+}
+
+@media screen and (max-width: 431px) {
+  .big-post-container {
+    width: 100%;
+    height: 100%;
+    padding: 20px; /* Add padding for spacing */
+    border-radius: 20px;
+  }
+
+  .post-container {
+    width: 100%;
+    height: 570px;
+    position: relative;
+    margin-bottom: 20px; /* Add margin for spacing */
+    border-radius: 20px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    background-color: rgba(34, 34, 34, 1);
+  }
+
+  .chat-icon {
+    width: 27px;
+    height: 27px;
+    position: absolute;
+    top: 8px;
+    left: 285px;
+    display: block;
+    gap: unset;
+    align-items: unset;
+    justify-content: unset;
+    overflow: hidden;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .post-img {
+    width: 250px;
+    height: 360px;
+    display: block;
+    gap: unset;
+    align-items: unset;
+    justify-content: unset;
+    position: absolute;
+    top: 70px;
+    left: 48px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 25px;
+    padding: 0;
+  }
+
+  .username-text {
+    font-family: "Inter";
+    font-size: 16px;
+    font-weight: 400;
+    color: rgba(230, 230, 230, 1);
+    line-height: 30px;
+    left: -58px;
+    text-align: left;
+    display: block;
+    flex-direction: column;
+    justify-content: unset;
+    width: unset;
+    height: unset;
+    gap: unset;
+    align-items: unset;
+    flex-shrink: 0;
+    position: relative;
+    padding: 0px;
+    white-space: pre-wrap;
+  }
+
+  .profile-picture {
+    display: none;
+  }
+
+  .green-button {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    border-radius: 51px;
+    top: 487px;
+    left: 270px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    background-color: rgba(0, 255, 26, 0.34);
+  }
+  
+  .red-button {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    border-radius: 51px;
+    top: 487px;
+    left: 10px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    background-color: rgba(255, 0, 0, 0.37);
+  }
+
+  .thumb-container1 {
+    display: none;
+  }
+  
+  .thumb-container2 {
+    display: none;
+  }
+}

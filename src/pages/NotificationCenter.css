@@ -28,3 +28,13 @@
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
+
+@media screen and (max-width: 431px) {
+    .NotificationCenter {
+        width: 400px;
+        height: 100%;
+        gap: 1rem;
+        display: inline-block;
+        background-color: rgba(34, 34, 34, 1);
+    }
+}
