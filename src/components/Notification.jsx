@@ -42,6 +42,8 @@ export default function Notification(props) {
         return `Friend request from ${notification[1]}`;
       case "Comment":
         return `${notification[1]} commented "${notification[3]}" on your post`;
+      case "PD":
+        return `Your post was removed by an admin for violating community guidelines!`;
       default:
         return `${notification[0]} Unknown notification`;
     }

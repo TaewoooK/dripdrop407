@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useContext } from "react";
-import { generateClient } from "aws-amplify/api";
+import { generateClient, post } from "aws-amplify/api";
 import { uploadData, getUrl } from "aws-amplify/storage";
 import { createPost, updatePost } from "../graphql/mutations";
-import { fetchUserAttributes } from "aws-amplify/auth";
+import { listPosts } from "../graphql/queries";
+import { fetchUserAttributes, getCurrentUser } from "aws-amplify/auth";
 import awsExports from "../aws-exports";
 import { Message, Image } from "@aws-amplify/ui-react";
 import { Loader } from "@aws-amplify/ui-react";
 import HidePeople from "./HidePeople";
 import { UserContext } from "../UserContext";
 import toast, { Toaster } from "react-hot-toast";
+import { render } from "@testing-library/react";
+import { isDevGlobal } from "../App";
 
 const client = generateClient();
 
@@ -25,12 +28,24 @@ const UploadImage = () => {
   const [imageUrl, setImageUrl] = useState(null);
   const { allUsers, myUser } = useContext(UserContext);
 
+  const [variables, setVariables] = useState({});
+  const [uploadedToday, setUploadedToday] = useState(false);
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const userAttributes = await fetchUserAttributes();
         console.log(userAttributes);
         setUser(userAttributes);
+        const currUserAttributes = await getCurrentUser();
+        const currDate = new Date();
+        const yesterday = new Date(currDate.getTime() - 24 * 60 * 60 * 1000);
+        setVariables({
+          filter: {
+            owner: { eq: currUserAttributes.username },
+            createdAt: { between: [yesterday.toJSON(), currDate.toJSON()] },
+          },
+        });
       } catch (error) {
         console.error("Error fetching user data: ", error);
       }
@@ -38,6 +53,22 @@ const UploadImage = () => {
 
     fetchUserData();
   }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      console.log("User:", user);
+      const postData = await client.graphql({ query: listPosts, variables });
+      console.log("postData:", postData.data.listPosts.items);
+      if (postData.data.listPosts.items.length > 0) {
+        console.log("You have already posted today");
+        setUploadedToday(true);
+      }
+    }
+
+    if (user) {
+      fetchData();
+    }
+  }, [user]);
 
   console.log(user);
 
@@ -70,10 +101,16 @@ const UploadImage = () => {
     console.log("comments checked/unchecked");
   };
 
+  const [devOverride, setDevOverride] = useState(false);
+
+  const handleDevOverride = () => {
+    setDevOverride(!devOverride);
+    console.log("Dev Override:", !devOverride);
+  };
+
   const handleSubmit = () => {
     return new Promise(async (resolve, reject) => {
       console.log("hiddenSelect:" + hiddenSelect);
-
       try {
         setSucceeded(2);
         // Handle post submission logic here
@@ -81,43 +118,48 @@ const UploadImage = () => {
         console.log("Description:", description);
         let commentEnabled = isChecked;
 
-        const currDate = new Date().toISOString();
+        if (uploadedToday && !devOverride) {
+          console.log("You have already posted today");
+          reject("You have already posted today");
+          return;
+        }
 
-      const response = await client.graphql({
-        query: createPost,
-        variables: {
-          input: {
-            owner: myUser.username,
-            description: description,
-            comments: String,
-            drip_points: 0,
-            createdAt: currDate,
-            enable_comments: commentEnabled,
-            postImageKey: "",
-            hiddenPeople: hiddenSelect,
-            actionedUsers: [],
+        const currDate = new Date();
+
+        const response = await client.graphql({
+          query: createPost,
+          variables: {
+            input: {
+              owner: myUser.username,
+              description: description,
+              comments: String,
+              drip_points: 0,
+              createdAt: currDate,
+              enable_comments: commentEnabled,
+              postImageKey: "",
+              hiddenPeople: hiddenSelect,
+              actionedUsers: [],
+            },
           },
-        },
-      });
+        });
 
         console.log("Logging response from createPost");
         console.log(response);
 
-  
-      const postContext = response.data.createPost;
-      if (!postContext) {
-        console.log("Failed to create post");
-        return reject("Failed to create post");
-      }
-      const imageUpload = await uploadData({
-        key: `${myUser.username} + ${currDate}` + "image.png",
-        data: image,
-        drip_points: 0,
-        options: {
-          contentType: "image/png",
-        },
-      }).result;
-
+        const postContext = response.data.createPost;
+        if (!postContext) {
+          console.log("Failed to create post");
+          reject("Failed to create post");
+          return;
+        }
+        const imageUpload = await uploadData({
+          key: `${myUser.username} + ${currDate}` + "image.png",
+          data: image,
+          drip_points: 0,
+          options: {
+            contentType: "image/png",
+          },
+        }).result;
 
         const updatePostDetails = {
           id: postContext.id,
@@ -137,11 +179,12 @@ const UploadImage = () => {
         const signedURL = await getUrl({ key: updatedPost.postImageKey });
         console.log(signedURL);
 
+        setUploadedToday(true);
         setSucceeded(1);
         resolve("Post created successfully");
       } catch (error) {
         setSucceeded(3);
-        reject("Failed to create post");
+        reject("Error creating post: " + error);
       }
     });
   };
@@ -162,9 +205,8 @@ const UploadImage = () => {
       }}
     >
       <h1 style={{ textAlign: "left", marginBottom: "30px", color: "white" }}>
-          make a <span style={{ color: "#047d95" }}>post</span>
+        make a <span style={{ color: "#047d95" }}>post</span>
       </h1>
-
       <input
         type="file"
         accept="image/*"
@@ -177,7 +219,7 @@ const UploadImage = () => {
           border: "1px solid #ddd",
           borderRadius: "5px",
           boxSizing: "border-box",
-          color: "white"
+          color: "white",
         }}
       />
       {image && (
@@ -217,7 +259,9 @@ const UploadImage = () => {
             onChange={handleCheckboxChange} // Call the handler function on checkbox change
             style={{ padding: "10px 0 20px 0" }}
           ></input>
-          <span style={{textAlign: "left", color: "white"}}>Enable comments?</span>
+          <span style={{ textAlign: "left", color: "white" }}>
+            Enable comments?
+          </span>
         </label>
       </div>
       <div
@@ -225,10 +269,25 @@ const UploadImage = () => {
           padding: "10px", // Increased padding for spacing
         }}
       >
-        <HidePeople style={{position: "absolute", left:"0"}}
+        <HidePeople
+          style={{ position: "absolute", left: "0" }}
           selectedFriends={hiddenSelect}
           setSelectedFriends={setHiddenSelect}
         />
+
+        {isDevGlobal && (
+          <label>
+            <input
+              type="checkbox"
+              checked={devOverride} // Bind the checkbox state to the isChecked variable
+              onChange={handleDevOverride} // Call the handler function on checkbox change
+              style={{ padding: "10px 0 20px 0" }}
+            ></input>
+            <span style={{ textAlign: "left", color: "white" }}>
+              Ignore 1 post per day rule?
+            </span>
+          </label>
+        )}
       </div>
       {/* Added empty div for spacing */}
       <button
@@ -237,7 +296,7 @@ const UploadImage = () => {
           toast.promise(handleSubmit(), {
             pending: "Uploading...",
             success: "Post created successfully",
-            error: "Failed to create post",
+            error: (err) => `${err.toString()}`,
           });
         }}
         style={{

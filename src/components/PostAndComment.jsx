@@ -22,7 +22,8 @@ import {
   updateSavedPosts,
   updatePost,
   updateNotifications,
- } from "../graphql/mutations";
+  deletePost,
+} from "../graphql/mutations";
 import {
   listPosts,
   getPost,
@@ -37,6 +38,7 @@ import ReportPost from "./ReportPost";
 import toast, { Toaster } from "react-hot-toast";
 import { useContext } from "react";
 import { UserContext } from "../UserContext";
+import { isDevGlobal } from "../App";
 
 const client = generateClient();
 
@@ -54,9 +56,11 @@ export default function PostAndComment({ isFriendsOnly }) {
   const [variablesN, setVariablesN] = React.useState(null);
   const [currUser, setCurrUser] = useState(null);
   const [gotVN, setGotVN] = useState(false);
-  const [savedPosts, setSavedPosts] = useState([]);
+  const [savedPostsList, setSavedPostsList] = useState([]);
 
   const [listOfFriends, setListOfFriends] = useState([]);
+
+  // console.log("isdevglobal", isDevGlobal);
 
   // Find Friends using updated filter
   const fetchFriends = async () => {
@@ -220,7 +224,7 @@ export default function PostAndComment({ isFriendsOnly }) {
   useEffect(() => {
     if (currUser) {
       getSavedPosts();
-    fetchFriends();
+      fetchFriends();
       // generateNotifs();
     }
   }, [currUser]);
@@ -429,10 +433,14 @@ export default function PostAndComment({ isFriendsOnly }) {
           variables: { filter: { username: { eq: currUser.username } } },
         });
         if (result.data.listSavedPosts.items.length > 0) {
-          setSavedPosts(result.data.listSavedPosts.items[0]);
+          setSavedPostsList(result.data.listSavedPosts.items[0].postIds);
           console.log(
             "saved posts:",
             result.data.listSavedPosts.items[0].postIds
+          );
+          console.log(
+            "fetched saved posts includes",
+            result.data.listSavedPosts.items[0].postIds.includes(0)
           );
           // return result.data.listSavedPosts.items; // Return the data from the GraphQL response
         } else {
@@ -443,7 +451,7 @@ export default function PostAndComment({ isFriendsOnly }) {
             },
           });
           console.log("created saved posts");
-          setSavedPosts(createdSavedPosts.data.createSavedPosts[0]);
+          setSavedPostsList(createdSavedPosts.data.createSavedPosts[0].postIds);
           // return createdSavedPosts.data.listSavedPosts.items; // Return the data from the GraphQL response
         }
       } catch (error) {
@@ -494,11 +502,11 @@ export default function PostAndComment({ isFriendsOnly }) {
       //   toast.success("Post saved");
       //   setSavedPosts(createdSavedPosts.data.updateSavedPosts.postIds);
       // } else {
-      if (savedPosts.postIds.includes(posts[currentImageIndex].id)) {
+      if (savedPostsList.postIds.includes(posts[currentImageIndex].id)) {
         console.log("unsaving post");
         const input = {
-          id: savedPosts.id,
-          postIds: savedPosts.postIds.filter(
+          id: savedPostsList.id,
+          postIds: savedPostsList.postIds.filter(
             (id) => id !== posts[currentImageIndex].id
           ),
         };
@@ -507,20 +515,20 @@ export default function PostAndComment({ isFriendsOnly }) {
           query: updateSavedPosts,
           variables: { input, condition },
         });
-        setSavedPosts(updatedSavedPosts.data.updateSavedPosts);
+        setSavedPostsList(updatedSavedPosts.data.updateSavedPosts.postIds);
         toast.success("Post unsaved");
       } else {
         console.log("post not saved");
         const input = {
-          id: savedPosts.id,
-          postIds: [...savedPosts.postIds, posts[currentImageIndex].id],
+          id: savedPostsList.id,
+          postIds: [...savedPostsList.postIds, posts[currentImageIndex].id],
         };
         const condition = { username: { eq: currUser.username } };
         const updatedSavedPosts = await client.graphql({
           query: updateSavedPosts,
           variables: { input, condition },
         });
-        setSavedPosts(updatedSavedPosts.data.updateSavedPosts);
+        setSavedPostsList(updatedSavedPosts.data.updateSavedPosts.postIds);
         toast.success("Post saved");
       }
       // }
@@ -554,6 +562,61 @@ export default function PostAndComment({ isFriendsOnly }) {
     toast.success("Comment deleted successfully");
   };
 
+  async function sendDeletionNotif(requestedUsername, currPostID) {
+    // Insert friend request for requested user
+    try {
+      // notify requested user
+      const notif = ["PD", currPostID];
+      console.log("send notif to:", requestedUsername);
+      console.log("notif:", notif);
+
+      const notifToRequestedUser = await client.graphql({
+        query: listNotifications,
+        variables: { filter: { username: { eq: requestedUsername } } },
+      });
+      if (notifToRequestedUser.data.listNotifications.items != null) {
+        console.log("notifToPostOwner:", notifToRequestedUser);
+        const notifList = notifToRequestedUser.data.listNotifications.items[0];
+        const input = {
+          id: notifList.id,
+          notificationsList: [notif, ...notifList.notificationsList],
+        };
+        const condition = { username: { eq: requestedUsername } };
+        await client.graphql({
+          query: updateNotifications,
+          variables: { input, condition },
+        });
+        console.log("notif sent to post owner");
+      } else {
+        console.log("no notif list for post owner");
+      }
+    } catch (error) {
+      console.log("Error sending notification: ", error);
+    }
+  }
+
+  const deleteCurrPost = async () => {
+    setShowActionCenter(false);
+    const currPost = posts[currentImageIndex];
+    
+    await client
+      .graphql({
+        query: deletePost,
+        variables: {
+          input: { id: currPost.id },
+        },
+      })
+      .then(() => {
+        toast.success("Post deleted successfully");
+      })
+      .catch((e) => {
+        console.log("error:", e);
+        toast.error("error deleting post");
+      });
+    fetchPost();
+    sendDeletionNotif(currPost.owner, currPost.id);
+  };
+
   return (
     <Flex direction="row" justifyContent="center" gap="0.5rem">
       {/* <Toaster position="top-right" reverseOrder={false} /> */}
@@ -563,7 +626,8 @@ export default function PostAndComment({ isFriendsOnly }) {
             <PostActionCenter
               toggleReportPost={toggleReportPost}
               toggleSavePost={toggleSavePost}
-              saved={savedPosts.includes(posts[currentImageIndex].id)}
+              saved={savedPostsList.includes(posts[currentImageIndex].id)}
+              deleteCurrPost={deleteCurrPost}
             />
           </div>
         </div>
@@ -657,7 +721,7 @@ export default function PostAndComment({ isFriendsOnly }) {
           <MyIcon
             className="more-icon"
             type="more_vert"
-            onClick={toggleActionCenter}
+            onClick={posts.length > 0 ? toggleActionCenter : null}
           />
 
           <Flex
@@ -861,8 +925,9 @@ export default function PostAndComment({ isFriendsOnly }) {
                   >
                     {text}
                   </Text>
-                  {(currUser.username == posts[currentImageIndex].owner ||
-                    currUser.username == comments[index].commentAuthorId) && (
+                  {(currUser.username === posts[currentImageIndex].owner ||
+                    currUser.username === comments[index].commentAuthorId ||
+                    isDevGlobal) && (
                     <Icon
                       width="22.5px"
                       height="25px"

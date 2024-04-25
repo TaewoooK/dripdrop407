@@ -6,20 +6,30 @@
 
 /* eslint-disable */
 import * as React from "react";
-// import { getOverrideProps } from "./utils";
 import { Button, Flex } from "@aws-amplify/ui-react";
-export default function PostActionCenter({toggleReportPost, toggleSavePost, saved}) {
+import { isDevGlobal } from "../App";
+
+export default function PostActionCenter({
+  toggleReportPost,
+  toggleSavePost,
+  saved,
+  deleteCurrPost,
+}) {
   // const { overrides, ...rest } = props;
 
   const handleReportButtonClick = () => {
     toggleReportPost();
-  }
+  };
 
   const handleSavePostButtonClick = () => {
     console.log("save post");
     toggleSavePost();
+  };
 
-  }
+  const handleDeleteButtonClick = () => {
+    console.log("delete post");
+    deleteCurrPost();
+  };
 
   return (
     <Flex
@@ -54,7 +64,7 @@ export default function PostActionCenter({toggleReportPost, toggleSavePost, save
         size="large"
         isDisabled={false}
         variation="primary"
-        children={saved? "Unsave Post" : "Save Post"}
+        children={saved ? "Unsave Post" : "Save Post"}
         onClick={handleSavePostButtonClick}
       ></Button>
 
@@ -68,6 +78,20 @@ export default function PostActionCenter({toggleReportPost, toggleSavePost, save
         children="Report Post"
         onClick={handleReportButtonClick}
       ></Button>
+
+      {isDevGlobal && (
+        <Button
+          width="367px"
+          height="unset"
+          shrink="0"
+          size="large"
+          isDisabled={false}
+          variation="primary"
+          children="Delete Post"
+          style={{ backgroundColor: "#8B0000" }}
+          onClick={handleDeleteButtonClick}
+        ></Button>
+      )}
     </Flex>
   );
 }
