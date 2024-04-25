@@ -234,7 +234,7 @@ export default function App() {
       {({ signOut, user }) => (
         <UserProvider>
           <View className="App">
-            <div style={{ backgroundColor: "rgb(24, 24, 24)" }}>
+            <div style={{ minHeight: '100vh', backgroundColor: "rgb(24, 24, 24)" }}>
               <UserNotificationSubscriber
                 user={user}
                 signOut={signOut}
@@ -244,7 +244,7 @@ export default function App() {
               <Toaster position="top-right" reverseOrder={false} />
               <Grid
                 columnGap="0.5rem"
-                height="100vh"
+                //minHeight="100vh"
                 rowGap="0.5rem"
                 templateColumns="1fr 8fr"
                 alignContent="center"
