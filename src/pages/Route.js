@@ -11,6 +11,10 @@ import ProfilePage from "../ui-components/ProfilePage";
 import FriendsOnly from "./FriendsOnly";
 import NotificationCenter from "../pages/NotificationCenter";
 import Board from "../components/Leaderboard/Board";
+
+import BattleRequest from "../components/Battle/BattleRequest";
+import BattleBoard from "../components/Battle/Battleboard";
+
 import PostV2 from "../components/PostsV2";
 
 const Route = (notifications) => {
@@ -69,6 +73,10 @@ const Route = (notifications) => {
           isLazy
         />
       );
+    case "/battle-request":
+      return <BattleRequest />;
+    case "/battleboard":
+      return <BattleBoard />;
   }
 };
 

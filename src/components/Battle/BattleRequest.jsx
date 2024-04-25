@@ -1,21 +1,18 @@
 import React, { useState, useEffect, useContext } from "react";
-import { generateClient, post } from "aws-amplify/api";
+import { generateClient } from "aws-amplify/api";
 import { uploadData, getUrl } from "aws-amplify/storage";
-import { createPost, updatePost } from "../graphql/mutations";
-import { listPosts } from "../graphql/queries";
-import { fetchUserAttributes, getCurrentUser } from "aws-amplify/auth";
-import awsExports from "../aws-exports";
+import { createBattle, updateBattle } from "../../graphql/mutations";
+import { fetchUserAttributes } from "aws-amplify/auth";
+import awsExports from "../../aws-exports";
 import { Message, Image } from "@aws-amplify/ui-react";
 import { Loader } from "@aws-amplify/ui-react";
-import HidePeople from "./HidePeople";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../../UserContext";
 import toast, { Toaster } from "react-hot-toast";
-import { render } from "@testing-library/react";
-import { isDevGlobal } from "../App";
+import AddUser from "../../ui-components/AddUser";
 
 const client = generateClient();
 
-const UploadImage = () => {
+const BattleRequest = () => {
   const [image, setImage] = useState(null);
   const [description, setDescription] = useState("");
 
@@ -28,24 +25,12 @@ const UploadImage = () => {
   const [imageUrl, setImageUrl] = useState(null);
   const { allUsers, myUser } = useContext(UserContext);
 
-  const [variables, setVariables] = useState({});
-  const [uploadedToday, setUploadedToday] = useState(false);
-
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const userAttributes = await fetchUserAttributes();
         console.log(userAttributes);
         setUser(userAttributes);
-        const currUserAttributes = await getCurrentUser();
-        const currDate = new Date();
-        const yesterday = new Date(currDate.getTime() - 24 * 60 * 60 * 1000);
-        setVariables({
-          filter: {
-            owner: { eq: currUserAttributes.username },
-            createdAt: { between: [yesterday.toJSON(), currDate.toJSON()] },
-          },
-        });
       } catch (error) {
         console.error("Error fetching user data: ", error);
       }
@@ -53,22 +38,6 @@ const UploadImage = () => {
 
     fetchUserData();
   }, []);
-
-  useEffect(() => {
-    async function fetchData() {
-      console.log("User:", user);
-      const postData = await client.graphql({ query: listPosts, variables });
-      console.log("postData:", postData.data.listPosts.items);
-      if (postData.data.listPosts.items.length > 0) {
-        console.log("You have already posted today");
-        setUploadedToday(true);
-      }
-    }
-
-    if (user) {
-      fetchData();
-    }
-  }, [user]);
 
   console.log(user);
 
@@ -101,44 +70,28 @@ const UploadImage = () => {
     console.log("comments checked/unchecked");
   };
 
-  const [devOverride, setDevOverride] = useState(false);
-
-  const handleDevOverride = () => {
-    setDevOverride(!devOverride);
-    console.log("Dev Override:", !devOverride);
-  };
-
   const handleSubmit = () => {
     return new Promise(async (resolve, reject) => {
-      console.log("hiddenSelect:" + hiddenSelect);
       try {
         setSucceeded(2);
         // Handle post submission logic here
         console.log("Image:", image);
-        console.log("Description:", description);
-        let commentEnabled = isChecked;
 
         const currDate = new Date().toISOString();
 
-        if (uploadedToday && !devOverride) {
-          console.log("You have already posted today");
-          reject("You have already posted today");
-          return;
-        }
-
         const response = await client.graphql({
-          query: createPost,
+          query: createBattle,
           variables: {
             input: {
-              owner: myUser.username,
-              description: description,
-              comments: String,
-              drip_points: 0,
+              Player1: myUser.username,
+              Player2: hiddenSelect[0],
+              Player1Status: "Ready",
+              Player2Status: "Pending",
+              Player1Score: 0,
+              Player2Score: 0,
+              Player1ImageKey: "null",
+              Player2ImageKey: "null",
               createdAt: currDate,
-              enable_comments: commentEnabled,
-              postImageKey: "",
-              hiddenPeople: hiddenSelect,
-              actionedUsers: [],
             },
           },
         });
@@ -146,14 +99,13 @@ const UploadImage = () => {
         console.log("Logging response from createPost");
         console.log(response);
 
-        const postContext = response.data.createPost;
+        const postContext = response.data.createBattle;
         if (!postContext) {
           console.log("Failed to create post");
-          reject("Failed to create post");
-          return;
+          return reject("Failed to create post");
         }
         const imageUpload = await uploadData({
-          key: `${myUser.username} + ${currDate}` + "image.png",
+          key: `${myUser.username} + ${currDate}` + "battle.png",
           data: image,
           drip_points: 0,
           options: {
@@ -163,33 +115,29 @@ const UploadImage = () => {
 
         const updatePostDetails = {
           id: postContext.id,
-          postImageKey: imageUpload?.key,
-          enable_comments: commentEnabled,
+          Player1ImageKey: imageUpload?.key,
         };
 
         const updatePostResponse = await client.graphql({
-          query: updatePost,
+          query: updateBattle,
           variables: { input: updatePostDetails },
         });
 
-        const updatedPost = updatePostResponse.data.updatePost;
+        const updatedPost = updatePostResponse.data.updateBattle;
         // console.log("Logging response from updatePost")
         // console.log(updatedPost)
-        if (!updatedPost.postImageKey) return;
+        if (!updatedPost.Player1ImageKey) return;
         const signedURL = await getUrl({ key: updatedPost.postImageKey });
         console.log(signedURL);
 
-        setUploadedToday(true);
         setSucceeded(1);
-        resolve("Post created successfully");
+        resolve("Battle created successfully");
       } catch (error) {
         setSucceeded(3);
-        reject("Error creating post: " + error);
+        reject("Failed to create post");
       }
     });
   };
-
-  console.log("In Upload Image: " + hiddenSelect);
 
   return (
     <div
@@ -205,7 +153,7 @@ const UploadImage = () => {
       }}
     >
       <h1 style={{ textAlign: "left", marginBottom: "30px", color: "white" }}>
-        make a <span style={{ color: "#047d95" }}>post</span>
+        create a <span style={{ color: "#047d95" }}>battle</span>
       </h1>
       <input
         type="file"
@@ -235,59 +183,16 @@ const UploadImage = () => {
           onClick={() => alert("📸 Say cheese!")}
         />
       )}
-      <div style={{ marginBottom: "30px" }}>
-        <textarea
-          placeholder="Enter description"
-          value={description}
-          onChange={handleDescriptionChange}
-          style={{
-            width: "100%",
-            height: "150px", // Increased height of textarea
-            marginBottom: "0px",
-            padding: "10px",
-            border: "1px solid #ddd",
-            borderRadius: "5px",
-            boxSizing: "border-box",
-            resize: "none",
-          }}
-        ></textarea>
-
-        <label>
-          <input
-            type="checkbox"
-            checked={isChecked} // Bind the checkbox state to the isChecked variable
-            onChange={handleCheckboxChange} // Call the handler function on checkbox change
-            style={{ padding: "10px 0 20px 0" }}
-          ></input>
-          <span style={{ textAlign: "left", color: "white" }}>
-            Enable comments?
-          </span>
-        </label>
-      </div>
       <div
         style={{
           padding: "10px", // Increased padding for spacing
         }}
       >
-        <HidePeople
+        <AddUser
           style={{ position: "absolute", left: "0" }}
           selectedFriends={hiddenSelect}
           setSelectedFriends={setHiddenSelect}
         />
-
-        {isDevGlobal && (
-          <label>
-            <input
-              type="checkbox"
-              checked={devOverride} // Bind the checkbox state to the isChecked variable
-              onChange={handleDevOverride} // Call the handler function on checkbox change
-              style={{ padding: "10px 0 20px 0" }}
-            ></input>
-            <span style={{ textAlign: "left", color: "white" }}>
-              Ignore 1 post per day rule?
-            </span>
-          </label>
-        )}
       </div>
       {/* Added empty div for spacing */}
       <button
@@ -296,7 +201,7 @@ const UploadImage = () => {
           toast.promise(handleSubmit(), {
             pending: "Uploading...",
             success: "Post created successfully",
-            error: (err) => `${err.toString()}`,
+            error: "Failed to create post",
           });
         }}
         style={{
@@ -312,7 +217,7 @@ const UploadImage = () => {
           fontWeight: "bold",
         }}
       >
-        Post
+        Request
       </button>
       <div style={{ height: "20px" }}></div> {/* Added empty div for spacing */}
       {/* <div>
@@ -348,4 +253,4 @@ const UploadImage = () => {
   );
 };
 
-export default UploadImage;
+export default BattleRequest;
