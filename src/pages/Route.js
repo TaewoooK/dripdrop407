@@ -11,6 +11,7 @@ import ProfilePage from "../ui-components/ProfilePage";
 import FriendsOnly from "./FriendsOnly";
 import NotificationCenter from "../pages/NotificationCenter";
 import Board from "../components/Leaderboard/Board";
+import BattleRequest from "../components/BattleRequest";
 
 const Route = (notifications) => {
   const { myUser, usernameToPrivacy } = useContext(UserContext);
