@@ -13,6 +13,7 @@ import {
   SearchField,
   Button,
   withAuthenticator,
+  SelectField
 } from "@aws-amplify/ui-react";
 import awsconfig from "../amplifyconfiguration.json";
 
