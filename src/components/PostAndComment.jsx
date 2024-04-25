@@ -140,15 +140,30 @@ export default function PostAndComment({ isFriendsOnly }) {
   const setVariablesNFilter = (nextToken) => {
     if (friends === null || privateUsers === null) return;
 
-    let friendsFilter = friends.map((username) =>
+    let friendMembers = friends.map((username) =>
       JSON.parse(`{"owner": {"eq": "${username}"}}`)
     );
 
-    let privateFilter = privateUsers.map((username) =>
-      JSON.parse(`{"not": {"owner": {"eq": "${username}"}}}`)
-    );
+    // Construct filter for friends
+    const friendsFilter = friends.map((username) => ({
+      owner: { eq: username },
+    }));
+
+    // Construct filter for private users
+    const privateUsersFilter = privateUsers.map((username) => ({
+      not: { owner: { eq: username } },
+    }));
 
     filter = {
+      or: [
+        // Include posts where owner is in friends regardless of privateUsers
+        ...friendsFilter,
+        ...privateUsersFilter,
+        // Include posts where owner is not in friends and not in privateUsers
+        // ...(privateUsers.length > 0
+        //   ? privateUsersFilter
+        //   : [{ owner: { ne: null } }]),
+      ],
       and: [
         {
           not: {
@@ -160,25 +175,13 @@ export default function PostAndComment({ isFriendsOnly }) {
             actionedUsers: { contains: myUser.username },
           },
         },
-        {
-          or: [
-            {
-              owner: { in: [...friends] },
-            },
-            // {
-            //   not: {
-            //     owner: { in: [...privateUsers] },
-            //   },
-            // },
-          ],
-        },
       ],
       createdAt: { between: [oneWeekFromToday.toJSON(), date.toJSON()] },
     };
 
     if (isFriendsOnly) {
       filter = {
-        or: friendsFilter,
+        or: friendMembers,
         and: [
           {
             not: {
