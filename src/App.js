@@ -244,7 +244,7 @@ export default function App() {
               <Toaster position="top-right" reverseOrder={false} />
               <Grid
                 columnGap="0.5rem"
-                height="100vh"
+                //height="100vh"
                 rowGap="0.5rem"
                 templateColumns="1fr 8fr"
                 alignContent="center"
