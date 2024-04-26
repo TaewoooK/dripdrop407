@@ -38,8 +38,6 @@ import { getUrl } from "aws-amplify/storage";
 import PostActionCenter from "./PostActionCenter";
 import ReportPost from "./ReportPost";
 import toast, { Toaster } from "react-hot-toast";
-import { useContext } from "react";
-import { UserContext } from "../UserContext";
 import { isDevGlobal } from "../App";
 
 const client = generateClient();
@@ -71,10 +69,14 @@ export default function PostAndComment({ isFriendsOnly }) {
         variables: { filter: { username: { eq: myUser.username } } },
       });
       if (result.data.listSavedPosts.items.length > 0) {
-        setSavedPosts(result.data.listSavedPosts.items[0]);
+        setSavedPostsList(result.data.listSavedPosts.items[0].postIds);
         console.log(
           "saved posts:",
           result.data.listSavedPosts.items[0].postIds
+        );
+        console.log(
+          "fetched saved posts includes",
+          result.data.listSavedPosts.items[0].postIds.includes(0)
         );
         // return result.data.listSavedPosts.items; // Return the data from the GraphQL response
       } else {
@@ -85,7 +87,7 @@ export default function PostAndComment({ isFriendsOnly }) {
           },
         });
         console.log("created saved posts");
-        setSavedPosts(createdSavedPosts.data.createSavedPosts[0]);
+        setSavedPostsList(createdSavedPosts.data.createSavedPosts[0].postIds);
         // return createdSavedPosts.data.listSavedPosts.items; // Return the data from the GraphQL response
       }
     } catch (error) {
@@ -159,10 +161,7 @@ export default function PostAndComment({ isFriendsOnly }) {
     }));
 
     filter = {
-      or: [
-        ...friendsFilter,
-        ...privateUsersFilter,
-      ],
+      or: [...friendsFilter, ...privateUsersFilter],
       and: [
         {
           not: {
@@ -612,7 +611,7 @@ export default function PostAndComment({ isFriendsOnly }) {
   const deleteCurrPost = async () => {
     setShowActionCenter(false);
     const currPost = posts[currentImageIndex];
-    
+
     await client
       .graphql({
         query: deletePost,
