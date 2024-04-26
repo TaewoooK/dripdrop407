@@ -173,6 +173,7 @@ export const onCreatePost = /* GraphQL */ `
       }
       hiddenPeople
       actionedUsers
+      tags
       updatedAt
       __typename
     }
@@ -194,6 +195,7 @@ export const onUpdatePost = /* GraphQL */ `
       }
       hiddenPeople
       actionedUsers
+      tags
       updatedAt
       __typename
     }
@@ -215,6 +217,7 @@ export const onDeletePost = /* GraphQL */ `
       }
       hiddenPeople
       actionedUsers
+      tags
       updatedAt
       __typename
     }
@@ -237,6 +240,7 @@ export const onCreateComment = /* GraphQL */ `
         postImageKey
         hiddenPeople
         actionedUsers
+        tags
         updatedAt
         __typename
       }
@@ -263,6 +267,7 @@ export const onUpdateComment = /* GraphQL */ `
         postImageKey
         hiddenPeople
         actionedUsers
+        tags
         updatedAt
         __typename
       }
@@ -289,6 +294,7 @@ export const onDeleteComment = /* GraphQL */ `
         postImageKey
         hiddenPeople
         actionedUsers
+        tags
         updatedAt
         __typename
       }

@@ -104,3 +104,11 @@ const query = /* GraphQL */ `
     body: JSON.stringify(body)
   };
 };
+
+function generateRandomTime() {
+  const nineAM = new Date();
+  nineAM.setHours(9, 0, 0, 0);
+  const fivePM = new Date();
+  fivePM.setHours(17, 0, 0, 0);
+  return new Date(nineAM.getTime() + Math.random() * (fivePM.getTime() - nineAM.getTime()));
+}

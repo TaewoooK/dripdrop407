@@ -23,7 +23,10 @@
       },
       "function": {
         "getRandDoublePointsTime": {},
-        "getDoublePtsTime": {}
+        "getDoublePtsTime": {
+          "deploymentBucketName": "amplify-dripdrop407-dev-05648-deployment",
+          "s3Key": "amplify-builds/getDoublePtsTime-46386d7278767a366968-build.zip"
+        }
       }
     }
   },
