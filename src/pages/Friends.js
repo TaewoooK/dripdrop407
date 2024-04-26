@@ -11,9 +11,7 @@ import {
   View,
   Divider,
   SearchField,
-  Button,
   withAuthenticator,
-  SelectField
 } from "@aws-amplify/ui-react";
 import awsconfig from "../amplifyconfiguration.json";
 
@@ -463,7 +461,9 @@ const Friends = () => {
         wrap="nowrap"
         gap="1rem"
       >
-        <Heading level={3}> Search For Users </Heading>
+        <Heading level={3}>
+          Search For <span style={{ color: "#047d95" }}>Users</span>
+        </Heading>
 
         <SearchField
           className="UserSearch"
@@ -509,7 +509,9 @@ const Friends = () => {
 
         <Divider size="large"></Divider>
 
-        <Heading level={3}> Friend Requests </Heading>
+        <Heading level={3}>
+          Friend <span style={{ color: "#047d95" }}>Requests</span>
+        </Heading>
 
         <SearchField
           className="RequestSearch"

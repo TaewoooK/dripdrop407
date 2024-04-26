@@ -83,8 +83,7 @@ type Battle @model @auth(rules: [{ allow: public }]) {
   createdAt: String!
   actionedUsers: [String]
 }
-
 type BannedUsers @model @auth(rules: [{ allow: public }]) {
   id: ID!
-  BannedUsers: String
+  BannedUsers: [String]
 }

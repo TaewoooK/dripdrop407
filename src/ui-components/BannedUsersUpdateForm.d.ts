@@ -22,7 +22,7 @@ export declare type ValidationResponse = {
 };
 export declare type ValidationFunction<T> = (value: T, validationResponse: ValidationResponse) => ValidationResponse | Promise<ValidationResponse>;
 export declare type BannedUsersUpdateFormInputValues = {
-    BannedUsers?: string;
+    BannedUsers?: string[];
 };
 export declare type BannedUsersUpdateFormValidationValues = {
     BannedUsers?: ValidationFunction<string>;

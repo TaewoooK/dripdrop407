@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "api": {
+      "dripdrop407": [
+        "Mutation"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

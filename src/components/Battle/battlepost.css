@@ -1,0 +1,293 @@
+.big-post-containerv2 {
+    width: 800px;
+    height: 550px;
+    display: block;
+    gap: 0;
+    align-items: unset;
+    justify-content: unset;
+    position: relative;
+    padding: 0;
+    border-radius: 25px;
+    background-color: rgba(34, 34, 34, 1);
+  }
+  
+  .post-containerv2 {
+    width: 770px;
+    height: 470px;
+    display: block;
+    gap: unset;
+    align-items: unset;
+    justify-content: center;
+    overflow: hidden;
+    position: absolute;
+    top: 20px;
+    bottom: 10.09%;
+    left: 15px;
+    right: 20.93%;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 25px;
+    padding: 0;
+    background-color: rgba(30, 30, 30, 1);
+  }
+  
+  .thumb-container1v2 {
+    width: 39px;
+    height: 39px;
+    display: block;
+    gap: unset;
+    align-items: unset;
+    justify-content: unset;
+    overflow: hidden;
+    position: absolute;
+    top: 530px;
+    left: 65px;
+    padding: 0;
+    filter: invert(100%);
+  }
+  
+  .thumb-container2v2 {
+    width: 39px;
+    height: 39px;
+    display: block;
+    gap: unset;
+    align-items: unset;
+    justify-content: unset;
+    overflow: hidden;
+    position: absolute;
+    top: 530px;
+    left: 350px;
+    padding: 0;
+    filter: invert(100%);
+  }
+  
+  .post-img-one {
+    width: 276px;
+    height: 383px;
+    display: block;
+    cursor: pointer;
+    gap: unset;
+    align-items: unset;
+    justify-content: unset;
+    position: absolute;
+    top: 64px;
+    left: 45px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 25px;
+    padding: 0;
+  }
+
+  .post-img-two {
+    width: 276px;
+    cursor: pointer;
+    height: 383px;
+    display: block;
+    gap: unset;
+    align-items: unset;
+    justify-content: unset;
+    position: absolute;
+    top: 64px;
+    left: 480px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 25px;
+    padding: 0;
+  }
+  
+  .more-iconv2 {
+    width: 27px;
+    height: 27px;
+    position: absolute;
+    top: 35px;
+    left: 45px;
+    display: block;
+    gap: unset;
+    align-items: unset;
+    justify-content: unset;
+    overflow: hidden;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+  .chat-iconv2 {
+    width: 27px;
+    height: 27px;
+    position: absolute;
+    top: 14px;
+    left: 370px;
+    display: none;
+    gap: unset;
+    align-items: unset;
+    justify-content: unset;
+    overflow: hidden;
+    cursor: pointer;
+    padding: 0;
+  }
+  
+  .button2 {
+    width: 56px;
+    height: 56px;
+    position: absolute;
+    border-radius: 51px;
+    top: 522px;
+    left: 650px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    background-color: rgba(4,125,149, 0.35);
+  }
+  
+  .button1 {
+    width: 56px;
+    height: 56px;
+    position: absolute;
+    border-radius: 51px;
+    top: 522px;
+    left: 190px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    background-color: rgba(4,125,149, 0.35);
+  }
+  
+  .username-textv2 {
+    font-family: "Inter";
+    font-size: 20px;
+    font-weight: 400;
+    color: rgba(230, 230, 230, 1);
+    line-height: 30px;
+    text-align: left;
+    display: block;
+    flex-direction: column;
+    justify-content: unset;
+    width: unset;
+    height: unset;
+    gap: unset;
+    align-items: unset;
+    flex-shrink: 0;
+    position: relative;
+    padding: 0px;
+    white-space: pre-wrap;
+  }
+  
+  .comment-containerv2 {
+    width: 277.5px;
+    height: 468px;
+    display: none;
+    gap: 0;
+    top: 30px;
+    align-items: unset;
+    justify-content: unset;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    padding: 0;
+    background-color: rgba(34, 34, 34, 1);
+  }
+  
+  .header-textv2 {
+    font-family: "Inter";
+    font-size: 24px; /* 32px scaled down by 25% */
+    font-weight: 700;
+    color: rgba(255, 255, 255, 1);
+    line-height: 24px;
+    text-align: left;
+    display: block;
+    direction: column;
+    justify-content: unset;
+    width: unset;
+    height: unset;
+    gap: unset;
+    align-items: unset;
+    position: absolute;
+    top: 27px; /* 36px scaled down by 25% */
+    left: 45px; /* 60px scaled down by 25% */
+    padding: 0;
+    white-space: pre-wrap;
+  }
+  
+  .text-field-containerv2 {
+    gap: 12.75px; /* 17px * 0.75 */
+    direction: row;
+    width: unset;
+    height: unset;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 406.5px; /* 542px * 0.75 */
+    left: 0px; /* 45px * 0.75 */
+    padding: 0;
+    display: flex;
+    transform: scale(0.75);
+  }
+  
+  .icon-containerv2 {
+    width: 30px; /* 40px * 0.75 */
+    height: 30px; /* 40px * 0.75 */
+    display: block;
+    gap: unset;
+    align-items: unset;
+    justify-content: unset;
+    overflow: hidden;
+    position: absolute;
+    top: 21px; /* 28px * 0.75 */
+    left: 219px; /* 292px * 0.75 */
+    padding: 0;
+  }
+
+  .battle-header-text {
+    font-family: Inter, sans-serif; /* Use appropriate font stack or import the font */
+    font-size: 40px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 1);
+    line-height: 58.09090805053711px; /* You may need to adjust this value */
+    text-align: left;
+    display: block;
+    flex-direction: column; /* Assuming this is inside a flex container */
+    justify-content: unset;
+    width: 358px;
+    height: 70px;
+    gap: unset;
+    align-items: unset;
+    position: absolute;
+    top: 2px;
+    left: 345px;
+    padding: 0px;
+    white-space: pre-wrap;
+  }
+  
+  .battle-sub-header-text {
+    font-family: Inter, sans-serif; /* Use appropriate font stack or import the font */
+    font-size: 24px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 1);
+    line-height: 58.09090805053711px; /* You may need to adjust this value */
+    text-align: left;
+    display: block;
+    flex-direction: column; /* Assuming this is inside a flex container */
+    justify-content: unset;
+    width: 358px;
+    height: 70px;
+    gap: unset;
+    align-items: unset;
+    position: absolute;
+    top: 200px;
+    left: 355px;
+    padding: 0px;
+    white-space: pre-wrap;
+  }
+
+  .next-button {
+    width: unset;
+    height: unset;
+    position: absolute;
+    top: 500px;
+    left: 650px;
+    color: white;
+  }
+
+  .right-img-percent {
+    color: white;
+
+  }
+
+  .left-img-percent {
+    color: white;
+    top: 25%;
+    left: 25%;
+  }
