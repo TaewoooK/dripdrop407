@@ -1,28 +1,28 @@
-type DoublePointsTime @model @auth(rules: [{allow: public}]) {
+type DoublePointsTime @model @auth(rules: [{ allow: public }]) {
   id: ID!
   date: String
   startTime: String
 }
 
-type Privacy @model @auth(rules: [{allow: public}]) {
+type Privacy @model @auth(rules: [{ allow: public }]) {
   id: ID!
   Username: String!
   Private: Boolean!
 }
 
-type FriendRequest @model @auth(rules: [{allow: public}]) {
+type FriendRequest @model @auth(rules: [{ allow: public }]) {
   id: ID!
   Username: ID!
   SenderUsername: String!
 }
 
-type Friend @model @auth(rules: [{allow: public}]) {
+type Friend @model @auth(rules: [{ allow: public }]) {
   id: ID!
   Username: ID!
   FriendUsername: String!
 }
 
-type Post @model @auth(rules: [{allow: public}]) {
+type Post @model @auth(rules: [{ allow: public }]) {
   id: ID!
   owner: String!
   description: String!
@@ -42,7 +42,7 @@ type S3Object {
   key: String!
 }
 
-type Comment @model @auth(rules: [{allow: public}]) {
+type Comment @model @auth(rules: [{ allow: public }]) {
   id: ID!
   postId: ID! @index(name: "byPost")
   text: String!
@@ -50,7 +50,7 @@ type Comment @model @auth(rules: [{allow: public}]) {
   CommentsPost: Post @belongsTo(fields: ["postId"])
 }
 
-type PostReport @model @auth(rules: [{allow: public}]) {
+type PostReport @model @auth(rules: [{ allow: public }]) {
   id: ID!
   reporter: String!
   reason: String
@@ -58,19 +58,19 @@ type PostReport @model @auth(rules: [{allow: public}]) {
   postId: String!
 }
 
-type SavedPosts @model @auth(rules: [{allow: public}]) {
+type SavedPosts @model @auth(rules: [{ allow: public }]) {
   id: ID!
   username: ID!
   postIds: [String]
 }
 
-type Notifications @model @auth(rules: [{allow: public}]) {
+type Notifications @model @auth(rules: [{ allow: public }]) {
   id: ID!
   username: ID!
   notificationsList: [[String]]
 }
 
-type Battle @model @auth(rules: [{allow: public}]) {
+type Battle @model @auth(rules: [{ allow: public }]) {
   id: ID!
   Player1: String!
   Player2: String!
@@ -82,4 +82,3 @@ type Battle @model @auth(rules: [{allow: public}]) {
   Player2ImageKey: String!
   createdAt: String!
 }
- 

@@ -5,11 +5,12 @@ import { createPost, updatePost } from "../graphql/mutations";
 import { listPosts } from "../graphql/queries";
 import { fetchUserAttributes, getCurrentUser } from "aws-amplify/auth";
 import awsExports from "../aws-exports";
-import { Message, Image } from "@aws-amplify/ui-react";
+import { Message, Image, CheckboxField, Flex } from "@aws-amplify/ui-react";
 import { Loader } from "@aws-amplify/ui-react";
 import HidePeople from "./HidePeople";
 import { UserContext } from "../UserContext";
 import toast, { Toaster } from "react-hot-toast";
+import "./UploadImage.css";
 import { render } from "@testing-library/react";
 import { isDevGlobal } from "../App";
 
@@ -28,6 +29,25 @@ const UploadImage = () => {
   const [imageUrl, setImageUrl] = useState(null);
   const { allUsers, myUser } = useContext(UserContext);
 
+  const [tags, setTags] = useState({
+    americana: false,
+    athleisure: false,
+    earthtones: false,
+    experimental: false,
+    fall: false,
+    formal: false,
+    gorpcore: false,
+    highfashion: false,
+    minimalist: false,
+    monochrome: false,
+    spring: false,
+    streetwear: false,
+    summer: false,
+    winter: false,
+    workwear: false,
+    y2k: false,
+  });
+  
   const [variables, setVariables] = useState({});
   const [uploadedToday, setUploadedToday] = useState(false);
 
@@ -101,6 +121,17 @@ const UploadImage = () => {
     console.log("comments checked/unchecked");
   };
 
+  const tagsDictToList = () => {
+    let list = [];
+    for (const key in tags) {
+      if (tags[key]) {
+        list.push(key);
+      }
+    }
+
+    return list;
+  };
+  
   const [devOverride, setDevOverride] = useState(false);
 
   const handleDevOverride = () => {
@@ -117,6 +148,8 @@ const UploadImage = () => {
         console.log("Image:", image);
         console.log("Description:", description);
         let commentEnabled = isChecked;
+
+        const tagList = tagsDictToList();
 
         const currDate = new Date().toISOString();
 
@@ -139,6 +172,7 @@ const UploadImage = () => {
               postImageKey: "",
               hiddenPeople: hiddenSelect,
               actionedUsers: [],
+              tags: tagList,
             },
           },
         });
@@ -190,6 +224,12 @@ const UploadImage = () => {
   };
 
   console.log("In Upload Image: " + hiddenSelect);
+
+  const handleSetTagDict = (tagName) => {
+    tags[tagName] = !tags[tagName];
+    //setTags(tags);
+    console.log(tags);
+  };
 
   return (
     <div
@@ -251,7 +291,6 @@ const UploadImage = () => {
             resize: "none",
           }}
         ></textarea>
-
         <label>
           <input
             type="checkbox"
@@ -263,6 +302,115 @@ const UploadImage = () => {
             Enable comments?
           </span>
         </label>
+        <h3 style={{ textAlign: "left", color: "white" }}>
+          add <span style={{ color: "#047d95" }}>tags</span>
+        </h3>
+        <Flex>
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("americana")}
+            label="Americana"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("athleisure")}
+            label="Athleisure"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("earthtones")}
+            label="Earth Tones"
+          />
+        </Flex>
+        <Flex>
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("experimental")}
+            label="Experimental"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("fall")}
+            label="Fall"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("formal")}
+            label="Formal"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("gorpcore")}
+            label="Gorpcore"
+          />
+        </Flex>
+        <Flex>
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("highfashion")}
+            label="High Fashion"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("minimalist")}
+            label="Minimalist"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("monochrome")}
+            label="Monochrome"
+          />
+        </Flex>
+        <Flex>
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("spring")}
+            label="Spring"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("streetwear")}
+            label="Streetwear"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("summer")}
+            label="Summer"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("winter")}
+            label="Winter"
+          />
+        </Flex>
+        <Flex>
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("workwear")}
+            label="Workwear"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("y2k")}
+            label="Y2K"
+          />
+        </Flex>
       </div>
       <div
         style={{

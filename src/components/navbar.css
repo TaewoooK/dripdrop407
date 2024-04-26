@@ -2,7 +2,7 @@
   width: 220px;
   height: 100vh;
   left: -180px;
-  transition: .3s;
+  transition: 0.3s;
   display: block;
   overflow: hidden;
   top: 0;
@@ -109,7 +109,7 @@
   justify-content: center;
   align-items: center;
   position: absolute;
-  top: 600px;
+  top: 825px;
   left: calc(50% - 91px - 0px);
   border-radius: 10px;
 }
@@ -150,7 +150,7 @@
   justify-content: flex-start;
   align-items: center;
   position: absolute;
-  top: 520px;
+  top: 750px;
   left: 40px;
   padding: 0;
 }
@@ -182,12 +182,10 @@
 /*=============== BREAKPOINTS ===============*/
 /* For large devices */
 @media screen and (max-width: 992px) {
-
 }
 /* For medium devices */
 
 @media screen and (max-width: 576px) {
-
 }
 
 /* For small devices */
@@ -219,7 +217,4 @@
     padding: 0px;
     white-space: pre-wrap;
   }
-
-  
 }
-

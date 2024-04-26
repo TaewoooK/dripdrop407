@@ -9,10 +9,10 @@ import {
   Button,
   Image,
 } from "@aws-amplify/ui-react";
-import { MyIcon } from "../ui-components";
+import { MyIcon } from "../../ui-components";
 import "./post2.css";
 import { motion, useAnimate } from "framer-motion";
-import awsconfig from "../aws-exports";
+import awsconfig from "../../aws-exports";
 import { fetchUserAttributes, getCurrentUser } from "aws-amplify/auth";
 import { generateClient, post } from "aws-amplify/api";
 import {
@@ -22,20 +22,20 @@ import {
   updateSavedPosts,
   updatePost,
   updateNotifications,
- } from "../graphql/mutations";
+} from "../../graphql/mutations";
 import {
   listPosts,
   getPost,
   commentsByPostId,
   listSavedPosts,
   listNotifications,
-} from "../graphql/queries";
+} from "../../graphql/queries";
 import { getUrl } from "aws-amplify/storage";
-import PostActionCenter from "./PostActionCenter";
-import ReportPost from "./ReportPost";
+import PostActionCenter from "../PostActionCenter";
+import ReportPost from "../ReportPost";
 import toast, { Toaster } from "react-hot-toast";
 import { useContext } from "react";
-import { UserContext } from "./../UserContext";
+import { UserContext } from "../../UserContext";
 
 const client = generateClient();
 
@@ -226,7 +226,7 @@ const PostV2 = () => {
       };
       await client.graphql({
         query: updatePost,
-        variables: { input: greenClickUpdateDetails}
+        variables: { input: greenClickUpdateDetails },
       });
       console.log(posts[currentImageIndex].drip_points);
 
@@ -260,7 +260,7 @@ const PostV2 = () => {
       };
       await client.graphql({
         query: updatePost,
-        variables: { input: redClickUpdateDetails}
+        variables: { input: redClickUpdateDetails },
       });
       console.log(posts[currentImageIndex].drip_points);
 
@@ -365,7 +365,7 @@ const PostV2 = () => {
     setComment("");
   };
 
-    // Handler function to toggle the comment deletion state
+  // Handler function to toggle the comment deletion state
   const handleIconClick = async ({ index }) => {
     //   setIsCommentDeleted(!isCommentDeleted);
     //   console.log("comment deleted:", index);
@@ -520,7 +520,6 @@ const PostV2 = () => {
 
   // const [isCommentDeleted, setIsCommentDeleted] = useState(false);
 
-
   return (
     <Flex direction="row" justifyContent="center" gap="0.5rem">
       {/* <Toaster position="top-right" reverseOrder={false} /> */}
@@ -564,7 +563,7 @@ const PostV2 = () => {
 
             <div>No More Posts, Check back later!</div>
           )}
-        <Flex
+          <Flex
             gap="22px"
             direction="column"
             width="unset"
@@ -603,17 +602,13 @@ const PostV2 = () => {
               src="https://cdn.discordapp.com/attachments/1120152118272213053/1200211293995544636/IMG_5670.jpg?ex=65d7cfdf&is=65c55adf&hm=d848327c70636c5c7e10ae24e3e8ae877f0b7c12c4d1c38da5b74c577d30b384&"
             ></Icon> */}
             {image ? (
-                <Text
-                    className="username-textv2"
-                    children={posts[currentImageIndex].owner}
-                ></Text>
+              <Text
+                className="username-textv2"
+                children={posts[currentImageIndex].owner}
+              ></Text>
             ) : (
-                <Text
-                    className="username-textv2"
-                    children={"No post"}
-                ></Text>
+              <Text className="username-textv2" children={"No post"}></Text>
             )}
-
           </Flex>
         </motion.View>
         {/* <View className="thumb-container1v2">
@@ -672,49 +667,49 @@ const PostV2 = () => {
               right="9.37%"
             ></Icon>
           </View> */}
-          {image ? (
-            <Image className="post-imgv2" src={image}></Image>
-          ) : (
-            //src={Post?.outfitimage}
-            //src="https://cdn.discordapp.com/attachments/1120152118272213053/1201614916788965536/IMG_5675.jpg?ex=65dceb19&is=65ca7619&hm=277e5088a148d22bbb7935216d52437d827a889d0d6e4e7dded8eeb7a4af1336&"
-            //src="https://images.unsplash.com/photo-1707879487614-72b421e4393f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHx8"
+        {image ? (
+          <Image className="post-imgv2" src={image}></Image>
+        ) : (
+          //src={Post?.outfitimage}
+          //src="https://cdn.discordapp.com/attachments/1120152118272213053/1201614916788965536/IMG_5675.jpg?ex=65dceb19&is=65ca7619&hm=277e5088a148d22bbb7935216d52437d827a889d0d6e4e7dded8eeb7a4af1336&"
+          //src="https://images.unsplash.com/photo-1707879487614-72b421e4393f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHx8"
 
-            <div>No More Posts, Check back later!</div>
-          )}
+          <div>No More Posts, Check back later!</div>
+        )}
 
-          <MyIcon
-            className="more-iconv2"
-            type="more_vert"
-            onClick={toggleActionCenter}
-          />
+        <MyIcon
+          className="more-iconv2"
+          type="more_vert"
+          onClick={toggleActionCenter}
+        />
 
-          <MyIcon
-            className="chat-iconv2"
-            type="chat"
-            onClick={handleCommentsExpansionClick}
-          ></MyIcon>
+        <MyIcon
+          className="chat-iconv2"
+          type="chat"
+          onClick={handleCommentsExpansionClick}
+        ></MyIcon>
 
-          <Button
-            className="button1"
-            onClick={handleGreenButtonClick}
-            whilehover={{ x: [-2, 2, -2, 2, 0], transition: { duration: 0.3 } }}
-            whiletap={{}}
-            size="default"
-            isDisabled={false}
-            variation="default"
-            //onClick={() => setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)}
-          ></Button>
+        <Button
+          className="button1"
+          onClick={handleGreenButtonClick}
+          whilehover={{ x: [-2, 2, -2, 2, 0], transition: { duration: 0.3 } }}
+          whiletap={{}}
+          size="default"
+          isDisabled={false}
+          variation="default"
+          //onClick={() => setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)}
+        ></Button>
 
-          <Button
-            className="button2"
-            onClick={handleRedButtonClick}
-            whilehover={{ x: [-2, 2, -2, 2, 0], transition: { duration: 0.3 } }}
-            whiletap={{}}
-            size="default"
-            isDisabled={false}
-            variation="default"
-            //onClick={() => setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)}
-          ></Button>
+        <Button
+          className="button2"
+          onClick={handleRedButtonClick}
+          whilehover={{ x: [-2, 2, -2, 2, 0], transition: { duration: 0.3 } }}
+          whiletap={{}}
+          size="default"
+          isDisabled={false}
+          variation="default"
+          //onClick={() => setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)}
+        ></Button>
       </View>
 
       {showComment && (
@@ -843,7 +838,8 @@ const PostV2 = () => {
                   >
                     {text}
                   </Text>
-                  {(currUser.username == posts[currentImageIndex].owner || currUser.username == comments[index].commentAuthorId) && (
+                  {(currUser.username == posts[currentImageIndex].owner ||
+                    currUser.username == comments[index].commentAuthorId) && (
                     <Icon
                       width="22.5px"
                       height="25px"
@@ -910,7 +906,7 @@ const PostV2 = () => {
 
             <div>No More Posts, Check back later!</div>
           )}
-        <Flex
+          <Flex
             gap="22px"
             direction="column"
             width="unset"
@@ -949,17 +945,13 @@ const PostV2 = () => {
               src="https://cdn.discordapp.com/attachments/1120152118272213053/1200211293995544636/IMG_5670.jpg?ex=65d7cfdf&is=65c55adf&hm=d848327c70636c5c7e10ae24e3e8ae877f0b7c12c4d1c38da5b74c577d30b384&"
             ></Icon> */}
             {image ? (
-                <Text
-                    className="username-textv2"
-                    children={posts[currentImageIndex].owner}
-                ></Text>
+              <Text
+                className="username-textv2"
+                children={posts[currentImageIndex].owner}
+              ></Text>
             ) : (
-                <Text
-                    className="username-textv2"
-                    children={"No post"}
-                ></Text>
+              <Text className="username-textv2" children={"No post"}></Text>
             )}
-
           </Flex>
         </motion.View>
         {/* <View className="thumb-container1v2">
@@ -1018,29 +1010,29 @@ const PostV2 = () => {
               right="9.37%"
             ></Icon>
           </View> */}
-          {image ? (
-            <Image className="post-imgv2" src={image}></Image>
-          ) : (
-            //src={Post?.outfitimage}
-            //src="https://cdn.discordapp.com/attachments/1120152118272213053/1201614916788965536/IMG_5675.jpg?ex=65dceb19&is=65ca7619&hm=277e5088a148d22bbb7935216d52437d827a889d0d6e4e7dded8eeb7a4af1336&"
-            //src="https://images.unsplash.com/photo-1707879487614-72b421e4393f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHx8"
+        {image ? (
+          <Image className="post-imgv2" src={image}></Image>
+        ) : (
+          //src={Post?.outfitimage}
+          //src="https://cdn.discordapp.com/attachments/1120152118272213053/1201614916788965536/IMG_5675.jpg?ex=65dceb19&is=65ca7619&hm=277e5088a148d22bbb7935216d52437d827a889d0d6e4e7dded8eeb7a4af1336&"
+          //src="https://images.unsplash.com/photo-1707879487614-72b421e4393f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHx8"
 
-            <div>No More Posts, Check back later!</div>
-          )}
+          <div>No More Posts, Check back later!</div>
+        )}
 
-          <MyIcon
-            className="more-iconv2"
-            type="more_vert"
-            onClick={toggleActionCenter}
-          />
+        <MyIcon
+          className="more-iconv2"
+          type="more_vert"
+          onClick={toggleActionCenter}
+        />
 
-          <MyIcon
-            className="chat-iconv2"
-            type="chat"
-            onClick={handleCommentsExpansionClick}
-          ></MyIcon>
+        <MyIcon
+          className="chat-iconv2"
+          type="chat"
+          onClick={handleCommentsExpansionClick}
+        ></MyIcon>
 
-          {/* <Button
+        {/* <Button
             className="green-buttonv2"
             onClick={handleGreenButtonClick}
             whilehover={{ x: [-2, 2, -2, 2, 0], transition: { duration: 0.3 } }}
@@ -1189,7 +1181,8 @@ const PostV2 = () => {
                   >
                     {text}
                   </Text>
-                  {(currUser.username == posts[currentImageIndex].owner || currUser.username == comments[index].commentAuthorId) && (
+                  {(currUser.username == posts[currentImageIndex].owner ||
+                    currUser.username == comments[index].commentAuthorId) && (
                     <Icon
                       width="22.5px"
                       height="25px"
@@ -1216,10 +1209,6 @@ const PostV2 = () => {
         </motion.View>
       )}
     </Flex>
-
-    
-
-
   );
 };
 
