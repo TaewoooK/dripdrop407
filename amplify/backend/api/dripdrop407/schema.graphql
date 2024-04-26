@@ -81,4 +81,5 @@ type Battle @model @auth(rules: [{ allow: public }]) {
   Player1ImageKey: String!
   Player2ImageKey: String!
   createdAt: String!
+  actionedUsers: [String]
 }

@@ -449,6 +449,7 @@ export const onCreateBattle = /* GraphQL */ `
       Player1ImageKey
       Player2ImageKey
       createdAt
+      actionedUsers
       updatedAt
       __typename
     }
@@ -467,6 +468,7 @@ export const onUpdateBattle = /* GraphQL */ `
       Player1ImageKey
       Player2ImageKey
       createdAt
+      actionedUsers
       updatedAt
       __typename
     }
@@ -485,6 +487,7 @@ export const onDeleteBattle = /* GraphQL */ `
       Player1ImageKey
       Player2ImageKey
       createdAt
+      actionedUsers
       updatedAt
       __typename
     }

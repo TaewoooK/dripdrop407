@@ -503,6 +503,7 @@ export const createBattle = /* GraphQL */ `
       Player1ImageKey
       Player2ImageKey
       createdAt
+      actionedUsers
       updatedAt
       __typename
     }
@@ -524,6 +525,7 @@ export const updateBattle = /* GraphQL */ `
       Player1ImageKey
       Player2ImageKey
       createdAt
+      actionedUsers
       updatedAt
       __typename
     }
@@ -545,6 +547,7 @@ export const deleteBattle = /* GraphQL */ `
       Player1ImageKey
       Player2ImageKey
       createdAt
+      actionedUsers
       updatedAt
       __typename
     }

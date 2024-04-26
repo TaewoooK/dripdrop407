@@ -371,6 +371,7 @@ export const getBattle = /* GraphQL */ `
       Player1ImageKey
       Player2ImageKey
       createdAt
+      actionedUsers
       updatedAt
       __typename
     }
@@ -394,6 +395,7 @@ export const listBattles = /* GraphQL */ `
         Player1ImageKey
         Player2ImageKey
         createdAt
+        actionedUsers
         updatedAt
         __typename
       }
