@@ -553,3 +553,45 @@ export const deleteBattle = /* GraphQL */ `
     }
   }
 `;
+export const createBannedUsers = /* GraphQL */ `
+  mutation CreateBannedUsers(
+    $input: CreateBannedUsersInput!
+    $condition: ModelBannedUsersConditionInput
+  ) {
+    createBannedUsers(input: $input, condition: $condition) {
+      id
+      BannedUsers
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateBannedUsers = /* GraphQL */ `
+  mutation UpdateBannedUsers(
+    $input: UpdateBannedUsersInput!
+    $condition: ModelBannedUsersConditionInput
+  ) {
+    updateBannedUsers(input: $input, condition: $condition) {
+      id
+      BannedUsers
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteBannedUsers = /* GraphQL */ `
+  mutation DeleteBannedUsers(
+    $input: DeleteBannedUsersInput!
+    $condition: ModelBannedUsersConditionInput
+  ) {
+    deleteBannedUsers(input: $input, condition: $condition) {
+      id
+      BannedUsers
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;

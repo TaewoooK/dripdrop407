@@ -4,6 +4,8 @@
  * Any changes to this file will be overwritten when running amplify pull. *
  **************************************************************************/
 
+export { default as BannedUsersCreateForm } from "./BannedUsersCreateForm";
+export { default as BannedUsersUpdateForm } from "./BannedUsersUpdateForm";
 export { default as BattleCreateForm } from "./BattleCreateForm";
 export { default as BattleUpdateForm } from "./BattleUpdateForm";
 export { default as DDLeaderboard } from "./DDLeaderboard";

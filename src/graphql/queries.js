@@ -404,3 +404,33 @@ export const listBattles = /* GraphQL */ `
     }
   }
 `;
+export const getBannedUsers = /* GraphQL */ `
+  query GetBannedUsers($id: ID!) {
+    getBannedUsers(id: $id) {
+      id
+      BannedUsers
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listBannedUsers = /* GraphQL */ `
+  query ListBannedUsers(
+    $filter: ModelBannedUsersFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listBannedUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        BannedUsers
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
