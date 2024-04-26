@@ -71,7 +71,7 @@ export default function PostAndComment({ isFriendsOnly }) {
         variables: { filter: { username: { eq: myUser.username } } },
       });
       if (result.data.listSavedPosts.items.length > 0) {
-        setSavedPostsList(result.data.listSavedPosts.items[0].postIds);
+        setSavedPostsList(result.data.listSavedPosts.items[0]);
         console.log(
           "saved posts:",
           result.data.listSavedPosts.items[0].postIds
@@ -89,7 +89,7 @@ export default function PostAndComment({ isFriendsOnly }) {
           },
         });
         console.log("created saved posts");
-        setSavedPostsList(createdSavedPosts.data.createSavedPosts[0].postIds);
+        setSavedPostsList(createdSavedPosts.data.createSavedPosts[0]);
         // return createdSavedPosts.data.listSavedPosts.items; // Return the data from the GraphQL response
       }
     } catch (error) {
@@ -562,7 +562,7 @@ export default function PostAndComment({ isFriendsOnly }) {
           query: updateSavedPosts,
           variables: { input, condition },
         });
-        setSavedPostsList(updatedSavedPosts.data.updateSavedPosts.postIds);
+        setSavedPostsList(updatedSavedPosts.data.updateSavedPosts);
         toast.success("Post unsaved");
       } else {
         console.log("post not saved");
@@ -575,7 +575,7 @@ export default function PostAndComment({ isFriendsOnly }) {
           query: updateSavedPosts,
           variables: { input, condition },
         });
-        setSavedPostsList(updatedSavedPosts.data.updateSavedPosts.postIds);
+        setSavedPostsList(updatedSavedPosts.data.updateSavedPosts);
         toast.success("Post saved");
       }
       // }
@@ -673,7 +673,9 @@ export default function PostAndComment({ isFriendsOnly }) {
             <PostActionCenter
               toggleReportPost={toggleReportPost}
               toggleSavePost={toggleSavePost}
-              saved={savedPostsList.includes(posts[currentImageIndex].id)}
+              saved={savedPostsList.postIds.includes(
+                posts[currentImageIndex].id
+              )}
               deleteCurrPost={deleteCurrPost}
             />
           </div>
