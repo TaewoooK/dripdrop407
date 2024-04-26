@@ -53,6 +53,24 @@
       "service": "Cognito"
     }
   },
+  "function": {
+    "getDoublePtsTime": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput",
+            "GraphQLAPIKeyOutput"
+          ],
+          "category": "api",
+          "resourceName": "dripdrop407"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
   "storage": {
     "s3poststorageprod": {
       "dependsOn": [],

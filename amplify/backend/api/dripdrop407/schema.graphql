@@ -33,6 +33,7 @@ type Post @model @auth(rules: [{allow: public}]) {
   comments: [Comment] @hasMany(indexName: "byPost", fields: ["id"])
   hiddenPeople: [String]
   actionedUsers: [String]
+  tags: [String]
 }
 
 type S3Object {

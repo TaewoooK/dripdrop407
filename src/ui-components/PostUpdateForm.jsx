@@ -200,6 +200,7 @@ export default function PostUpdateForm(props) {
     postImageKey: "",
     hiddenPeople: [],
     actionedUsers: [],
+    tags: [],
   };
   const [owner, setOwner] = React.useState(initialValues.owner);
   const [description, setDescription] = React.useState(
@@ -221,6 +222,7 @@ export default function PostUpdateForm(props) {
   const [actionedUsers, setActionedUsers] = React.useState(
     initialValues.actionedUsers
   );
+  const [tags, setTags] = React.useState(initialValues.tags);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = postRecord
@@ -236,6 +238,8 @@ export default function PostUpdateForm(props) {
     setCurrentHiddenPeopleValue("");
     setActionedUsers(cleanValues.actionedUsers ?? []);
     setCurrentActionedUsersValue("");
+    setTags(cleanValues.tags ?? []);
+    setCurrentTagsValue("");
     setErrors({});
   };
   const [postRecord, setPostRecord] = React.useState(postModelProp);
@@ -260,6 +264,8 @@ export default function PostUpdateForm(props) {
   const [currentActionedUsersValue, setCurrentActionedUsersValue] =
     React.useState("");
   const actionedUsersRef = React.createRef();
+  const [currentTagsValue, setCurrentTagsValue] = React.useState("");
+  const tagsRef = React.createRef();
   const validations = {
     owner: [{ type: "Required" }],
     description: [{ type: "Required" }],
@@ -269,6 +275,7 @@ export default function PostUpdateForm(props) {
     postImageKey: [],
     hiddenPeople: [],
     actionedUsers: [],
+    tags: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -304,6 +311,7 @@ export default function PostUpdateForm(props) {
           postImageKey: postImageKey ?? null,
           hiddenPeople: hiddenPeople ?? null,
           actionedUsers: actionedUsers ?? null,
+          tags: tags ?? null,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -372,6 +380,7 @@ export default function PostUpdateForm(props) {
               postImageKey,
               hiddenPeople,
               actionedUsers,
+              tags,
             };
             const result = onChange(modelFields);
             value = result?.owner ?? value;
@@ -403,6 +412,7 @@ export default function PostUpdateForm(props) {
               postImageKey,
               hiddenPeople,
               actionedUsers,
+              tags,
             };
             const result = onChange(modelFields);
             value = result?.description ?? value;
@@ -438,6 +448,7 @@ export default function PostUpdateForm(props) {
               postImageKey,
               hiddenPeople,
               actionedUsers,
+              tags,
             };
             const result = onChange(modelFields);
             value = result?.drip_points ?? value;
@@ -469,6 +480,7 @@ export default function PostUpdateForm(props) {
               postImageKey,
               hiddenPeople,
               actionedUsers,
+              tags,
             };
             const result = onChange(modelFields);
             value = result?.createdAt ?? value;
@@ -500,6 +512,7 @@ export default function PostUpdateForm(props) {
               postImageKey,
               hiddenPeople,
               actionedUsers,
+              tags,
             };
             const result = onChange(modelFields);
             value = result?.enable_comments ?? value;
@@ -531,6 +544,7 @@ export default function PostUpdateForm(props) {
               postImageKey: value,
               hiddenPeople,
               actionedUsers,
+              tags,
             };
             const result = onChange(modelFields);
             value = result?.postImageKey ?? value;
@@ -558,6 +572,7 @@ export default function PostUpdateForm(props) {
               postImageKey,
               hiddenPeople: values,
               actionedUsers,
+              tags,
             };
             const result = onChange(modelFields);
             values = result?.hiddenPeople ?? values;
@@ -612,6 +627,7 @@ export default function PostUpdateForm(props) {
               postImageKey,
               hiddenPeople,
               actionedUsers: values,
+              tags,
             };
             const result = onChange(modelFields);
             values = result?.actionedUsers ?? values;
@@ -651,6 +667,59 @@ export default function PostUpdateForm(props) {
           ref={actionedUsersRef}
           labelHidden={true}
           {...getOverrideProps(overrides, "actionedUsers")}
+        ></TextField>
+      </ArrayField>
+      <ArrayField
+        onChange={async (items) => {
+          let values = items;
+          if (onChange) {
+            const modelFields = {
+              owner,
+              description,
+              drip_points,
+              createdAt,
+              enable_comments,
+              postImageKey,
+              hiddenPeople,
+              actionedUsers,
+              tags: values,
+            };
+            const result = onChange(modelFields);
+            values = result?.tags ?? values;
+          }
+          setTags(values);
+          setCurrentTagsValue("");
+        }}
+        currentFieldValue={currentTagsValue}
+        label={"Tags"}
+        items={tags}
+        hasError={errors?.tags?.hasError}
+        runValidationTasks={async () =>
+          await runValidationTasks("tags", currentTagsValue)
+        }
+        errorMessage={errors?.tags?.errorMessage}
+        setFieldValue={setCurrentTagsValue}
+        inputFieldRef={tagsRef}
+        defaultFieldValue={""}
+      >
+        <TextField
+          label="Tags"
+          isRequired={false}
+          isReadOnly={false}
+          value={currentTagsValue}
+          onChange={(e) => {
+            let { value } = e.target;
+            if (errors.tags?.hasError) {
+              runValidationTasks("tags", value);
+            }
+            setCurrentTagsValue(value);
+          }}
+          onBlur={() => runValidationTasks("tags", currentTagsValue)}
+          errorMessage={errors.tags?.errorMessage}
+          hasError={errors.tags?.hasError}
+          ref={tagsRef}
+          labelHidden={true}
+          {...getOverrideProps(overrides, "tags")}
         ></TextField>
       </ArrayField>
       <Flex
