@@ -1,6 +1,48 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const onCreateDoublePointsTime = /* GraphQL */ `
+  subscription OnCreateDoublePointsTime(
+    $filter: ModelSubscriptionDoublePointsTimeFilterInput
+  ) {
+    onCreateDoublePointsTime(filter: $filter) {
+      id
+      date
+      startTime
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateDoublePointsTime = /* GraphQL */ `
+  subscription OnUpdateDoublePointsTime(
+    $filter: ModelSubscriptionDoublePointsTimeFilterInput
+  ) {
+    onUpdateDoublePointsTime(filter: $filter) {
+      id
+      date
+      startTime
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteDoublePointsTime = /* GraphQL */ `
+  subscription OnDeleteDoublePointsTime(
+    $filter: ModelSubscriptionDoublePointsTimeFilterInput
+  ) {
+    onDeleteDoublePointsTime(filter: $filter) {
+      id
+      date
+      startTime
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const onCreatePrivacy = /* GraphQL */ `
   subscription OnCreatePrivacy($filter: ModelSubscriptionPrivacyFilterInput) {
     onCreatePrivacy(filter: $filter) {
@@ -131,6 +173,7 @@ export const onCreatePost = /* GraphQL */ `
       }
       hiddenPeople
       actionedUsers
+      tags
       updatedAt
       __typename
     }
@@ -152,6 +195,7 @@ export const onUpdatePost = /* GraphQL */ `
       }
       hiddenPeople
       actionedUsers
+      tags
       updatedAt
       __typename
     }
@@ -173,6 +217,7 @@ export const onDeletePost = /* GraphQL */ `
       }
       hiddenPeople
       actionedUsers
+      tags
       updatedAt
       __typename
     }
@@ -195,6 +240,7 @@ export const onCreateComment = /* GraphQL */ `
         postImageKey
         hiddenPeople
         actionedUsers
+        tags
         updatedAt
         __typename
       }
@@ -221,6 +267,7 @@ export const onUpdateComment = /* GraphQL */ `
         postImageKey
         hiddenPeople
         actionedUsers
+        tags
         updatedAt
         __typename
       }
@@ -247,6 +294,7 @@ export const onDeleteComment = /* GraphQL */ `
         postImageKey
         hiddenPeople
         actionedUsers
+        tags
         updatedAt
         __typename
       }
@@ -382,6 +430,60 @@ export const onDeleteNotifications = /* GraphQL */ `
       id
       username
       notificationsList
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onCreateBattle = /* GraphQL */ `
+  subscription OnCreateBattle($filter: ModelSubscriptionBattleFilterInput) {
+    onCreateBattle(filter: $filter) {
+      id
+      Player1
+      Player2
+      Player1Status
+      Player2Status
+      Player1Score
+      Player2Score
+      Player1ImageKey
+      Player2ImageKey
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateBattle = /* GraphQL */ `
+  subscription OnUpdateBattle($filter: ModelSubscriptionBattleFilterInput) {
+    onUpdateBattle(filter: $filter) {
+      id
+      Player1
+      Player2
+      Player1Status
+      Player2Status
+      Player1Score
+      Player2Score
+      Player1ImageKey
+      Player2ImageKey
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteBattle = /* GraphQL */ `
+  subscription OnDeleteBattle($filter: ModelSubscriptionBattleFilterInput) {
+    onDeleteBattle(filter: $filter) {
+      id
+      Player1
+      Player2
+      Player1Status
+      Player2Status
+      Player1Score
+      Player2Score
+      Player1ImageKey
+      Player2ImageKey
       createdAt
       updatedAt
       __typename

@@ -1,6 +1,51 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const createDoublePointsTime = /* GraphQL */ `
+  mutation CreateDoublePointsTime(
+    $input: CreateDoublePointsTimeInput!
+    $condition: ModelDoublePointsTimeConditionInput
+  ) {
+    createDoublePointsTime(input: $input, condition: $condition) {
+      id
+      date
+      startTime
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateDoublePointsTime = /* GraphQL */ `
+  mutation UpdateDoublePointsTime(
+    $input: UpdateDoublePointsTimeInput!
+    $condition: ModelDoublePointsTimeConditionInput
+  ) {
+    updateDoublePointsTime(input: $input, condition: $condition) {
+      id
+      date
+      startTime
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteDoublePointsTime = /* GraphQL */ `
+  mutation DeleteDoublePointsTime(
+    $input: DeleteDoublePointsTimeInput!
+    $condition: ModelDoublePointsTimeConditionInput
+  ) {
+    deleteDoublePointsTime(input: $input, condition: $condition) {
+      id
+      date
+      startTime
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const createPrivacy = /* GraphQL */ `
   mutation CreatePrivacy(
     $input: CreatePrivacyInput!
@@ -155,6 +200,7 @@ export const createPost = /* GraphQL */ `
       }
       hiddenPeople
       actionedUsers
+      tags
       updatedAt
       __typename
     }
@@ -179,6 +225,7 @@ export const updatePost = /* GraphQL */ `
       }
       hiddenPeople
       actionedUsers
+      tags
       updatedAt
       __typename
     }
@@ -203,6 +250,7 @@ export const deletePost = /* GraphQL */ `
       }
       hiddenPeople
       actionedUsers
+      tags
       updatedAt
       __typename
     }
@@ -228,6 +276,7 @@ export const createComment = /* GraphQL */ `
         postImageKey
         hiddenPeople
         actionedUsers
+        tags
         updatedAt
         __typename
       }
@@ -257,6 +306,7 @@ export const updateComment = /* GraphQL */ `
         postImageKey
         hiddenPeople
         actionedUsers
+        tags
         updatedAt
         __typename
       }
@@ -286,6 +336,7 @@ export const deleteComment = /* GraphQL */ `
         postImageKey
         hiddenPeople
         actionedUsers
+        tags
         updatedAt
         __typename
       }
@@ -430,6 +481,69 @@ export const deleteNotifications = /* GraphQL */ `
       id
       username
       notificationsList
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const createBattle = /* GraphQL */ `
+  mutation CreateBattle(
+    $input: CreateBattleInput!
+    $condition: ModelBattleConditionInput
+  ) {
+    createBattle(input: $input, condition: $condition) {
+      id
+      Player1
+      Player2
+      Player1Status
+      Player2Status
+      Player1Score
+      Player2Score
+      Player1ImageKey
+      Player2ImageKey
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateBattle = /* GraphQL */ `
+  mutation UpdateBattle(
+    $input: UpdateBattleInput!
+    $condition: ModelBattleConditionInput
+  ) {
+    updateBattle(input: $input, condition: $condition) {
+      id
+      Player1
+      Player2
+      Player1Status
+      Player2Status
+      Player1Score
+      Player2Score
+      Player1ImageKey
+      Player2ImageKey
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteBattle = /* GraphQL */ `
+  mutation DeleteBattle(
+    $input: DeleteBattleInput!
+    $condition: ModelBattleConditionInput
+  ) {
+    deleteBattle(input: $input, condition: $condition) {
+      id
+      Player1
+      Player2
+      Player1Status
+      Player2Status
+      Player1Score
+      Player2Score
+      Player1ImageKey
+      Player2ImageKey
       createdAt
       updatedAt
       __typename

@@ -4,11 +4,12 @@ import { uploadData, getUrl } from "aws-amplify/storage";
 import { createPost, updatePost } from "../graphql/mutations";
 import { fetchUserAttributes } from "aws-amplify/auth";
 import awsExports from "../aws-exports";
-import { Message, Image } from "@aws-amplify/ui-react";
+import { Message, Image, CheckboxField, Flex } from "@aws-amplify/ui-react";
 import { Loader } from "@aws-amplify/ui-react";
 import HidePeople from "./HidePeople";
 import { UserContext } from "../UserContext";
 import toast, { Toaster } from "react-hot-toast";
+import "./UploadImage.css";
 
 const client = generateClient();
 
@@ -24,6 +25,25 @@ const UploadImage = () => {
 
   const [imageUrl, setImageUrl] = useState(null);
   const { allUsers, myUser } = useContext(UserContext);
+
+  const [tags, setTags] = useState({
+    americana: false,
+    athleisure: false,
+    earthtones: false,
+    experimental: false,
+    fall: false,
+    formal: false,
+    gorpcore: false,
+    highfashion: false,
+    minimalist: false,
+    monochrome: false,
+    spring: false,
+    streetwear: false,
+    summer: false,
+    winter: false,
+    workwear: false,
+    y2k: false,
+  });
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -70,6 +90,17 @@ const UploadImage = () => {
     console.log("comments checked/unchecked");
   };
 
+  const tagsDictToList = () => {
+    let list = [];
+    for (const key in tags) {
+      if (tags[key]) {
+        list.push(key);
+      }
+    }
+
+    return list;
+  };
+
   const handleSubmit = () => {
     return new Promise(async (resolve, reject) => {
       console.log("hiddenSelect:" + hiddenSelect);
@@ -81,43 +112,45 @@ const UploadImage = () => {
         console.log("Description:", description);
         let commentEnabled = isChecked;
 
+        const tagList = tagsDictToList();
+
         const currDate = new Date().toISOString();
 
-      const response = await client.graphql({
-        query: createPost,
-        variables: {
-          input: {
-            owner: myUser.username,
-            description: description,
-            comments: String,
-            drip_points: 0,
-            createdAt: currDate,
-            enable_comments: commentEnabled,
-            postImageKey: "",
-            hiddenPeople: hiddenSelect,
-            actionedUsers: [],
+        const response = await client.graphql({
+          query: createPost,
+          variables: {
+            input: {
+              owner: myUser.username,
+              description: description,
+              comments: String,
+              drip_points: 0,
+              createdAt: currDate,
+              enable_comments: commentEnabled,
+              postImageKey: "",
+              hiddenPeople: hiddenSelect,
+              actionedUsers: [],
+              tags: tagList,
+            },
           },
-        },
-      });
+        });
 
         console.log("Logging response from createPost");
         console.log(response);
 
-  
-      const postContext = response.data.createPost;
-      if (!postContext) {
-        console.log("Failed to create post");
-        return reject("Failed to create post");
-      }
-      const imageUpload = await uploadData({
-        key: `${myUser.username} + ${currDate}` + "image.png",
-        data: image,
-        drip_points: 0,
-        options: {
-          contentType: "image/png",
-        },
-      }).result;
-
+        const postContext = response.data.createPost;
+        if (!postContext) {
+          console.log("Failed to create post 1");
+          reject("Failed to create post: post context");
+          return;
+        }
+        const imageUpload = await uploadData({
+          key: `${myUser.username} + ${currDate}` + "image.png",
+          data: image,
+          drip_points: 0,
+          options: {
+            contentType: "image/png",
+          },
+        }).result;
 
         const updatePostDetails = {
           id: postContext.id,
@@ -148,6 +181,12 @@ const UploadImage = () => {
 
   console.log("In Upload Image: " + hiddenSelect);
 
+  const handleSetTagDict = (tagName) => {
+    tags[tagName] = !tags[tagName];
+    //setTags(tags);
+    console.log(tags);
+  };
+
   return (
     <div
       style={{
@@ -162,9 +201,8 @@ const UploadImage = () => {
       }}
     >
       <h1 style={{ textAlign: "left", marginBottom: "30px", color: "white" }}>
-          make a <span style={{ color: "#047d95" }}>post</span>
+        make a <span style={{ color: "#047d95" }}>post</span>
       </h1>
-
       <input
         type="file"
         accept="image/*"
@@ -177,7 +215,7 @@ const UploadImage = () => {
           border: "1px solid #ddd",
           borderRadius: "5px",
           boxSizing: "border-box",
-          color: "white"
+          color: "white",
         }}
       />
       {image && (
@@ -209,7 +247,6 @@ const UploadImage = () => {
             resize: "none",
           }}
         ></textarea>
-
         <label>
           <input
             type="checkbox"
@@ -217,15 +254,127 @@ const UploadImage = () => {
             onChange={handleCheckboxChange} // Call the handler function on checkbox change
             style={{ padding: "10px 0 20px 0" }}
           ></input>
-          <span style={{textAlign: "left", color: "white"}}>Enable comments?</span>
+          <span style={{ textAlign: "left", color: "white" }}>
+            Enable comments?
+          </span>
         </label>
+        <h3 style={{ textAlign: "left", color: "white" }}>
+          add <span style={{ color: "#047d95" }}>tags</span>
+        </h3>
+        <Flex>
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("americana")}
+            label="Americana"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("athleisure")}
+            label="Athleisure"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("earthtones")}
+            label="Earth Tones"
+          />
+        </Flex>
+        <Flex>
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("experimental")}
+            label="Experimental"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("fall")}
+            label="Fall"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("formal")}
+            label="Formal"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("gorpcore")}
+            label="Gorpcore"
+          />
+        </Flex>
+        <Flex>
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("highfashion")}
+            label="High Fashion"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("minimalist")}
+            label="Minimalist"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("monochrome")}
+            label="Monochrome"
+          />
+        </Flex>
+        <Flex>
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("spring")}
+            label="Spring"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("streetwear")}
+            label="Streetwear"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("summer")}
+            label="Summer"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("winter")}
+            label="Winter"
+          />
+        </Flex>
+        <Flex>
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("workwear")}
+            label="Workwear"
+          />
+          <CheckboxField
+            name="tags-controlled"
+            value="yes"
+            onChange={(e) => handleSetTagDict("y2k")}
+            label="Y2K"
+          />
+        </Flex>
       </div>
       <div
         style={{
           padding: "10px", // Increased padding for spacing
         }}
       >
-        <HidePeople style={{position: "absolute", left:"0"}}
+        <HidePeople
+          style={{ position: "absolute", left: "0" }}
           selectedFriends={hiddenSelect}
           setSelectedFriends={setHiddenSelect}
         />
