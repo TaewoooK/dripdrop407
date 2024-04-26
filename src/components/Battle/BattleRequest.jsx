@@ -92,6 +92,7 @@ const BattleRequest = () => {
               Player1ImageKey: "null",
               Player2ImageKey: "null",
               createdAt: currDate,
+              actionedUsers: [],
             },
           },
         });

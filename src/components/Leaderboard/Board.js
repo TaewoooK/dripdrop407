@@ -6,13 +6,8 @@ import { generateClient } from "aws-amplify/api";
 import { View, Text, Button, SelectField } from "@aws-amplify/ui-react";
 import "./board.css";
 
-import {
-  listPosts,
-} from "../../graphql/queries";
-import {
-    onCreatePost,
-    onDeletePost
-} from "../../graphql/subscriptions"
+import { listPosts } from "../../graphql/queries";
+import { onCreatePost, onDeletePost } from "../../graphql/subscriptions";
 
 import BoardProfile from "./LeaderProfile";
 
@@ -56,7 +51,7 @@ export default function Board() {
     return () => {
       subscriptionRefs.forEach((subscription) => subscription.unsubscribe());
     };
-  }, [])
+  }, []);
 
   useEffect(() => {
     fetchData();
@@ -68,13 +63,13 @@ export default function Board() {
         setSelectedData(await getAllPostsRankedByDripPoints());
         break;
       case "byUser":
-        setSelectedData(await getUserDripPointsLeaderboard(allUsers));
+        setSelectedData(await getUserDripPointsLeaderboard());
         break;
       default:
     }
   }
 
-  function getPostFetchVariables(username = "") {
+  function getPostFetchVariables(username = "", nextToken = null) {
     switch (boardState) {
       case "byPost":
         switch (time) {
@@ -86,13 +81,13 @@ export default function Board() {
                 },
               },
               limit: 10, // Adjust the limit as needed
-              nextToken: null, // Include the pagination token
+              nextToken: nextToken,
             };
           // "allTime"
           default:
             return {
               limit: 10, // Adjust the limit as needed
-              nextToken: null, // Include the pagination token
+              nextToken: nextToken,
             };
         }
       // "byUser"
@@ -109,7 +104,7 @@ export default function Board() {
                 },
               },
               limit: 10, // Adjust the limit as needed
-              nextToken: null, // Include the pagination token
+              nextToken: nextToken,
             };
           // "allTime"
           default:
@@ -120,7 +115,7 @@ export default function Board() {
                 },
               },
               limit: 10, // Adjust the limit as needed
-              nextToken: null, // Include the pagination token
+              nextToken: nextToken,
             };
         }
     }
@@ -131,12 +126,22 @@ export default function Board() {
     let nextToken = null; // Initialize pagination token
 
     do {
-      const userPosts = await client.graphql({
-        query: listPosts,
-        variables: getPostFetchVariables(username),
-      });
+      let userPosts;
+
+      try {
+        userPosts = await client.graphql({
+          query: listPosts,
+          variables: getPostFetchVariables(username, nextToken),
+        });
+      } catch (error) {
+        console.error("Failed to get " + username + " posts: " + error);
+        return;
+      }
 
       const posts = userPosts.data.listPosts.items;
+
+      // if (posts.length === 0) return 0;
+
       for (let i = 0; i < posts.length; i++) {
         const post = posts[i];
         totalDripPoints += post.drip_points || 0;
@@ -150,83 +155,74 @@ export default function Board() {
   }
 
   async function getAllPostsRankedByDripPoints() {
+    let posts = [];
+    let nextToken = null;
+
     try {
-      const postData = await client.graphql({
-        query: listPosts,
-        variables: getPostFetchVariables(),
-      });
-      const posts = postData.data.listPosts.items;
+      do {
+        const postData = await client.graphql({
+          query: listPosts,
+          variables: getPostFetchVariables("", nextToken),
+        });
 
-      // Sort the posts by drip_points in descending order
-      posts.sort((a, b) => b.drip_points - a.drip_points);
+        (postData.data.listPosts.items).forEach((item) => posts.push(item));
 
-      // Convert the posts data into the desired format
-      const convertedData = posts.map((post, index) => ({
-        toShow: post.description,
-        username: post.owner,
-        totalDripPoints: post.drip_points,
-        rank: index + 1, // Adding 1 to make the ranks start from 1
-      }));
-
-      return convertedData;
+        nextToken = postData.data.listPosts.nextToken;
+      } while (nextToken);
     } catch (error) {
-      console.error("Error fetching and ranking posts:", error);
+      console.error("Error fetching posts:", error);
       return [];
     }
+
+    console.log("posts:", posts);
+    // Sort the posts by drip_points in descending order
+    posts.sort((a, b) => b.drip_points - a.drip_points);
+
+    // Convert the posts data into the desired format
+    const convertedData = posts.map((post, index) => ({
+      toShow: post.description,
+      username: post.owner,
+      totalDripPoints: post.drip_points,
+      rank: index + 1, // Adding 1 to make the ranks start from 1
+    }));
+
+    return convertedData;
   }
 
-  async function getUserDripPointsLeaderboard(allUsers) {
+  async function getUserDripPointsLeaderboard() {
     const userDripPointsList = [];
-  
+
     for (const user of allUsers) {
-        const username = user.Username;
-        try {
-          const totalDripPoints = await getTotalDripPointsForUser(username);
-          userDripPointsList.push({
-            toShow: user.Username, // Adjust as needed
-            username: user.Username,
-            totalDripPoints: totalDripPoints,
-            rank: 0, // Rank will be assigned later
-          });
-        } catch (error) {
-          console.error(`Error fetching drip points for user ${username}:`, error);
-        }
+      const username = user.Username;
+      try {
+        const totalDripPoints = await getTotalDripPointsForUser(username);
+        userDripPointsList.push({
+          toShow: user.Username, // Adjust as needed
+          username: user.Username,
+          totalDripPoints: totalDripPoints,
+          rank: 0, // Rank will be assigned later
+        });
+      } catch (error) {
+        console.error(
+          `Error fetching drip points for user ${username}:`,
+          error
+        );
+      }
     }
-  
+
     // Sort the list by totalDripPoints in descending order
     userDripPointsList.sort((a, b) => b.totalDripPoints - a.totalDripPoints);
-  
+
     // Assign ranks to each user
     userDripPointsList.forEach((user, index) => {
       user.rank = index + 1; // Adding 1 to make the ranks start from 1
     });
-  
+
     return userDripPointsList;
   }
 
-  useEffect(() => {
-    const fetchData = async () => {
-        const data = await getAllPostsRankedByDripPoints();
-        setBoardState("byPost");
-    };
-    fetchData();
-}, []); // empty dependency array ensures the effect runs only once on mount
-
-  
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-//   const PostModal = ({ onClose }) => {
-//     return (
-//       <div style={modalContainerStyles}>
-//         <div style={modalStyles}>
-//           <h1>PUT CONTENT HERE</h1>
-//           <button onClick={onClose}>Close</button>
-//         </div>
-//       </div>
-//     );
-//   };
-
-  //const user = allUsers.find((user) => user.Username === username); 
   const modalContainerStyles = {
     position: "fixed",
     top: 0,
@@ -241,7 +237,7 @@ export default function Board() {
     overflow: "auto", // Enable scrolling if the content overflows the viewport
     zIndex: 9999, // higher z-index to ensure it's above other content
   };
-  
+
   const modalStyles = {
     backgroundColor: "rgba(34, 34, 34, 1)",
     padding: "20px",
@@ -265,13 +261,10 @@ export default function Board() {
     setSelectedUser(allUsers.find((user) => user.Username === username)); // Set the user
     setIsModalOpen(true); // Open the modal
   };
-  
 
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
-
 
   return (
     <View className="leaderboard-container">
@@ -281,27 +274,45 @@ export default function Board() {
           <Text className="user-text" children={toggleUser ? "User" : "Post"} />
           <Text className="point-text" children="Points" />
           <hr className="separator" />
-          <div className="columns-container" style={{ cursor: "pointer", overflow: "auto" }} 
-                        >
-                      <View className="rank-column">
-                          {selectedData.map((entry, index) => (
-                              <h2 key={index} onClick={() => openModal(entry.username)} style={{ color: "white" }}>{entry.rank}</h2>
-                          ))}
-                      </View>
-                      <View className="user-column">
-                          {selectedData.map((entry, index) => (
-                              <h2 key={index} onClick={() => openModal(entry.username)} style={{ color: "white" }}>{entry.toShow}</h2>
-                          ))}
-                      </View>
-                      <View className="points-column">
-                          {selectedData.map((entry, index) => (
-                              <h2 key={index} onClick={() => openModal(entry.username)} style={{ color: "white" }}>{entry.totalDripPoints}</h2>
-                          ))}
-                      </View>
-            </div>
-            <div>
-                {isModalOpen && <PostModal onClose={closeModal} />}
-            </div>
+          <div
+            className="columns-container"
+            style={{ cursor: "pointer", overflow: "auto" }}
+          >
+            <View className="rank-column">
+              {selectedData.map((entry, index) => (
+                <h2
+                  key={index}
+                  onClick={() => openModal(entry.username)}
+                  style={{ color: "white" }}
+                >
+                  {entry.rank}
+                </h2>
+              ))}
+            </View>
+            <View className="user-column">
+              {selectedData.map((entry, index) => (
+                <h2
+                  key={index}
+                  onClick={() => openModal(entry.username)}
+                  style={{ color: "white" }}
+                >
+                  {entry.toShow}
+                </h2>
+              ))}
+            </View>
+            <View className="points-column">
+              {selectedData.map((entry, index) => (
+                <h2
+                  key={index}
+                  onClick={() => openModal(entry.username)}
+                  style={{ color: "white" }}
+                >
+                  {entry.totalDripPoints}
+                </h2>
+              ))}
+            </View>
+          </div>
+          <div>{isModalOpen && <PostModal onClose={closeModal} />}</div>
         </View>
         <Text className="board-header-text">
           <span style={{ color: "#047d95" }}>Leader</span>
@@ -334,7 +345,7 @@ export default function Board() {
           variation="default"
           onClick={() => setBoardState("byUser")}
         >
-          By User total
+          By User Total
         </Button>
       </View>
     </View>

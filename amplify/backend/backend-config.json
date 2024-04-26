@@ -72,6 +72,42 @@
       "service": "Lambda"
     }
   },
+
+  "parameters": {
+    "AMPLIFY_function_getDoublePointsTime_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getDoublePointsTime"
+        }
+      ]
+    },
+    "AMPLIFY_function_getDoublePointsTime_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getDoublePointsTime"
+        }
+      ]
+    },
+    "AMPLIFY_function_getDoublePtsTime_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getDoublePtsTime"
+        }
+      ]
+    },
+    "AMPLIFY_function_getDoublePtsTime_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getDoublePtsTime"
+        }
+      ]
+    }
+  },
+
   "storage": {
     "s3poststorageprod": {
       "dependsOn": [],
