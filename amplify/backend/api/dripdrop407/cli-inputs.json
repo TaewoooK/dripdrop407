@@ -6,8 +6,8 @@
     "defaultAuthType": {
       "mode": "API_KEY",
       "expirationTime": 30,
-      "apiKeyExpirationDate": "2024-05-26T04:40:34.136Z",
-      "keyDescription": "generateDPTime"
+      "apiKeyExpirationDate": "2024-05-26T08:14:02.432Z",
+      "keyDescription": "Double points generation"
     },
     "additionalAuthTypes": [
       {

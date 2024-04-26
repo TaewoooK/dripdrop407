@@ -46,7 +46,6 @@ const query = /* GraphQL */ `
 
   const variables = {
     input: {
-      id: timeSignature,
       date: dateStr,
       startTime: randomTimeStr
     }

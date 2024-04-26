@@ -18,7 +18,7 @@ export type AmplifyDependentResourcesAttributes = {
     }
   },
   "function": {
-    "getDoublePtsTime": {
+    "getDoublePointsTime": {
       "Arn": "string",
       "CloudWatchEventRule": "string",
       "LambdaExecutionRole": "string",

@@ -59,12 +59,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "getDoublePtsTime",
+            "getDoublePointsTime",
             {
               "Fn::Join": [
                 "",
                 [
-                  "getDoublePtsTime",
+                  "getDoublePointsTime",
                   "-",
                   {
                     "Ref": "env"
@@ -110,12 +110,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "dripdrop407LambdaRole0e4ddd4f",
+            "dripdrop407LambdaRole9c456a70",
             {
               "Fn::Join": [
                 "",
                 [
-                  "dripdrop407LambdaRole0e4ddd4f",
+                  "dripdrop407LambdaRole9c456a70",
                   "-",
                   {
                     "Ref": "env"
