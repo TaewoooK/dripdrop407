@@ -126,7 +126,7 @@ export const UserProvider = ({ children }) => {
           userPoolId = process.env.REACT_APP_USER_POOL_ID_PROD;
           break;
         default:
-          userPoolId = process.env.REACT_APP_USER_POOL_ID_PROD;
+          userPoolId = process.env.REACT_APP_USER_POOL_ID_DEV;
       }
 
       // Set Parameters for querying Users (pool Id and filter)
