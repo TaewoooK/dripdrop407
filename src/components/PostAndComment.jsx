@@ -128,27 +128,27 @@ export default function PostAndComment({ isFriendsOnly }) {
   };
 
   const fetchDoublePoints = async () => {
-    const dateStr = new Date().toISOString().split("T")[0];
+    const dateStr = new Date().toISOString().split('T')[0];
     try {
       const doublePointsData = await client.graphql({
         query: listDoublePointsTimes,
-        variables: { filter: { date: { eq: dateStr } } },
+        variables: { filter: { date: { eq: dateStr } } }
       });
       const results = doublePointsData.data.listDoublePointsTimes.items;
       const dpTimeObj = new Date(`${results[0].date}T${results[0].startTime}Z`);
-      const currTimeObj = new Date();
+      const currTimeObj = new Date()
       const diffInMilliseconds = Math.abs(currTimeObj - dpTimeObj);
       const diffInMinutes = diffInMilliseconds / (1000 * 60);
       if (diffInMinutes >= 0 && diffInMinutes <= 30) {
         setDoublePointsActive(true);
       }
+      
+      console.log("Fetched double points data")
+      console.log(dpTimeObj)
+      console.log(currTimeObj)
+      console.log(diffInMinutes)
 
-      console.log("Fetched double points data");
-      console.log(dpTimeObj);
-      console.log(currTimeObj);
-      console.log(diffInMinutes);
-
-      console.log(doublePointsActive);
+      console.log(doublePointsActive)
       //console.log(time)
     } catch (error) {
       console.error("Error fetching double points: ", error);

@@ -11,8 +11,9 @@
           ],
           "defaultAuthentication": {
             "apiKeyConfig": {
+              "apiKeyExpirationDate": "2024-05-26T08:37:02.350Z",
               "apiKeyExpirationDays": 30,
-              "description": "api key description"
+              "description": "get double points time"
             },
             "authenticationType": "API_KEY"
           }
@@ -53,6 +54,60 @@
       "service": "Cognito"
     }
   },
+  "function": {
+    "getDoublePointsTime": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput",
+            "GraphQLAPIKeyOutput"
+          ],
+          "category": "api",
+          "resourceName": "dripdrop407"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+
+  "parameters": {
+    "AMPLIFY_function_getDoublePointsTime_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getDoublePointsTime"
+        }
+      ]
+    },
+    "AMPLIFY_function_getDoublePointsTime_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getDoublePointsTime"
+        }
+      ]
+    },
+    "AMPLIFY_function_getDoublePtsTime_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getDoublePtsTime"
+        }
+      ]
+    },
+    "AMPLIFY_function_getDoublePtsTime_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getDoublePtsTime"
+        }
+      ]
+    }
+  },
+
   "storage": {
     "s3poststorageprod": {
       "dependsOn": [],
