@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { UserContext } from "../UserContext";
 import {
   Card,
   Flex,
@@ -31,18 +32,18 @@ import {
   listSavedPosts,
   listFriends,
   listNotifications,
+  listPrivacies,
 } from "../graphql/queries";
 import { getUrl } from "aws-amplify/storage";
 import PostActionCenter from "./PostActionCenter";
 import ReportPost from "./ReportPost";
 import toast, { Toaster } from "react-hot-toast";
-import { useContext } from "react";
-import { UserContext } from "../UserContext";
 import { isDevGlobal } from "../App";
 
 const client = generateClient();
 
 export default function PostAndComment({ isFriendsOnly }) {
+  const { myUser } = useContext(UserContext);
   const [comment, setComment] = React.useState("");
   const [comments, setComments] = React.useState([]);
   const [commentsText, setCommentsText] = React.useState([]);
@@ -54,101 +55,163 @@ export default function PostAndComment({ isFriendsOnly }) {
   const [currentImageIndex, setCurrentImageIndex] = React.useState(1);
   const [currPostID, setCurrPostID] = React.useState(null);
   const [variablesN, setVariablesN] = React.useState(null);
-  const [currUser, setCurrUser] = useState(null);
   const [gotVN, setGotVN] = useState(false);
   const [savedPostsList, setSavedPostsList] = useState([]);
 
-  const [listOfFriends, setListOfFriends] = useState([]);
+  const [friends, setFriends] = useState(null);
+  const [privateUsers, setPrivateUsers] = useState(null);
 
-  // console.log("isdevglobal", isDevGlobal);
+  const getSavedPosts = async () => {
+    try {
+      console.log("fetching saved posts");
+      const result = await client.graphql({
+        query: listSavedPosts,
+        variables: { filter: { username: { eq: myUser.username } } },
+      });
+      if (result.data.listSavedPosts.items.length > 0) {
+        setSavedPostsList(result.data.listSavedPosts.items[0].postIds);
+        console.log(
+          "saved posts:",
+          result.data.listSavedPosts.items[0].postIds
+        );
+        console.log(
+          "fetched saved posts includes",
+          result.data.listSavedPosts.items[0].postIds.includes(0)
+        );
+        // return result.data.listSavedPosts.items; // Return the data from the GraphQL response
+      } else {
+        const createdSavedPosts = await client.graphql({
+          query: createSavedPosts,
+          variables: {
+            input: { username: myUser.username, postIds: [] },
+          },
+        });
+        console.log("created saved posts");
+        setSavedPostsList(createdSavedPosts.data.createSavedPosts[0].postIds);
+        // return createdSavedPosts.data.listSavedPosts.items; // Return the data from the GraphQL response
+      }
+    } catch (error) {
+      console.error("Error fetching saved posts:", error);
+      return null; // Return null in case of error
+    }
+  };
 
   // Find Friends using updated filter
   const fetchFriends = async () => {
-    if (currUser != null) {
-      try {
-        const friendsData = await client.graphql({
-          query: listFriends,
-          variables: { filter: { Username: { eq: currUser.username } } },
-        });
-        setListOfFriends(friendsData.data.listFriends.items);
-        let temp = friendsData.data.listFriends.items;
-        setListOfFriends(temp.map((friend) => friend.FriendUsername));
-      } catch (error) {
-        console.error("Error fetching friends: ", error);
-      }
+    try {
+      const friendsData = await client.graphql({
+        query: listFriends,
+        variables: { filter: { Username: { eq: myUser.username } } },
+      });
+      const results = friendsData.data.listFriends.items;
+      setFriends(results.map((friend) => friend.FriendUsername));
+    } catch (error) {
+      console.error("Error fetching friends: ", error);
     }
   };
+
+  // Find private profiles to hide in Global Feed
+  const fetchPrivateUsers = async () => {
+    try {
+      const privacyData = await client.graphql({
+        query: listPrivacies,
+        variables: { filter: { Private: { eq: true } } },
+      });
+
+      const results = privacyData.data.listPrivacies.items;
+      setPrivateUsers(results.map((priv) => priv.Username));
+    } catch (error) {
+      console.log("Error fetching private users: ", error);
+    }
+  };
+
+  useEffect(() => {
+    getSavedPosts();
+  }, []);
+  useEffect(() => {
+    fetchFriends();
+  }, [savedPostsList]);
+  useEffect(() => {
+    fetchPrivateUsers();
+  }, [friends]);
+  useEffect(() => {
+    setVariablesNFilter();
+  }, [friends, privateUsers]);
 
   let filter = {};
 
   const date = new Date();
   let oneWeekFromToday = new Date(date.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-  const fetchUserData = async () => {
-    try {
-      const currUserAttributes = await getCurrentUser();
-      setCurrUser(currUserAttributes);
-    } catch (error) {
-      console.error("Error fetching user data: ", error);
-    }
-  };
-
   const setVariablesNFilter = (nextToken) => {
-    if (currUser != null) {
+    if (friends === null || privateUsers === null) return;
+
+    let friendMembers = friends.map((username) =>
+      JSON.parse(`{"owner": {"eq": "${username}"}}`)
+    );
+
+    // Construct filter for friends
+    const friendsFilter = friends.map((username) => ({
+      owner: { eq: username },
+    }));
+
+    // Construct filter for private users
+    const privateUsersFilter = privateUsers.map((username) => ({
+      not: { owner: { eq: username } },
+    }));
+
+    filter = {
+      or: [...friendsFilter, ...privateUsersFilter],
+      and: [
+        {
+          not: {
+            hiddenPeople: { contains: myUser.username },
+          },
+        },
+        {
+          not: {
+            actionedUsers: { contains: myUser.username },
+          },
+        },
+      ],
+      createdAt: { between: [oneWeekFromToday.toJSON(), date.toJSON()] },
+    };
+
+    if (isFriendsOnly) {
       filter = {
+        or: friendMembers,
         and: [
           {
             not: {
-              hiddenPeople: { contains: currUser.username },
+              hiddenPeople: { contains: myUser.username },
             },
           },
           {
             not: {
-              actionedUsers: { contains: currUser.username },
+              actionedUsers: { contains: myUser.username },
             },
           },
         ],
+
         createdAt: { between: [oneWeekFromToday.toJSON(), date.toJSON()] },
       };
-
-      if (isFriendsOnly) {
-        let filterMembers = listOfFriends.map((id) =>
-          JSON.parse(`{"owner": {"eq": "${id}"}}`)
-        );
-        filter = {
-          or: filterMembers,
-          and: [
-            {
-              not: {
-                hiddenPeople: { contains: currUser.username },
-              },
-            },
-            {
-              not: {
-                actionedUsers: { contains: currUser.username },
-              },
-            },
-          ],
-
-          createdAt: { between: [oneWeekFromToday.toJSON(), date.toJSON()] },
-        };
-      }
-
-      if (!nextToken) {
-        // This means either the page just loaded or the user has scrolled to the end of the list
-        setVariablesN({
-          filter: filter,
-          limit: 10,
-        });
-      } else {
-        setVariablesN({
-          filter: filter,
-          limit: 10,
-          nextToken: nextToken,
-        });
-      }
-      setGotVN(true);
     }
+    console.log("setVariablesNFilter filter: ", filter);
+
+    if (!nextToken) {
+      // This means either the page just loaded or the user has scrolled to the end of the list
+      setVariablesN({
+        filter: filter,
+        limit: 10,
+      });
+    } else {
+      setVariablesN({
+        filter: filter,
+        limit: 10,
+        nextToken: nextToken,
+      });
+    }
+    setGotVN(true);
   };
 
   const updatePostFunction = async (currPost) => {
@@ -157,7 +220,7 @@ export default function PostAndComment({ isFriendsOnly }) {
       variables: {
         input: {
           id: currPost.id,
-          actionedUsers: [...currPost.actionedUsers, currUser.username],
+          actionedUsers: [...currPost.actionedUsers, myUser.username],
         },
       },
     });
@@ -165,6 +228,9 @@ export default function PostAndComment({ isFriendsOnly }) {
   };
 
   const fetchPost = async () => {
+    console.log("variablesN: ", variablesN);
+    console.log("variablesN stringify: ", JSON.stringify(variablesN));
+
     if (variablesN != null) {
       try {
         //console.log("Logging fetchPost begin")
@@ -217,22 +283,6 @@ export default function PostAndComment({ isFriendsOnly }) {
     }
   };
 
-  useEffect(() => {
-    fetchUserData();
-  }, []);
-
-  useEffect(() => {
-    if (currUser) {
-      getSavedPosts();
-      fetchFriends();
-      // generateNotifs();
-    }
-  }, [currUser]);
-
-  useEffect(() => {
-    setVariablesNFilter();
-  }, [listOfFriends]);
-
   // When nextToken changes, fetch more posts
   useEffect(() => {
     console.log("NextTok change calls fetchPost");
@@ -242,7 +292,7 @@ export default function PostAndComment({ isFriendsOnly }) {
   // When gotVN changes, fetch more posts
   useEffect(() => {
     console.log("VariablesN change calls fetchPost");
-    fetchPost();
+    if (variablesN != null) fetchPost();
   }, [gotVN]);
 
   // useEffect(() => {
@@ -351,8 +401,8 @@ export default function PostAndComment({ isFriendsOnly }) {
       currPost.id,
       "currPostOwner:",
       currPost.owner,
-      "currUserId:",
-      currUser.username
+      "myUserId:",
+      myUser.username
     );
     await client.graphql({
       query: createComment,
@@ -360,13 +410,13 @@ export default function PostAndComment({ isFriendsOnly }) {
         input: {
           postId: currPost.id,
           text: comment,
-          commentAuthorId: currUser.userId,
+          commentAuthorId: myUser.userId,
         },
       },
     });
 
     // notifify post owner
-    const notif = ["Comment", currUser.username, currPost.id, comment];
+    const notif = ["Comment", myUser.username, currPost.id, comment];
     console.log("send notif to:", currPost.owner);
     console.log("notif:", notif);
 
@@ -424,56 +474,19 @@ export default function PostAndComment({ isFriendsOnly }) {
     toast.success("Post reported successfully");
   };
 
-  const getSavedPosts = async () => {
-    if (currUser != null) {
-      try {
-        console.log("fetching saved posts");
-        const result = await client.graphql({
-          query: listSavedPosts,
-          variables: { filter: { username: { eq: currUser.username } } },
-        });
-        if (result.data.listSavedPosts.items.length > 0) {
-          setSavedPostsList(result.data.listSavedPosts.items[0].postIds);
-          console.log(
-            "saved posts:",
-            result.data.listSavedPosts.items[0].postIds
-          );
-          console.log(
-            "fetched saved posts includes",
-            result.data.listSavedPosts.items[0].postIds.includes(0)
-          );
-          // return result.data.listSavedPosts.items; // Return the data from the GraphQL response
-        } else {
-          const createdSavedPosts = await client.graphql({
-            query: createSavedPosts,
-            variables: {
-              input: { username: currUser.username, postIds: [] },
-            },
-          });
-          console.log("created saved posts");
-          setSavedPostsList(createdSavedPosts.data.createSavedPosts[0].postIds);
-          // return createdSavedPosts.data.listSavedPosts.items; // Return the data from the GraphQL response
-        }
-      } catch (error) {
-        console.error("Error fetching saved posts:", error);
-        return null; // Return null in case of error
-      }
-    }
-  };
-
   // const generateNotifs = async () => {
   //   try {
   //     console.log("fetching notif list for user");
   //     const result = await client.graphql({
   //       query: listNotifications,
-  //       variables: { filter: { username: { eq: currUser.username } } },
+  //       variables: { filter: { username: { eq: myUser.username } } },
   //     });
   //     if (result.data.listNotifications.items === null) {
   //       console.log("creating notification list ");
   //       await client.graphql({
   //         query: createNotifications,
   //         variables: {
-  //           input: { username: currUser.username, notificationsList: [] },
+  //           input: { username: myUser.username, notificationsList: [] },
   //         },
   //       });
   //       console.log("created notification list");
@@ -495,7 +508,7 @@ export default function PostAndComment({ isFriendsOnly }) {
       //   const createdSavedPosts = await client.graphql({
       //     query: createSavedPosts,
       //     variables: {
-      //       input: { username: currUser.username, postIds: [currPost.id] },
+      //       input: { username: myUser.username, postIds: [currPost.id] },
       //     },
       //   });
       //   console.log("created saved posts");
@@ -510,7 +523,7 @@ export default function PostAndComment({ isFriendsOnly }) {
             (id) => id !== posts[currentImageIndex].id
           ),
         };
-        const condition = { username: { eq: currUser.username } };
+        const condition = { username: { eq: myUser.username } };
         const updatedSavedPosts = await client.graphql({
           query: updateSavedPosts,
           variables: { input, condition },
@@ -523,7 +536,7 @@ export default function PostAndComment({ isFriendsOnly }) {
           id: savedPostsList.id,
           postIds: [...savedPostsList.postIds, posts[currentImageIndex].id],
         };
-        const condition = { username: { eq: currUser.username } };
+        const condition = { username: { eq: myUser.username } };
         const updatedSavedPosts = await client.graphql({
           query: updateSavedPosts,
           variables: { input, condition },
@@ -598,7 +611,7 @@ export default function PostAndComment({ isFriendsOnly }) {
   const deleteCurrPost = async () => {
     setShowActionCenter(false);
     const currPost = posts[currentImageIndex];
-    
+
     await client
       .graphql({
         query: deletePost,
@@ -925,8 +938,8 @@ export default function PostAndComment({ isFriendsOnly }) {
                   >
                     {text}
                   </Text>
-                  {(currUser.username === posts[currentImageIndex].owner ||
-                    currUser.username === comments[index].commentAuthorId ||
+                  {(myUser.username === posts[currentImageIndex].owner ||
+                    myUser.username === comments[index].commentAuthorId ||
                     isDevGlobal) && (
                     <Icon
                       width="22.5px"

@@ -178,11 +178,6 @@
   background-color: rgba(49, 49, 49, 1);
 }
 
-.points-column h2 {
-  margin-bottom: 25px; /* Adjust the value as needed */
-  color: white;
-}
-
 .separator {
   width: 786px;
   height: 1px;
