@@ -812,7 +812,11 @@ export default function PostAndComment({ isFriendsOnly }) {
             <Text
               className="username-text"
               //children={Post?.username}
-              children={"Test User"}
+              children={
+                posts[currentImageIndex] != null
+                  ? posts[currentImageIndex].owner
+                  : "No Post"
+              }
             ></Text>
           </Flex>
 
