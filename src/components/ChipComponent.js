@@ -14,7 +14,8 @@ import ProfileModal from "./ProfileModal";
 
 import { isDevGlobal } from "../App";
 import { generateClient } from "aws-amplify/api";
-import { createBannedUsers } from "../graphql/mutations";
+import { createBannedUsers, deleteBannedUsers } from "../graphql/mutations";
+import { listBannedUsers } from "../graphql/queries";
 
 const modalContainerStyles = {
   position: "fixed",
@@ -53,6 +54,9 @@ export default function ChipComponent({
   const [openProfileModal, setOpenProfileModal] = useState(false);
   const { allUsers } = useContext(UserContext);
   const user = allUsers.find((user) => user.Username === username);
+  const [isBanned, setIsBanned] = useState(null);
+
+  // setIsBanned(getIsBanned(user.Username));
 
   const handleOpenProfileModal = () => {
     setOpenProfileModal(true);
@@ -64,16 +68,47 @@ export default function ChipComponent({
 
   const banUser = async (username) => {
     console.log("Banning user: ", username);
-    await client.graphql({
+    const result = await client.graphql({
       query: createBannedUsers,
       variables: {
-        input: { BannedUsers: username },
+        input: { bannedUsers: username },
       },
     });
+    setIsBanned(result.data.createBannedUsers.id);
+    console.log("result", result);
     console.log("user successfully banned");
   };
 
+  const unbanUser = async () => {
+    console.log("User is already banned");
+    await client.graphql({
+      query: deleteBannedUsers,
+      variables: {
+        input: { id: isBanned },
+      },
+    });
+    setIsBanned(null);
+    console.log("user successfully unbanned");
+  };
+
+  const getIsBanned = async (username) => {
+    try {
+      const result = await client.graphql({
+        query: listBannedUsers,
+        variables: { filter: { bannedUsers: { eq: username } } },
+      });
+      console.log("banned users:", result.data.listBannedUsers.items);
+      // setIsBanned(result.data.listBannedUsers.items.length > 0);
+      setIsBanned(result.data.listBannedUsers.items[0].id);
+      console.log("isBanned", isBanned);
+    } catch (error) {
+      console.error("Error fetching banned users:", error);
+    }
+  };
+
   const Modal = ({ onClose }) => {
+    getIsBanned(user.Username);
+
     return (
       <div style={modalContainerStyles}>
         <div style={modalStyles}>
@@ -82,11 +117,19 @@ export default function ChipComponent({
             style={{ display: "flex", gap: "10px", justifyContent: "center" }}
           >
             <button onClick={onClose}>Close</button>
-            {isDevGlobal && (
+            {isDevGlobal && (isBanned == null) && (
               // <button onClick={() => console.log("user", user)}>
               //   Log User
               // </button>
               <button onClick={() => banUser(user.Username)}>Ban User</button>
+            )}
+            {isDevGlobal && (isBanned != null) && (
+              // <button onClick={() => console.log("user", user)}>
+              //   Log User
+              // </button>
+              <button onClick={() => unbanUser()}>
+                Unban User
+              </button>
             )}
           </div>
         </div>

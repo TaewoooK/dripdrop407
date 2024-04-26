@@ -149,7 +149,7 @@ const UserNotificationSubscriber = ({
       try {
         const result = await client.graphql({
           query: listBannedUsers,
-          variables: { filter: { BannedUsers: { eq: user.username } } },
+          variables: { filter: { bannedUsers: { eq: user.username } } },
         });
         console.log("banned users:", result.data.listBannedUsers.items);
         setIsBanned(result.data.listBannedUsers.items.length > 0);
