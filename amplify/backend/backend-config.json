@@ -72,6 +72,7 @@
       "service": "Lambda"
     }
   },
+
   "parameters": {
     "AMPLIFY_function_getDoublePointsTime_deploymentBucketName": {
       "usedBy": [
@@ -106,6 +107,7 @@
       ]
     }
   },
+
   "storage": {
     "s3poststorageprod": {
       "dependsOn": [],
