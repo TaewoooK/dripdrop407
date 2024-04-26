@@ -130,7 +130,7 @@ export default function PostAndComment({ isFriendsOnly }) {
   }, []);
   useEffect(() => {
     fetchFriends();
-  }, [savedPosts]);
+  }, [savedPostsList]);
   useEffect(() => {
     fetchPrivateUsers();
   }, [friends]);
