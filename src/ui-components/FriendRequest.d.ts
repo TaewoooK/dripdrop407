@@ -5,27 +5,39 @@
  **************************************************************************/
 
 import * as React from "react";
-import { ButtonProps, IconProps, TextProps, ViewProps } from "@aws-amplify/ui-react";
+import {
+  ButtonProps,
+  IconProps,
+  TextProps,
+  ViewProps,
+} from "@aws-amplify/ui-react";
 export declare type EscapeHatchProps = {
-    [elementHierarchy: string]: Record<string, unknown>;
+  [elementHierarchy: string]: Record<string, unknown>;
 } | null;
 export declare type VariantValues = {
-    [key: string]: string;
+  [key: string]: string;
 };
 export declare type Variant = {
-    variantValues: VariantValues;
-    overrides: EscapeHatchProps;
+  variantValues: VariantValues;
+  overrides: EscapeHatchProps;
 };
-export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
+export declare type PrimitiveOverrideProps<T> = Partial<T> &
+  React.DOMAttributes<HTMLDivElement>;
 export declare type FriendRequestOverridesProps = {
-    FriendRequest?: PrimitiveOverrideProps<ViewProps>;
-    "Profile Card"?: PrimitiveOverrideProps<ViewProps>;
-    "Profile Picture"?: PrimitiveOverrideProps<IconProps>;
-    Username?: PrimitiveOverrideProps<TextProps>;
-    Button49974147?: PrimitiveOverrideProps<ButtonProps>;
-    Button49975929?: PrimitiveOverrideProps<ButtonProps>;
+  FriendRequest?: PrimitiveOverrideProps<ViewProps>;
+  "Profile Card"?: PrimitiveOverrideProps<ViewProps>;
+  "Profile Picture"?: PrimitiveOverrideProps<IconProps>;
+  Username?: PrimitiveOverrideProps<TextProps>;
+  Button49974147?: PrimitiveOverrideProps<ButtonProps>;
+  Button49975929?: PrimitiveOverrideProps<ButtonProps>;
 } & EscapeHatchProps;
-export declare type FriendRequestProps = React.PropsWithChildren<Partial<ViewProps> & {
+export declare type FriendRequestProps = React.PropsWithChildren<
+  Partial<ViewProps> & {
+    friendRequest?: any;
+  } & {
     overrides?: FriendRequestOverridesProps | undefined | null;
-}>;
-export default function FriendRequest(props: FriendRequestProps): React.ReactElement;
+  }
+>;
+export default function FriendRequest(
+  props: FriendRequestProps
+): React.ReactElement;
