@@ -5,10 +5,13 @@ import { Button, View, withAuthenticator } from "@aws-amplify/ui-react";
 import awsconfig from "../amplifyconfiguration.json";
 import UploadImage from "../ui-components/UploadImage.jsx";
 
-
 Amplify.configure(awsconfig);
 
 const Upload = () => {
+  const openBattle = (event) => {
+    return;
+  };
+
   return (
     <View className="Upload">
       <div>

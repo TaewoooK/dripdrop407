@@ -1,6 +1,42 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getDoublePointsTime = /* GraphQL */ `
+  query GetDoublePointsTime($id: ID!) {
+    getDoublePointsTime(id: $id) {
+      id
+      date
+      startTime
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listDoublePointsTimes = /* GraphQL */ `
+  query ListDoublePointsTimes(
+    $filter: ModelDoublePointsTimeFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listDoublePointsTimes(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        date
+        startTime
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
 export const getPrivacy = /* GraphQL */ `
   query GetPrivacy($id: ID!) {
     getPrivacy(id: $id) {
@@ -310,6 +346,50 @@ export const listNotifications = /* GraphQL */ `
         id
         username
         notificationsList
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getBattle = /* GraphQL */ `
+  query GetBattle($id: ID!) {
+    getBattle(id: $id) {
+      id
+      Player1
+      Player2
+      Player1Status
+      Player2Status
+      Player1Score
+      Player2Score
+      Player1ImageKey
+      Player2ImageKey
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listBattles = /* GraphQL */ `
+  query ListBattles(
+    $filter: ModelBattleFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listBattles(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        Player1
+        Player2
+        Player1Status
+        Player2Status
+        Player1Score
+        Player2Score
+        Player1ImageKey
+        Player2ImageKey
         createdAt
         updatedAt
         __typename

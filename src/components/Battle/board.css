@@ -128,7 +128,7 @@
 }
 
 .rank-column {
-  width: 98px;
+  width: 250px; /* Half of the original width */
   display: block;
   gap: unset;
   align-items: unset;
@@ -136,25 +136,25 @@
   overflow: hidden;
   position: absolute;
   left: 20px;
-  border-radius: 15px 0px 0px 15px;
   padding: 0px;
-  background-color: rgba(45, 45, 45, 1);
+  background-color: rgba(49, 49, 49, 1);
 }
 
 .rank-column h2 {
   margin-bottom: 25px; /* Adjust the value as needed */
   color: white;
+  text-align: left;
 }
 
 .user-column {
-  width: 344px; /* Half of the original width */
+  width: 270px; /* Half of the original width */
   display: block;
   gap: unset;
   align-items: unset;
   justify-content: unset;
   overflow: hidden;
   position: absolute;
-  left: 118px;
+  left: 250px;
   padding: 0px;
   background-color: rgba(49, 49, 49, 1);
 }
@@ -162,6 +162,7 @@
 .user-column h2 {
   margin-bottom: 25px; /* Adjust the value as needed */
   color: white;
+  text-align: left;
 }
 
 .points-column {
@@ -178,11 +179,6 @@
   background-color: rgba(49, 49, 49, 1);
 }
 
-.points-column h2 {
-  margin-bottom: 25px; /* Adjust the value as needed */
-  color: white;
-}
-
 .separator {
   width: 786px;
   height: 1px;
@@ -197,7 +193,7 @@
   border-top: 1px solid rgba(255, 255, 255, 1);
 }
 
-.time-select,
+.button-by-view,
 .button-by-post,
 .button-by-user {
   width: unset;
@@ -207,20 +203,12 @@
   color: white;
 }
 
-.time-select {
-  left: 450px;
-  width: 130px;
-  font-family: Inter, sans-serif; /* Use appropriate font stack or import the font */
-  font-weight: 600;
-}
-
-.time-select .amplify-select {
-  border-radius: 0;
-  color: white;
+.button-by-view {
+  left: 375px;
 }
 
 .button-by-post {
-  left: 600px;
+  left: 525px;
 }
 
 .button-by-user {
@@ -240,139 +228,4 @@
 .points-column {
   flex: 1;
   padding: 0 10px; /* Adjust padding as needed */
-}
-
-
-@media screen and (max-width: 431px) {
-  .board-header-text {
-      font-family: Inter, sans-serif; /* Use appropriate font stack or import the font */
-      font-size: 32px;
-      font-weight: 700;
-      color: rgba(255, 255, 255, 1);
-      line-height: 58.09090805053711px; /* You may need to adjust this value */
-      text-align: left;
-      display: block;
-      flex-direction: column; /* Assuming this is inside a flex container */
-      justify-content: unset;
-      width: 358px;
-      height: 70px;
-      gap: unset;
-      align-items: unset;
-      position: absolute;
-      top: 45px;
-      left: 25px;
-      padding: 0px;
-      white-space: pre-wrap;
-  }
-
-  .board2 {
-      width: 828px;
-      height: 578px;
-      display: block;
-      gap: unset;
-      align-items: unset;
-      justify-content: unset;
-      overflow: auto;
-      position: absolute;
-      top: 106px;
-      left: 10px;
-      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-      border-radius: 25px;
-      padding: 0px;
-      background-color: rgba(34,34,34,1);
-  }    
-
-  .rank-column {
-      width: 66px;
-      display: block;
-      gap: unset;
-      align-items: unset;
-      justify-content: unset;
-      overflow: hidden;
-      position: absolute;
-      left: 15px;
-      border-radius: 15px 0px 0px 15px;
-      padding: 0px;
-      background-color: rgba(45, 45, 45, 1);
-  }
-
-  .user-column {
-      width: 300px; /* Half of the original width */
-      display: block;
-      gap: unset;
-      align-items: unset;
-      justify-content: unset;
-      overflow: hidden;
-      position: absolute;
-      left: 75px;
-      padding: 0px;
-      background-color: rgba(49, 49, 49, 1);
-  }
-
-  .points-column {
-      display: none;
-  }
-
-  .point-text {
-      display: none;
-  }
-
-  .leaderboard-container {
-      width: 97%;
-      height: 708px;
-      left: 0px;
-      display: block;
-      gap: 0;
-      align-items: unset;
-      justify-content: unset;
-      overflow: hidden;
-      position: relative;
-      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-      border-radius: 20px;
-      padding: 0;
-      background-color: rgba(50, 50, 50, 1);
-  }
-
-  .board {
-      width: 100%;
-      height: 708px;
-      display: block;
-      gap: unset;
-      align-items: unset;
-      justify-content: unset;
-      overflow: hidden;
-      position: relative;
-      padding: 0px;
-  }
-
-  .user-text {
-      font-family: Inter, sans-serif; /* Use appropriate font stack or import the font */
-      font-size: 20px;
-      font-weight: 700;
-      color: rgba(255, 255, 255, 1);
-      line-height: 24.204544067382812px; /* You may need to adjust this value */
-      text-align: left;
-      display: block;
-      flex-direction: column; /* Assuming this is inside a flex container */
-      justify-content: unset;
-      width: 94px;
-      height: 32px;
-      gap: unset;
-      align-items: unset;
-      position: absolute;
-      top: 35px;
-      left: 210px;
-      padding: 0px;
-      white-space: pre-wrap;
-  }
-
-  .button-by-post {
-      left: 45px;
-      top: 5px;
-  }
-
-  .button-by-user {
-      left: 200px;
-      top: 5px;
-  }
 }
