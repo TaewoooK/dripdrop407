@@ -5,7 +5,7 @@ import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
 import { Amplify, graphqlOperation } from "aws-amplify";
 import { fetchAuthSession } from "aws-amplify/auth";
-import { generateClient } from "aws-amplify/api";
+import { post, generateClient } from "aws-amplify/api";
 import {
   Button,
   Grid,
@@ -113,6 +113,25 @@ const UserNotificationSubscriber = ({
         console.error("Error fetching notification list:", error);
       }
     };
+
+    // async function addtoDevGroup() {
+    //   let apiName = "AdminQueries";
+    //   let path = "/addUserToGroup";
+    //   let options = {
+    //     body: {
+    //       username: user.username,
+    //       groupname: "Devs",
+    //     },
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: `${
+    //         (await fetchAuthSession()).tokens.accessToken.payload
+    //       }`,
+    //     },
+    //   };
+    //   return post({ apiName, path, options });
+    // }
+    // const adminQueries = require("./admin-queries");
 
     const getIsDev = async () => {
       try {
@@ -256,6 +275,8 @@ export default function App() {
     console.log("isDev app:", isDev);
     if (isDev) {
       isDevGlobal = true;
+
+
     }
   }, [isDev]);
 
