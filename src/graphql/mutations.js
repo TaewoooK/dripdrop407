@@ -200,6 +200,7 @@ export const createPost = /* GraphQL */ `
       }
       hiddenPeople
       actionedUsers
+      tags
       updatedAt
       __typename
     }
@@ -224,6 +225,7 @@ export const updatePost = /* GraphQL */ `
       }
       hiddenPeople
       actionedUsers
+      tags
       updatedAt
       __typename
     }
@@ -248,6 +250,7 @@ export const deletePost = /* GraphQL */ `
       }
       hiddenPeople
       actionedUsers
+      tags
       updatedAt
       __typename
     }
@@ -273,6 +276,7 @@ export const createComment = /* GraphQL */ `
         postImageKey
         hiddenPeople
         actionedUsers
+        tags
         updatedAt
         __typename
       }
@@ -302,6 +306,7 @@ export const updateComment = /* GraphQL */ `
         postImageKey
         hiddenPeople
         actionedUsers
+        tags
         updatedAt
         __typename
       }
@@ -331,6 +336,7 @@ export const deleteComment = /* GraphQL */ `
         postImageKey
         hiddenPeople
         actionedUsers
+        tags
         updatedAt
         __typename
       }
