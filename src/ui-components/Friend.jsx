@@ -6,23 +6,10 @@
 
 /* eslint-disable */
 import * as React from "react";
-import { generateClient } from "aws-amplify/api";
-import { deleteFriend } from "../graphql/mutations";
 import { getOverrideProps } from "./utils";
 import { Button, Icon, Text, View } from "@aws-amplify/ui-react";
-const client = generateClient();
 export default function Friend(props) {
-  const { friend, overrides, ...rest } = props;
-  const buttonOnClick = async () => {
-    await client.graphql({
-      query: deleteFriend.replaceAll("__typename", ""),
-      variables: {
-        input: {
-          id: friend?.id,
-        },
-      },
-    });
-  };
+  const { overrides, ...rest } = props;
   return (
     <View
       width="383px"
@@ -101,7 +88,7 @@ export default function Friend(props) {
         right="38.37%"
         padding="0px 0px 0px 0px"
         whiteSpace="pre-wrap"
-        children={friend?.FriendUsername}
+        children="Username"
         {...getOverrideProps(overrides, "Username")}
       ></Text>
       <Button
@@ -114,9 +101,6 @@ export default function Friend(props) {
         isDisabled={false}
         variation="destructive"
         children="Remove"
-        onClick={() => {
-          buttonOnClick();
-        }}
         {...getOverrideProps(overrides, "Button")}
       ></Button>
     </View>
