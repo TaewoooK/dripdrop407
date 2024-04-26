@@ -2,7 +2,7 @@
   width: 220px;
   height: 100vh;
   left: -180px;
-  transition: .3s;
+  transition: 0.3s;
   display: block;
   overflow: hidden;
   top: 0;
@@ -109,12 +109,9 @@
   justify-content: center;
   align-items: center;
   position: absolute;
-  top: 600px;
+  top: 825px;
   left: calc(50% - 91px - 0px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
-  padding: 1px;
 }
 
 .toggle-arrow-container {
@@ -153,7 +150,7 @@
   justify-content: flex-start;
   align-items: center;
   position: absolute;
-  top: 520px;
+  top: 750px;
   left: 40px;
   padding: 0;
 }
@@ -178,18 +175,46 @@
   white-space: pre-wrap;
 }
 
+.signout-alt {
+  display: none;
+}
+
 /*=============== BREAKPOINTS ===============*/
 /* For large devices */
 @media screen and (max-width: 992px) {
-
 }
 /* For medium devices */
 
 @media screen and (max-width: 576px) {
-
 }
 
 /* For small devices */
-@media screen and (max-width: 350px) {
+/* For small devices */
+@media screen and (max-width: 431px) {
+  .navbar_container {
+    width: 220px;
+    height: 100vh;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  }
 
+  .logo-text {
+    font-family: Inter;
+    font-size: 24px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 1);
+    line-height: 24px;
+    text-align: left;
+    display: block;
+    flex-direction: column;
+    justify-content: unset;
+    width: unset;
+    height: unset;
+    gap: unset;
+    align-items: unset;
+    position: absolute;
+    top: 40px;
+    left: 29px;
+    padding: 0px;
+    white-space: pre-wrap;
+  }
 }

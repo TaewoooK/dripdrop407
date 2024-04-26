@@ -36,7 +36,7 @@ const NotificationCenter = ({ notifications, signOut }) => {
   };
 
   useEffect(() => {
-    console.log("notifications:", notifications);
+    // console.log("notifications:", notifications);
     fetchUserData();
   }, []);
 
@@ -134,7 +134,7 @@ const NotificationCenter = ({ notifications, signOut }) => {
                         (acc, curr) => acc + (curr.length > 50 ? 90 : 60),
                         11
                       ); // Adjust the height accordingly
-              console.log("Notification:", notification);
+              // console.log("Notification:", notification);
               return (
                 <Notification
                   key={index}

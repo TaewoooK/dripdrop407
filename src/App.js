@@ -3,7 +3,8 @@ import { UserProvider } from "./UserContext";
 
 import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
-import { Amplify, graphqlOperation, Auth } from "aws-amplify";
+import { Amplify, graphqlOperation } from "aws-amplify";
+import { fetchAuthSession } from "aws-amplify/auth";
 import { generateClient } from "aws-amplify/api";
 import {
   Button,
@@ -75,7 +76,7 @@ const client = generateClient();
 const UserNotificationSubscriber = ({
   user,
   signOut,
-  notifications,
+  setIsDev,
   setNotifications,
 }) => {
   useEffect(() => {
@@ -96,6 +97,7 @@ const UserNotificationSubscriber = ({
           });
           console.log("created notification list");
           setNotifications([]);
+          return 0;
         } else {
           console.log(
             "notification list already exists:",
@@ -104,18 +106,30 @@ const UserNotificationSubscriber = ({
           setNotifications(
             result.data.listNotifications.items[0].notificationsList
           );
+          return result.data.listNotifications.items[0].notificationsList
+            .length;
         }
       } catch (error) {
         console.error("Error fetching notification list:", error);
       }
     };
 
+    const getIsDev = async () => {
+      try {
+        const { tokens } = await fetchAuthSession();
+        const groups = tokens?.idToken.payload["cognito:groups"];
+        console.log("groups:", groups);
+        setIsDev(groups.includes("dev"));
+      } catch (error) {
+        console.error("Error fetching current authenticated user:", error);
+      }
+    };
+
     let notifSubscription;
 
     if (user) {
-      generateNotifs(user);
-
-      console.log("from app.js:", user.username);
+      var internal_notif_length = generateNotifs(user);
+      getIsDev();
 
       notifSubscription = client
         .graphql({
@@ -124,16 +138,17 @@ const UserNotificationSubscriber = ({
         })
         .subscribe({
           next: (notificationData) => {
-            console.log("notificationData:", notificationData);
+            // console.log("notificationData:", notificationData);
             const notifList =
               notificationData.data.onUpdateNotifications.notificationsList;
-            console.log("notifList:", notifList);
+            // console.log("notifList:", notifList);
+            // console.log("notifications:", notifications, notifications.length);
             if (
               notifList.length !== 0 &&
-              notifList.length > notifications.length
+              notifList.length > internal_notif_length
             ) {
               const newNotif = notifList[0];
-              console.log("newNotif:", newNotif);
+              // console.log("newNotif:", newNotif);
               // console.log(
               //   "newNotif[0]:",
               //   newNotif[0] === "FR"
@@ -201,12 +216,21 @@ const UserNotificationSubscriber = ({
                   );
 
                   break;
+                case "PD":
+                  toast(
+                    `Your post was removed by an admin for violating community guidelines!`,
+                    {
+                      icon: "❌",
+                    }
+                  );
+                  break;
                 default:
                   break;
               }
             }
-            console.log("notifList:", notifList);
+            // console.log("notifList:", notifList);
             setNotifications(notifList);
+            internal_notif_length = notifList.length;
           },
         });
       console.log("subscribed to notifications for:", user.username);
@@ -222,8 +246,18 @@ const UserNotificationSubscriber = ({
   return null;
 };
 
+export var isDevGlobal = false;
+
 export default function App() {
   const [notifications, setNotifications] = React.useState([]);
+  const [isDev, setIsDev] = React.useState(false);
+
+  useEffect(() => {
+    console.log("isDev app:", isDev);
+    if (isDev) {
+      isDevGlobal = true;
+    }
+  }, [isDev]);
 
   return (
     <Authenticator
@@ -234,27 +268,28 @@ export default function App() {
       {({ signOut, user }) => (
         <UserProvider>
           <View className="App">
-            <div style={{ backgroundColor: "rgb(24, 24, 24)" }}>
+            <div style={{ minHeight: '100vh', backgroundColor: "rgb(24, 24, 24)" }}>
               <UserNotificationSubscriber
                 user={user}
                 signOut={signOut}
-                notifications={notifications}
+                setIsDev={setIsDev}
                 setNotifications={setNotifications}
               />
               <Toaster position="top-right" reverseOrder={false} />
               <Grid
                 columnGap="0.5rem"
-                height="100vh"
                 rowGap="0.5rem"
                 templateColumns="1fr 8fr"
                 alignContent="center"
               >
-                <NavBar columnStart="1" columnEnd="2" /> {/* NavBar spans only 1 column */}
-                <div style={{ gridColumn: "2 / span 1" }}> {/* Content div spans only 1 column */}
+                <NavBar columnStart="1" columnEnd="2" />{" "}
+                {/* NavBar spans only 1 column */}
+                <div style={{ gridColumn: "2 / span 1" }}>
+                  {" "}
+                  {/* Content div spans only 1 column */}
                   <Route notifications={notifications} />
                 </div>
               </Grid>
-
             </div>
           </View>
         </UserProvider>
