@@ -1,6 +1,6 @@
 .big-post-containerv2 {
-    width: 450px;
-    height: 570px;
+    width: 800px;
+    height: 550px;
     display: block;
     gap: 0;
     align-items: unset;
@@ -8,10 +8,11 @@
     position: relative;
     padding: 0;
     border-radius: 25px;
+    background-color: rgba(34, 34, 34, 1);
   }
   
   .post-containerv2 {
-    width: 375px;
+    width: 770px;
     height: 470px;
     display: block;
     gap: unset;
@@ -19,14 +20,14 @@
     justify-content: center;
     overflow: hidden;
     position: absolute;
-    top: 0%;
+    top: 20px;
     bottom: 10.09%;
-    left: 7%;
+    left: 15px;
     right: 20.93%;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 25px;
     padding: 0;
-    background-color: rgba(34, 34, 34, 1);
+    background-color: rgba(30, 30, 30, 1);
   }
   
   .thumb-container1v2 {
@@ -59,8 +60,25 @@
     filter: invert(100%);
   }
   
-  .post-imgv2 {
+  .post-img-one {
     width: 276px;
+    height: 383px;
+    display: block;
+    cursor: pointer;
+    gap: unset;
+    align-items: unset;
+    justify-content: unset;
+    position: absolute;
+    top: 64px;
+    left: 45px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 25px;
+    padding: 0;
+  }
+
+  .post-img-two {
+    width: 276px;
+    cursor: pointer;
     height: 383px;
     display: block;
     gap: unset;
@@ -68,7 +86,7 @@
     justify-content: unset;
     position: absolute;
     top: 64px;
-    left: 90px;
+    left: 480px;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 25px;
     padding: 0;
@@ -95,7 +113,7 @@
     position: absolute;
     top: 14px;
     left: 370px;
-    display: block;
+    display: none;
     gap: unset;
     align-items: unset;
     justify-content: unset;
@@ -149,7 +167,7 @@
   .comment-containerv2 {
     width: 277.5px;
     height: 468px;
-    display: block;
+    display: none;
     gap: 0;
     top: 30px;
     align-items: unset;
@@ -211,4 +229,65 @@
     left: 219px; /* 292px * 0.75 */
     padding: 0;
   }
+
+  .battle-header-text {
+    font-family: Inter, sans-serif; /* Use appropriate font stack or import the font */
+    font-size: 40px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 1);
+    line-height: 58.09090805053711px; /* You may need to adjust this value */
+    text-align: left;
+    display: block;
+    flex-direction: column; /* Assuming this is inside a flex container */
+    justify-content: unset;
+    width: 358px;
+    height: 70px;
+    gap: unset;
+    align-items: unset;
+    position: absolute;
+    top: 2px;
+    left: 345px;
+    padding: 0px;
+    white-space: pre-wrap;
+  }
   
+  .battle-sub-header-text {
+    font-family: Inter, sans-serif; /* Use appropriate font stack or import the font */
+    font-size: 24px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 1);
+    line-height: 58.09090805053711px; /* You may need to adjust this value */
+    text-align: left;
+    display: block;
+    flex-direction: column; /* Assuming this is inside a flex container */
+    justify-content: unset;
+    width: 358px;
+    height: 70px;
+    gap: unset;
+    align-items: unset;
+    position: absolute;
+    top: 200px;
+    left: 355px;
+    padding: 0px;
+    white-space: pre-wrap;
+  }
+
+  .next-button {
+    width: unset;
+    height: unset;
+    position: absolute;
+    top: 500px;
+    left: 650px;
+    color: white;
+  }
+
+  .right-img-percent {
+    color: white;
+
+  }
+
+  .left-img-percent {
+    color: white;
+    top: 25%;
+    left: 25%;
+  }

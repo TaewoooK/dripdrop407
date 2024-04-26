@@ -15,7 +15,7 @@ import Board from "../components/Leaderboard/Board";
 import BattleRequest from "../components/Battle/BattleRequest";
 import BattleBoard from "../components/Battle/Battleboard";
 
-import PostV2 from "../components/PostsV2";
+import BattlePost from "../components/BattlePost";
 
 const Route = (notifications) => {
   const { myUser, usernameToPrivacy } = useContext(UserContext);
@@ -47,7 +47,7 @@ const Route = (notifications) => {
     case "/leaderboard":
       return <Board />;
     case "/Versus":
-      return <PostV2 />;
+      return <BattlePost />;
     case "/":
     case "/home":
       return (
