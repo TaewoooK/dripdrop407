@@ -156,13 +156,8 @@ export default function PostAndComment({ isFriendsOnly }) {
 
     filter = {
       or: [
-        // Include posts where owner is in friends regardless of privateUsers
         ...friendsFilter,
         ...privateUsersFilter,
-        // Include posts where owner is not in friends and not in privateUsers
-        // ...(privateUsers.length > 0
-        //   ? privateUsersFilter
-        //   : [{ owner: { ne: null } }]),
       ],
       and: [
         {
