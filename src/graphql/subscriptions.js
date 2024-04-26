@@ -449,6 +449,7 @@ export const onCreateBattle = /* GraphQL */ `
       Player1ImageKey
       Player2ImageKey
       createdAt
+      actionedUsers
       updatedAt
       __typename
     }
@@ -467,6 +468,7 @@ export const onUpdateBattle = /* GraphQL */ `
       Player1ImageKey
       Player2ImageKey
       createdAt
+      actionedUsers
       updatedAt
       __typename
     }
@@ -484,6 +486,46 @@ export const onDeleteBattle = /* GraphQL */ `
       Player2Score
       Player1ImageKey
       Player2ImageKey
+      createdAt
+      actionedUsers
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onCreateBannedUsers = /* GraphQL */ `
+  subscription OnCreateBannedUsers(
+    $filter: ModelSubscriptionBannedUsersFilterInput
+  ) {
+    onCreateBannedUsers(filter: $filter) {
+      id
+      BannedUsers
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateBannedUsers = /* GraphQL */ `
+  subscription OnUpdateBannedUsers(
+    $filter: ModelSubscriptionBannedUsersFilterInput
+  ) {
+    onUpdateBannedUsers(filter: $filter) {
+      id
+      BannedUsers
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteBannedUsers = /* GraphQL */ `
+  subscription OnDeleteBannedUsers(
+    $filter: ModelSubscriptionBannedUsersFilterInput
+  ) {
+    onDeleteBannedUsers(filter: $filter) {
+      id
+      BannedUsers
       createdAt
       updatedAt
       __typename
