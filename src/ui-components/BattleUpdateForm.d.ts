@@ -31,6 +31,7 @@ export declare type BattleUpdateFormInputValues = {
     Player1ImageKey?: string;
     Player2ImageKey?: string;
     createdAt?: string;
+    actionedUsers?: string[];
 };
 export declare type BattleUpdateFormValidationValues = {
     Player1?: ValidationFunction<string>;
@@ -42,6 +43,7 @@ export declare type BattleUpdateFormValidationValues = {
     Player1ImageKey?: ValidationFunction<string>;
     Player2ImageKey?: ValidationFunction<string>;
     createdAt?: ValidationFunction<string>;
+    actionedUsers?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type BattleUpdateFormOverridesProps = {
@@ -55,6 +57,7 @@ export declare type BattleUpdateFormOverridesProps = {
     Player1ImageKey?: PrimitiveOverrideProps<TextFieldProps>;
     Player2ImageKey?: PrimitiveOverrideProps<TextFieldProps>;
     createdAt?: PrimitiveOverrideProps<TextFieldProps>;
+    actionedUsers?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type BattleUpdateFormProps = React.PropsWithChildren<{
     overrides?: BattleUpdateFormOverridesProps | undefined | null;
