@@ -110,12 +110,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "dripdrop407LambdaRole9c456a70",
+            "dripdrop407LambdaRole217d8279",
             {
               "Fn::Join": [
                 "",
                 [
-                  "dripdrop407LambdaRole9c456a70",
+                  "dripdrop407LambdaRole217d8279",
                   "-",
                   {
                     "Ref": "env"

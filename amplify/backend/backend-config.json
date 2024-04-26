@@ -11,9 +11,9 @@
           ],
           "defaultAuthentication": {
             "apiKeyConfig": {
-              "apiKeyExpirationDate": "2024-05-26T08:14:02.432Z",
+              "apiKeyExpirationDate": "2024-05-26T08:37:02.350Z",
               "apiKeyExpirationDays": 30,
-              "description": "Double points generation"
+              "description": "get double points time"
             },
             "authenticationType": "API_KEY"
           }
@@ -56,22 +56,6 @@
   },
   "function": {
     "getDoublePointsTime": {
-      "build": true,
-      "dependsOn": [
-        {
-          "attributes": [
-            "GraphQLAPIIdOutput",
-            "GraphQLAPIEndpointOutput",
-            "GraphQLAPIKeyOutput"
-          ],
-          "category": "api",
-          "resourceName": "dripdrop407"
-        }
-      ],
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
-    "getDoublePtsTime": {
       "build": true,
       "dependsOn": [
         {

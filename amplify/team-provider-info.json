@@ -29,7 +29,7 @@
         },
         "getDoublePointsTime": {
           "deploymentBucketName": "amplify-dripdrop407-dev-05648-deployment",
-          "s3Key": "amplify-builds/getDoublePointsTime-6f4c554a645354475577-build.zip"
+          "s3Key": "amplify-builds/getDoublePointsTime-71575750724c362b3155-build.zip"
         }
       }
     }
