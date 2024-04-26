@@ -7,8 +7,8 @@
 export { default as BattleCreateForm } from "./BattleCreateForm";
 export { default as BattleUpdateForm } from "./BattleUpdateForm";
 export { default as DDLeaderboard } from "./DDLeaderboard";
-// export { default as DoublePointsTimeCreateForm } from "./DoublePointsTimeCreateForm";
-// export { default as DoublePointsTimeUpdateForm } from "./DoublePointsTimeUpdateForm";
+export { default as DoublePointsTimeCreateForm } from "./DoublePointsTimeCreateForm";
+export { default as DoublePointsTimeUpdateForm } from "./DoublePointsTimeUpdateForm";
 export { default as Friend } from "./Friend";
 export { default as FriendCreateForm } from "./FriendCreateForm";
 export { default as FriendRequest } from "./FriendRequest";

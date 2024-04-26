@@ -12,7 +12,11 @@ import {
 import { View, Text, Button } from "@aws-amplify/ui-react";
 import BattlePending from "./BattlePending";
 import { uploadData, getUrl } from "aws-amplify/storage";
-import { createBattle, updateBattle } from "../../graphql/mutations";
+import {
+  createBattle,
+  deleteBattle,
+  updateBattle,
+} from "../../graphql/mutations";
 import toast, { Toaster } from "react-hot-toast";
 
 const client = generateClient();
@@ -81,6 +85,32 @@ export default function BattleBoard() {
         console.log(signedURL);
 
         resolve("Battle created successfully");
+      } catch (error) {
+        reject("Failed to create post");
+      }
+      setImage(null);
+      setShowActionCenter(false);
+    });
+  };
+
+  const handleReject = () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        // Handle post submission logic here
+        console.log("Image:", image);
+
+        const currDate = new Date().toISOString();
+
+        const updatePostDetails = {
+          id: selectedBattle.id,
+        };
+
+        const updatePostResponse = await client.graphql({
+          query: deleteBattle,
+          variables: { input: updatePostDetails },
+        });
+
+        resolve("Battle rejected successfully");
       } catch (error) {
         reject("Failed to create post");
       }
@@ -301,6 +331,17 @@ export default function BattleBoard() {
               }}
             >
               Play!
+            </button>
+            <button
+              onClick={() => {
+                toast.promise(handleReject(), {
+                  pending: "Uploading...",
+                  success: "Post created successfully",
+                  error: "Failed to create post",
+                });
+              }}
+            >
+              Reject Battle
             </button>
             <button onClick={() => onCloseHidden()}>Close</button>
           </div>
