@@ -179,11 +179,6 @@
   background-color: rgba(49, 49, 49, 1);
 }
 
-.points-column h2 {
-  margin-bottom: 25px; /* Adjust the value as needed */
-  color: white;
-}
-
 .separator {
   width: 786px;
   height: 1px;
@@ -198,6 +193,7 @@
   border-top: 1px solid rgba(255, 255, 255, 1);
 }
 
+.button-by-view,
 .button-by-post,
 .button-by-user {
   width: unset;
@@ -207,8 +203,12 @@
   color: white;
 }
 
+.button-by-view {
+  left: 375px;
+}
+
 .button-by-post {
-  left: 526px;
+  left: 525px;
 }
 
 .button-by-user {
