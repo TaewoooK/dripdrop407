@@ -2,7 +2,7 @@ import * as React from "react";
 import { useEffect, useState, useContext } from "react";
 import { generateClient } from "aws-amplify/api";
 import { UserContext } from "../../UserContext";
-import "./board.css";
+import "./Battleboard.css";
 import {
   listPosts,
   listBattles,

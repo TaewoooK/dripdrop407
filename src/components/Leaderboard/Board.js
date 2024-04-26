@@ -48,6 +48,9 @@ export default function Board() {
       }
     );
 
+    setTime('allTime');
+    setBoardState('byPost');
+
     return () => {
       subscriptionRefs.forEach((subscription) => subscription.unsubscribe());
     };

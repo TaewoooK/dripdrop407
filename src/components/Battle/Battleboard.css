@@ -1,4 +1,4 @@
-.leaderboard-container {
+.battleboard .leaderboard-container {
   width: 902px;
   height: 708px;
   left: 50px;
@@ -14,7 +14,7 @@
   background-color: rgba(50, 50, 50, 1);
 }
 
-.board {
+.battleboard .board {
   width: 902px;
   height: 708px;
   display: block;
@@ -26,7 +26,7 @@
   padding: 0px;
 }
 
-.board2 {
+.battleboard .board2 {
   width: 828px;
   height: 578px;
   display: block;
@@ -43,7 +43,7 @@
   background-color: rgba(34, 34, 34, 1);
 }
 
-.rank-text {
+.battleboard .rank-text {
   font-family: Inter; /* Use appropriate font stack or import the font */
   font-size: 20px;
   font-weight: 700;
@@ -64,7 +64,7 @@
   white-space: pre-wrap;
 }
 
-.user-text {
+.battleboard .user-text {
   font-family: Inter, sans-serif; /* Use appropriate font stack or import the font */
   font-size: 20px;
   font-weight: 700;
@@ -85,7 +85,7 @@
   white-space: pre-wrap;
 }
 
-.point-text {
+.battleboard .point-text {
   font-family: Inter; /* Use appropriate font stack or import the font */
   font-size: 20px;
   font-weight: 700;
@@ -106,7 +106,7 @@
   white-space: pre-wrap;
 }
 
-.board-header-text {
+.battleboard .board-header-text {
   font-family: Inter, sans-serif; /* Use appropriate font stack or import the font */
   font-size: 48px;
   font-weight: 700;
@@ -127,7 +127,7 @@
   white-space: pre-wrap;
 }
 
-.rank-column {
+.battleboard .rank-column {
   width: 250px; /* Half of the original width */
   display: block;
   gap: unset;
@@ -140,13 +140,13 @@
   background-color: rgba(49, 49, 49, 1);
 }
 
-.rank-column h2 {
+.battleboard .rank-column h2 {
   margin-bottom: 25px; /* Adjust the value as needed */
   color: white;
   text-align: left;
 }
 
-.user-column {
+.battleboard .user-column {
   width: 270px; /* Half of the original width */
   display: block;
   gap: unset;
@@ -159,13 +159,13 @@
   background-color: rgba(49, 49, 49, 1);
 }
 
-.user-column h2 {
+.battleboard .user-column h2 {
   margin-bottom: 25px; /* Adjust the value as needed */
   color: white;
   text-align: left;
 }
 
-.points-column {
+.battleboard .points-column {
   width: 320px; /* Half of the original width */
   display: block;
   gap: unset;
@@ -179,7 +179,7 @@
   background-color: rgba(49, 49, 49, 1);
 }
 
-.separator {
+.battleboard .separator {
   width: 786px;
   height: 1px;
   display: block;
@@ -193,9 +193,9 @@
   border-top: 1px solid rgba(255, 255, 255, 1);
 }
 
-.button-by-view,
-.button-by-post,
-.button-by-user {
+.battleboard .button-by-view,
+.battleboard .button-by-post,
+.battleboard .button-by-user {
   width: unset;
   height: unset;
   position: absolute;
@@ -203,19 +203,19 @@
   color: white;
 }
 
-.button-by-view {
+.battleboard .button-by-view {
   left: 375px;
 }
 
-.button-by-post {
+.battleboard .button-by-post {
   left: 525px;
 }
 
-.button-by-user {
+.battleboard .button-by-user {
   left: 751px;
 }
 
-.columns-container {
+.battleboard .columns-container {
   width: 800px;
   height: 470px;
   display: flex;
@@ -223,9 +223,9 @@
   position: absolute;
 }
 
-.rank-column,
-.user-column,
-.points-column {
+.battleboard .rank-column,
+.battleboard .user-column,
+.battleboard .points-column {
   flex: 1;
   padding: 0 10px; /* Adjust padding as needed */
 }

@@ -2,7 +2,7 @@ import * as React from "react";
 import { useEffect, useState, useContext } from "react";
 import { generateClient } from "aws-amplify/api";
 import { UserContext } from "../../UserContext";
-import "./board.css";
+import "./Battleboard.css";
 import {
   listPosts,
   listBattles,
@@ -234,155 +234,157 @@ export default function BattleBoard() {
   }, [showActionCenter]);
 
   return (
-    <View className="leaderboard-container">
-      <View className="board">
-        <View className="board2">
-          <Text className="rank-text" children="Player 1" />
-          <Text className="user-text" children="Player 2" />
-          <Text className="point-text" children="Status" />
-          <hr className="separator" />
-          <div className="columns-container" style={{ overflow: "auto" }}>
-            {/* First, add a div to contain the columns */}
-            <View className="rank-column">
-              {selectedData.map((entry, index) => (
-                <h2 key={index} style={{ color: "white" }}>
-                  {entry.Player1}
-                </h2>
-              ))}
-            </View>
-            <View className="user-column">
-              {selectedData.map((entry, index) => (
-                <h2 key={index} style={{ color: "white" }}>
-                  {entry.Player2}
-                </h2>
-              ))}
-            </View>
-            <View className="points-column">
-              {selectedData.map((entry, index) => {
-                // Example of an if statement for entry
-                if (entry.Player2Status === "Pending") {
-                  // Replace 'condition' with the property you want to check
-                  return (
-                    <div
-                      key={index}
-                      onClick={() => {
-                        setSelectedBattle(entry);
-                        setShowActionCenter(true);
-                      }}
-                    >
-                      <h2 style={{ color: "white" }}>{"Click To Play"}</h2>
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div
-                      key={index}
-                      onClick={() => {
-                        setSelectedBattle(entry);
-                        getImagePlayer(entry);
-                        setShowImageActionCenter(true);
-                      }}
-                    >
-                      <h2 key={index} style={{ color: "white" }}>
-                        {entry.Player1Score + " | " + entry.Player2Score}
-                      </h2>
-                    </div>
-                  );
-                }
-              })}
-            </View>
-          </div>
+    <View className="battleboard">
+      <View className="leaderboard-container">
+        <View className="board">
+          <View className="board2">
+            <Text className="rank-text" children="Player 1" />
+            <Text className="user-text" children="Player 2" />
+            <Text className="point-text" children="Status" />
+            <hr className="separator" />
+            <div className="columns-container" style={{ overflow: "auto" }}>
+              {/* First, add a div to contain the columns */}
+              <View className="rank-column">
+                {selectedData.map((entry, index) => (
+                  <h2 key={index} style={{ color: "white" }}>
+                    {entry.Player1}
+                  </h2>
+                ))}
+              </View>
+              <View className="user-column">
+                {selectedData.map((entry, index) => (
+                  <h2 key={index} style={{ color: "white" }}>
+                    {entry.Player2}
+                  </h2>
+                ))}
+              </View>
+              <View className="points-column">
+                {selectedData.map((entry, index) => {
+                  // Example of an if statement for entry
+                  if (entry.Player2Status === "Pending") {
+                    // Replace 'condition' with the property you want to check
+                    return (
+                      <div
+                        key={index}
+                        onClick={() => {
+                          setSelectedBattle(entry);
+                          setShowActionCenter(true);
+                        }}
+                      >
+                        <h2 style={{ color: "white" }}>{"Click To Play"}</h2>
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div
+                        key={index}
+                        onClick={() => {
+                          setSelectedBattle(entry);
+                          getImagePlayer(entry);
+                          setShowImageActionCenter(true);
+                        }}
+                      >
+                        <h2 key={index} style={{ color: "white" }}>
+                          {entry.Player1Score + " | " + entry.Player2Score}
+                        </h2>
+                      </div>
+                    );
+                  }
+                })}
+              </View>
+            </div>
+          </View>
+          <Text className="board-header-text">
+            <span style={{ color: "#047d95" }}>Battle</span>
+            <span>board</span>
+          </Text>
+          <Button
+            className="button-by-view"
+            variation="default"
+            onClick={() => {
+              getAllPostsRankedByDripPoints(myUser.username);
+            }}
+          >
+            My Battle(s)
+          </Button>
+          <Button
+            className="button-by-post"
+            variation="default"
+            onClick={() => {
+              getAllPending(myUser.username);
+            }}
+          >
+            Pending Battle(s)
+          </Button>
+          <Button
+            className="button-by-user"
+            variation="default"
+            onClick={() => {
+              window.location.href = "/battle-request";
+            }}
+          >
+            New Battle
+          </Button>
         </View>
-        <Text className="board-header-text">
-          <span style={{ color: "#047d95" }}>Battle</span>
-          <span>board</span>
-        </Text>
-        <Button
-          className="button-by-view"
-          variation="default"
-          onClick={() => {
-            getAllPostsRankedByDripPoints(myUser.username);
-          }}
-        >
-          My Battle(s)
-        </Button>
-        <Button
-          className="button-by-post"
-          variation="default"
-          onClick={() => {
-            getAllPending(myUser.username);
-          }}
-        >
-          Pending Battle(s)
-        </Button>
-        <Button
-          className="button-by-user"
-          variation="default"
-          onClick={() => {
-            window.location.href = "/battle-request";
-          }}
-        >
-          New Battle
-        </Button>
+        {showActionCenter && (
+          <div style={modalContainerStyles}>
+            <div style={modalStyles}>
+              <BattlePending
+                entry={selectedBattle}
+                image={image}
+                setImage={setImage}
+              />
+              <button
+                style={{
+                  backgroundColor: "#047d95",
+                  color: "white",
+                  border: "none",
+                  padding: "15px 24px", // Increased padding for the button
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                  display: "block",
+                  width: "100%",
+                  fontSize: "16px",
+                  fontWeight: "bold",
+                }}
+                onClick={() => {
+                  toast.promise(handleSubmit(), {
+                    pending: "Uploading...",
+                    success: "Post created successfully",
+                    error: "Failed to create post",
+                  });
+                }}
+              >
+                Play!
+              </button>
+              <button
+                onClick={() => {
+                  toast.promise(handleReject(), {
+                    pending: "Uploading...",
+                    success: "Post created successfully",
+                    error: "Failed to create post",
+                  });
+                }}
+              >
+                Reject Battle
+              </button>
+              <button onClick={() => onCloseHidden()}>Close</button>
+            </div>
+          </div>
+        )}
+        {showImageActionCenter && (
+          <div style={modalContainerStyles}>
+            <div style={modalStyles}>
+              <BattleImages
+                entry={selectedBattle}
+                image1={image1}
+                image2={image2}
+              />
+              <button onClick={() => onCloseHidden()}>Close</button>
+            </div>
+          </div>
+        )}
       </View>
-      {showActionCenter && (
-        <div style={modalContainerStyles}>
-          <div style={modalStyles}>
-            <BattlePending
-              entry={selectedBattle}
-              image={image}
-              setImage={setImage}
-            />
-            <button
-              style={{
-                backgroundColor: "#047d95",
-                color: "white",
-                border: "none",
-                padding: "15px 24px", // Increased padding for the button
-                borderRadius: "5px",
-                cursor: "pointer",
-                display: "block",
-                width: "100%",
-                fontSize: "16px",
-                fontWeight: "bold",
-              }}
-              onClick={() => {
-                toast.promise(handleSubmit(), {
-                  pending: "Uploading...",
-                  success: "Post created successfully",
-                  error: "Failed to create post",
-                });
-              }}
-            >
-              Play!
-            </button>
-            <button
-              onClick={() => {
-                toast.promise(handleReject(), {
-                  pending: "Uploading...",
-                  success: "Post created successfully",
-                  error: "Failed to create post",
-                });
-              }}
-            >
-              Reject Battle
-            </button>
-            <button onClick={() => onCloseHidden()}>Close</button>
-          </div>
-        </div>
-      )}
-      {showImageActionCenter && (
-        <div style={modalContainerStyles}>
-          <div style={modalStyles}>
-            <BattleImages
-              entry={selectedBattle}
-              image1={image1}
-              image2={image2}
-            />
-            <button onClick={() => onCloseHidden()}>Close</button>
-          </div>
-        </div>
-      )}
     </View>
   );
 }
