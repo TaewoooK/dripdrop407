@@ -22,15 +22,15 @@ export declare type ValidationResponse = {
 };
 export declare type ValidationFunction<T> = (value: T, validationResponse: ValidationResponse) => ValidationResponse | Promise<ValidationResponse>;
 export declare type BannedUsersCreateFormInputValues = {
-    BannedUsers?: string[];
+    bannedUsers?: string;
 };
 export declare type BannedUsersCreateFormValidationValues = {
-    BannedUsers?: ValidationFunction<string>;
+    bannedUsers?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type BannedUsersCreateFormOverridesProps = {
     BannedUsersCreateFormGrid?: PrimitiveOverrideProps<GridProps>;
-    BannedUsers?: PrimitiveOverrideProps<TextFieldProps>;
+    bannedUsers?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type BannedUsersCreateFormProps = React.PropsWithChildren<{
     overrides?: BannedUsersCreateFormOverridesProps | undefined | null;

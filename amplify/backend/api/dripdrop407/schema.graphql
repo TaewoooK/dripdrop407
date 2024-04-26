@@ -85,5 +85,5 @@ type Battle @model @auth(rules: [{ allow: public }]) {
 }
 type BannedUsers @model @auth(rules: [{ allow: public }]) {
   id: ID!
-  BannedUsers: [String]
+  bannedUsers: String
 }
