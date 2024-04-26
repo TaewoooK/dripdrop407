@@ -11,8 +11,13 @@ import {
 } from "../../graphql/queries";
 import { View, Text, Button } from "@aws-amplify/ui-react";
 import BattlePending from "./BattlePending";
+import BattleImages from "./BattleImages";
 import { uploadData, getUrl } from "aws-amplify/storage";
-import { createBattle, updateBattle } from "../../graphql/mutations";
+import {
+  createBattle,
+  deleteBattle,
+  updateBattle,
+} from "../../graphql/mutations";
 import toast, { Toaster } from "react-hot-toast";
 
 const client = generateClient();
@@ -42,8 +47,12 @@ export default function BattleBoard() {
   const [selectedData, setSelectedData] = useState([]); // Initialize with an empty array
   const [battles, setBattles] = useState([]);
   const [showActionCenter, setShowActionCenter] = React.useState(false);
+  const [showImageActionCenter, setShowImageActionCenter] =
+    React.useState(false);
   const [selectedBattle, setSelectedBattle] = useState(null);
   const [image, setImage] = useState(null);
+  const [image1, setImage1] = useState("");
+  const [image2, setImage2] = useState("");
 
   const handleSubmit = () => {
     return new Promise(async (resolve, reject) => {
@@ -89,6 +98,43 @@ export default function BattleBoard() {
     });
   };
 
+  const handleReject = () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        // Handle post submission logic here
+        console.log("Image:", image);
+
+        const currDate = new Date().toISOString();
+
+        const updatePostDetails = {
+          id: selectedBattle.id,
+        };
+
+        const updatePostResponse = await client.graphql({
+          query: deleteBattle,
+          variables: { input: updatePostDetails },
+        });
+
+        resolve("Battle rejected successfully");
+      } catch (error) {
+        reject("Failed to create post");
+      }
+      setImage(null);
+      setShowActionCenter(false);
+    });
+  };
+
+  const getImagePlayer = async (entry) => {
+    console.log(selectedBattle);
+
+    const postData = await getUrl({ key: entry.Player1ImageKey });
+    const postData2 = await getUrl({ key: entry.Player2ImageKey });
+    setImage1(postData.url);
+    setImage2(postData2.url);
+
+    console.log("image1: " + image1);
+  };
+
   async function getAllPending(username) {
     let nextToken = null; // Initialize pagination token
 
@@ -122,13 +168,12 @@ export default function BattleBoard() {
       nextToken = userPosts.data.listBattles.nextToken;
     } while (nextToken); // Continue fetching until there are no more posts
 
-    console.log(battleData);
-
     setSelectedData(battleData);
   }
 
   const onCloseHidden = () => {
     setShowActionCenter(false);
+    setShowImageActionCenter(false);
   };
 
   async function getAllPostsRankedByDripPoints(username) {
@@ -230,9 +275,18 @@ export default function BattleBoard() {
                   );
                 } else {
                   return (
-                    <h2 key={index} style={{ color: "white" }}>
-                      {entry.Player1Score + " | " + entry.Player2Score}
-                    </h2>
+                    <div
+                      key={index}
+                      onClick={() => {
+                        setSelectedBattle(entry);
+                        getImagePlayer(entry);
+                        setShowImageActionCenter(true);
+                      }}
+                    >
+                      <h2 key={index} style={{ color: "white" }}>
+                        {entry.Player1Score + " | " + entry.Player2Score}
+                      </h2>
+                    </div>
                   );
                 }
               })}
@@ -302,6 +356,29 @@ export default function BattleBoard() {
             >
               Play!
             </button>
+            <button
+              onClick={() => {
+                toast.promise(handleReject(), {
+                  pending: "Uploading...",
+                  success: "Post created successfully",
+                  error: "Failed to create post",
+                });
+              }}
+            >
+              Reject Battle
+            </button>
+            <button onClick={() => onCloseHidden()}>Close</button>
+          </div>
+        </div>
+      )}
+      {showImageActionCenter && (
+        <div style={modalContainerStyles}>
+          <div style={modalStyles}>
+            <BattleImages
+              entry={selectedBattle}
+              image1={image1}
+              image2={image2}
+            />
             <button onClick={() => onCloseHidden()}>Close</button>
           </div>
         </div>
