@@ -560,7 +560,7 @@ export const createBannedUsers = /* GraphQL */ `
   ) {
     createBannedUsers(input: $input, condition: $condition) {
       id
-      BannedUsers
+      bannedUsers
       createdAt
       updatedAt
       __typename
@@ -574,7 +574,7 @@ export const updateBannedUsers = /* GraphQL */ `
   ) {
     updateBannedUsers(input: $input, condition: $condition) {
       id
-      BannedUsers
+      bannedUsers
       createdAt
       updatedAt
       __typename
@@ -588,7 +588,7 @@ export const deleteBannedUsers = /* GraphQL */ `
   ) {
     deleteBannedUsers(input: $input, condition: $condition) {
       id
-      BannedUsers
+      bannedUsers
       createdAt
       updatedAt
       __typename

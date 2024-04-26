@@ -14,7 +14,7 @@ import {
   Text,
   useTheme,
 } from "@aws-amplify/ui-react";
-import { listNotifications } from "./graphql/queries";
+import { listBannedUsers, listNotifications } from "./graphql/queries";
 import { createNotifications } from "./graphql/mutations";
 import { Authenticator } from "@aws-amplify/ui-react";
 import awsconfig from "./amplifyconfiguration.json";
@@ -78,6 +78,7 @@ const UserNotificationSubscriber = ({
   signOut,
   setIsDev,
   setNotifications,
+  setIsBanned,
 }) => {
   useEffect(() => {
     const generateNotifs = async (currUser) => {
@@ -114,6 +115,25 @@ const UserNotificationSubscriber = ({
       }
     };
 
+    // async function addtoDevGroup() {
+    //   let apiName = "AdminQueries";
+    //   let path = "/addUserToGroup";
+    //   let options = {
+    //     body: {
+    //       username: user.username,
+    //       groupname: "Devs",
+    //     },
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: `${
+    //         (await fetchAuthSession()).tokens.accessToken.payload
+    //       }`,
+    //     },
+    //   };
+    //   return post({ apiName, path, options });
+    // }
+    // const adminQueries = require("./admin-queries");
+
     const getIsDev = async () => {
       try {
         const { tokens } = await fetchAuthSession();
@@ -125,11 +145,25 @@ const UserNotificationSubscriber = ({
       }
     };
 
+    const getIsBanned = async () => {
+      try {
+        const result = await client.graphql({
+          query: listBannedUsers,
+          variables: { filter: { bannedUsers: { eq: user.username } } },
+        });
+        console.log("banned users:", result.data.listBannedUsers.items);
+        setIsBanned(result.data.listBannedUsers.items.length > 0);
+      } catch (error) {
+        console.error("Error fetching banned users:", error);
+      }
+    };
+
     let notifSubscription;
 
     if (user) {
       var internal_notif_length = generateNotifs(user);
       getIsDev();
+      getIsBanned();
 
       notifSubscription = client
         .graphql({
@@ -251,6 +285,7 @@ export var isDevGlobal = false;
 export default function App() {
   const [notifications, setNotifications] = React.useState([]);
   const [isDev, setIsDev] = React.useState(false);
+  const [isBanned, setIsBanned] = React.useState(null);
 
   useEffect(() => {
     console.log("isDev app:", isDev);
@@ -268,28 +303,69 @@ export default function App() {
       {({ signOut, user }) => (
         <UserProvider>
           <View className="App">
-            <div style={{ minHeight: '100vh', backgroundColor: "rgb(24, 24, 24)" }}>
+            <div
+              style={{ minHeight: "100vh", backgroundColor: "rgb(24, 24, 24)" }}
+            >
               <UserNotificationSubscriber
                 user={user}
                 signOut={signOut}
                 setIsDev={setIsDev}
                 setNotifications={setNotifications}
+                setIsBanned={setIsBanned}
               />
-              <Toaster position="top-right" reverseOrder={false} />
-              <Grid
-                columnGap="0.5rem"
-                rowGap="0.5rem"
-                templateColumns="1fr 8fr"
-                alignContent="center"
-              >
-                <NavBar columnStart="1" columnEnd="2" />{" "}
-                {/* NavBar spans only 1 column */}
-                <div style={{ gridColumn: "2 / span 1" }}>
-                  {" "}
-                  {/* Content div spans only 1 column */}
-                  <Route notifications={notifications} />
+              {isBanned && (
+                <div>
+                  <Text
+                    fontSize="24px"
+                    color="rgba(255,255,255,1)"
+                    textAlign="center"
+                    display="block"
+                    direction="column"
+                    justifyContent="unset"
+                    width="unset"
+                    height="unset"
+                    gap="unset"
+                    alignItems="unset"
+                    position="center"
+                    top="49px"
+                    left="29px"
+                    padding="20px"
+                    whiteSpace="pre-wrap"
+                  >
+                    You have been banned from DripDrop.
+                  </Text>
+                  <Button
+                    variation="primary"
+                    colorTheme="danger"
+                    size="large"
+                    style={{ margin: "auto", display: "block" }}
+                    onClick={() => {
+                      signOut();
+                    }}
+                  >
+                    Sign Out
+                  </Button>
                 </div>
-              </Grid>
+              )}
+              {isBanned !== null && !isBanned && (
+                <div>
+                  <Toaster position="top-right" reverseOrder={false} />
+                  <Grid
+                    columnGap="0.5rem"
+                    rowGap="0.5rem"
+                    templateColumns="1fr 8fr"
+                    alignContent="center"
+                  >
+                    <NavBar columnStart="1" columnEnd="2" />{" "}
+                    {/* NavBar spans only 1 column */}
+                    <div style={{ gridColumn: "2 / span 1" }}>
+                      {" "}
+                      {/* Content div spans only 1 column */}
+                      <Route notifications={notifications} />
+                    </div>
+                  </Grid>
+                </div>
+              )}
             </div>
           </View>
         </UserProvider>

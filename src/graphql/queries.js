@@ -408,7 +408,7 @@ export const getBannedUsers = /* GraphQL */ `
   query GetBannedUsers($id: ID!) {
     getBannedUsers(id: $id) {
       id
-      BannedUsers
+      bannedUsers
       createdAt
       updatedAt
       __typename
@@ -424,7 +424,7 @@ export const listBannedUsers = /* GraphQL */ `
     listBannedUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        BannedUsers
+        bannedUsers
         createdAt
         updatedAt
         __typename

@@ -55,7 +55,14 @@
         "s3poststorageprod": {}
       },
       "api": {
-        "dripdrop407": {}
+        "dripdrop407": {},
+        "AdminQueries": {}
+      },
+      "function": {
+        "AdminQueriesd8df764b": {
+          "deploymentBucketName": "amplify-dripdrop407-prod-171256-deployment",
+          "s3Key": "amplify-builds/AdminQueriesd8df764b-54715355696156627471-build.zip"
+        }
       }
     }
   }
