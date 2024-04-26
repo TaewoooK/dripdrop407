@@ -173,6 +173,7 @@ export const onCreatePost = /* GraphQL */ `
       }
       hiddenPeople
       actionedUsers
+      tags
       updatedAt
       __typename
     }
@@ -194,6 +195,7 @@ export const onUpdatePost = /* GraphQL */ `
       }
       hiddenPeople
       actionedUsers
+      tags
       updatedAt
       __typename
     }
@@ -215,6 +217,7 @@ export const onDeletePost = /* GraphQL */ `
       }
       hiddenPeople
       actionedUsers
+      tags
       updatedAt
       __typename
     }
@@ -237,6 +240,7 @@ export const onCreateComment = /* GraphQL */ `
         postImageKey
         hiddenPeople
         actionedUsers
+        tags
         updatedAt
         __typename
       }
@@ -263,6 +267,7 @@ export const onUpdateComment = /* GraphQL */ `
         postImageKey
         hiddenPeople
         actionedUsers
+        tags
         updatedAt
         __typename
       }
@@ -289,6 +294,7 @@ export const onDeleteComment = /* GraphQL */ `
         postImageKey
         hiddenPeople
         actionedUsers
+        tags
         updatedAt
         __typename
       }
@@ -443,6 +449,7 @@ export const onCreateBattle = /* GraphQL */ `
       Player1ImageKey
       Player2ImageKey
       createdAt
+      actionedUsers
       updatedAt
       __typename
     }
@@ -461,6 +468,7 @@ export const onUpdateBattle = /* GraphQL */ `
       Player1ImageKey
       Player2ImageKey
       createdAt
+      actionedUsers
       updatedAt
       __typename
     }
@@ -478,6 +486,46 @@ export const onDeleteBattle = /* GraphQL */ `
       Player2Score
       Player1ImageKey
       Player2ImageKey
+      createdAt
+      actionedUsers
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onCreateBannedUsers = /* GraphQL */ `
+  subscription OnCreateBannedUsers(
+    $filter: ModelSubscriptionBannedUsersFilterInput
+  ) {
+    onCreateBannedUsers(filter: $filter) {
+      id
+      BannedUsers
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateBannedUsers = /* GraphQL */ `
+  subscription OnUpdateBannedUsers(
+    $filter: ModelSubscriptionBannedUsersFilterInput
+  ) {
+    onUpdateBannedUsers(filter: $filter) {
+      id
+      BannedUsers
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteBannedUsers = /* GraphQL */ `
+  subscription OnDeleteBannedUsers(
+    $filter: ModelSubscriptionBannedUsersFilterInput
+  ) {
+    onDeleteBannedUsers(filter: $filter) {
+      id
+      BannedUsers
       createdAt
       updatedAt
       __typename

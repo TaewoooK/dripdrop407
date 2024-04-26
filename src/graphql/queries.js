@@ -149,6 +149,7 @@ export const getPost = /* GraphQL */ `
       }
       hiddenPeople
       actionedUsers
+      tags
       updatedAt
       __typename
     }
@@ -171,6 +172,7 @@ export const listPosts = /* GraphQL */ `
         postImageKey
         hiddenPeople
         actionedUsers
+        tags
         updatedAt
         __typename
       }
@@ -196,6 +198,7 @@ export const getComment = /* GraphQL */ `
         postImageKey
         hiddenPeople
         actionedUsers
+        tags
         updatedAt
         __typename
       }
@@ -368,6 +371,7 @@ export const getBattle = /* GraphQL */ `
       Player1ImageKey
       Player2ImageKey
       createdAt
+      actionedUsers
       updatedAt
       __typename
     }
@@ -390,6 +394,37 @@ export const listBattles = /* GraphQL */ `
         Player2Score
         Player1ImageKey
         Player2ImageKey
+        createdAt
+        actionedUsers
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getBannedUsers = /* GraphQL */ `
+  query GetBannedUsers($id: ID!) {
+    getBannedUsers(id: $id) {
+      id
+      BannedUsers
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listBannedUsers = /* GraphQL */ `
+  query ListBannedUsers(
+    $filter: ModelBannedUsersFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listBannedUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        BannedUsers
         createdAt
         updatedAt
         __typename

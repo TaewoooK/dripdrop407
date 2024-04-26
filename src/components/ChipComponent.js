@@ -12,6 +12,10 @@ import { Button, Icon, Text, View } from "@aws-amplify/ui-react";
 
 import ProfileModal from "./ProfileModal";
 
+import { isDevGlobal } from "../App";
+import { generateClient } from "aws-amplify/api";
+import { createBannedUsers } from "../graphql/mutations";
+
 const modalContainerStyles = {
   position: "fixed",
   top: 0,
@@ -33,6 +37,8 @@ const modalStyles = {
   borderRadius: "8px",
   boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
 };
+
+const client = generateClient();
 
 export default function ChipComponent({
   key,
@@ -56,12 +62,33 @@ export default function ChipComponent({
     setOpenProfileModal(false);
   };
 
+  const banUser = async (username) => {
+    console.log("Banning user: ", username);
+    await client.graphql({
+      query: createBannedUsers,
+      variables: {
+        input: { BannedUsers: username },
+      },
+    });
+    console.log("user successfully banned");
+  };
+
   const Modal = ({ onClose }) => {
     return (
       <div style={modalContainerStyles}>
         <div style={modalStyles}>
           <ProfileModal user={user} />
-          <button onClick={onClose}>Close</button>
+          <div
+            style={{ display: "flex", gap: "10px", justifyContent: "center" }}
+          >
+            <button onClick={onClose}>Close</button>
+            {isDevGlobal && (
+              // <button onClick={() => console.log("user", user)}>
+              //   Log User
+              // </button>
+              <button onClick={() => banUser(user.Username)}>Ban User</button>
+            )}
+          </div>
         </div>
       </div>
     );
